@@ -1,0 +1,26 @@
+{
+  "name": "cookie-consent",
+  "version": "0.0.1",
+  "description": "In-house solution for managing cookies on nhs.uk",
+  "main": "src/cookieconsent.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "testserver": "./node_modules/.bin/http-server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nhsuk/cookie-consent.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nhsuk/cookie-consent/issues"
+  },
+  "homepage": "https://github.com/nhsuk/cookie-consent#readme",
+  "devDependencies": {
+    "http-server": "^0.11.1"
+  }
+}
