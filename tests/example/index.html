@@ -1,0 +1,48 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+
+    <title>Cookie Consent test page</title>
+
+    <link rel="stylesheet" href="./css/style.css">
+
+    <!-- Necessary cookies should always be set regardless of user preferences  -->
+    <script src="./js/necessary.js"></script>
+
+    <!-- Statistics cookies have to be accepted before they are set -->
+    <script data-src="./js/statistics.js" data-cookie-category="statistics"></script>
+
+
+    <!-- Cookie Consent plugin -->
+    <script src="../../src/cookieconsent.js"></script>
+  </head>
+  <body>
+    <main class="main">
+      <h1>Cookies:</h1>
+      <button onclick="listCookies()">Refresh</button>
+      <div id="cookie-list"></div>
+      <script>
+        function listCookies() {
+          // Get all cookies and render them in the cookie-list div
+          var cookies = document.cookie ? document.cookie.split(";") : []
+          var container = document.getElementById("cookie-list");
+
+          // set the cookie list
+          container.innerHTML = "";
+          if(cookies.length) {
+            cookies.forEach(function(cookie) {
+              var lineItem = "<li>" + cookie + "</li>";
+              container.insertAdjacentHTML('beforeend', lineItem);
+            })
+          } else {
+            container.innerHTML = "<p>No cookies to show</p>";
+          }
+        }
+        listCookies()
+      </script>
+    </div>
+  </body>
+</html>
