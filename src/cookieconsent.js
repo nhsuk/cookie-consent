@@ -61,6 +61,8 @@ window.onload = function checkCookie() {
         alert("cookie already exists");
     }
 };
-//on page loads, if no cookie, drop cookie with stamp similar to cookiebot
 
-//if accept has been clicked, yes to all
+//If consent is given, change value of cookie
+function acceptConsent() {
+    var cookieTypes = "necessary:true"+delimiter+"preferences:false"+delimiter+"statistics:false"+delimiter+"marketing:false";
+}
