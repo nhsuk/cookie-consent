@@ -20,3 +20,11 @@ npm run build
 ```
 
 Compiled javascript will be saved to dist/main.js
+
+## Tests
+
+To run the [Jest](https://jestjs.io/en/) tests
+
+```sh
+npm test
+```
