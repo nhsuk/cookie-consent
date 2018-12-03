@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
 
+    <link rel="shortcut icon" href="">
+
     <title>Cookie Consent test page</title>
 
     <link rel="stylesheet" href="./css/style.css">
@@ -15,16 +17,16 @@
     <!-- Statistics cookies have to be accepted before they are set -->
     <script data-src="./js/statistics.js" data-cookie-category="statistics"></script>
 
-
     <!-- Cookie Consent plugin -->
-    <script src="../../src/cookieconsent.js"></script>
+    <script src="../../src/cookieconsent.js" type="text/javascript"></script>
+
   </head>
   <body>
     <main class="main">
       <h1>Cookies:</h1>
       <button onclick="listCookies()">Refresh</button>
       <div id="cookie-list"></div>
-      <script>
+      <script type="text/javascript">
         function listCookies() {
           // Get all cookies and render them in the cookie-list div
           var cookies = document.cookie ? document.cookie.split(";") : []
@@ -41,8 +43,14 @@
             container.innerHTML = "<p>No cookies to show</p>";
           }
         }
-        listCookies()
+        listCookies();
       </script>
     </div>
   </body>
 </html>
+
+
+window.getCookie = function(name) {
+  var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+  if (match) return match[2];
+}
