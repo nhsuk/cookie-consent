@@ -7,8 +7,11 @@
     "test": "tests"
   },
   "scripts": {
+    "build": "webpack src/cookieconsent.js",
+    "start": "npm run watch & npm run testserver",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "testserver": "./node_modules/.bin/http-server"
+    "testserver": "./node_modules/.bin/http-server",
+    "watch": "webpack --watch src/cookieconsent.js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +24,8 @@
   },
   "homepage": "https://github.com/nhsuk/cookie-consent#readme",
   "devDependencies": {
-    "http-server": "^0.11.1"
+    "http-server": "^0.11.1",
+    "webpack": "^4.26.1",
+    "webpack-cli": "^3.1.2"
   }
 }
