@@ -7,11 +7,11 @@
     "test": "tests"
   },
   "scripts": {
-    "build": "webpack src/cookieconsent.js",
+    "build": "webpack",
     "start": "npm run watch & npm run testserver",
     "test": "echo \"Error: no test specified\" && exit 1",
     "testserver": "./node_modules/.bin/http-server",
-    "watch": "webpack --watch src/cookieconsent.js"
+    "watch": "webpack --watch"
   },
   "repository": {
     "type": "git",
@@ -24,6 +24,10 @@
   },
   "homepage": "https://github.com/nhsuk/cookie-consent#readme",
   "devDependencies": {
+    "@babel/core": "^7.1.6",
+    "@babel/preset-env": "^7.1.6",
+    "babel-cli": "^6.26.0",
+    "babel-loader": "^8.0.4",
     "http-server": "^0.11.1",
     "webpack": "^4.26.1",
     "webpack-cli": "^3.1.2"
