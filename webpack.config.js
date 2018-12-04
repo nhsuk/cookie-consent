@@ -1,6 +1,7 @@
 const path = require('path');
 
 module.exports = {
+  mode: 'development',
   entry: './src/cookieconsent.js',
   output: {
     filename: 'main.js',
