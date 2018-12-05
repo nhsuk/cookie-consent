@@ -4,6 +4,8 @@ describe('Example site cookie usage', () => {
   })
 
   it('should load necessary cookies', async () => {
-    await expect(page).toMatch('necessary=This is a necessary cookie')
+    const cookies = await page.cookies()
+    expect(cookies.length).toBe(1)
+    expect(cookies[0].name).toBe("necessary")
   })
 })
