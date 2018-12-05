@@ -9,7 +9,9 @@
   "scripts": {
     "build": "webpack",
     "start": "npm run watch & npm run testserver",
-    "test": "jest",
+    "test": "npm run test:unit; npm run test:integration",
+    "test:unit": "jest",
+    "test:integration": "jest -c tests/integration-tests/jest.config.js",
     "testserver": "./node_modules/.bin/http-server",
     "watch": "webpack --watch"
   },
