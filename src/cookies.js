@@ -1,3 +1,4 @@
+import { acceptConsent, askMeLater } from './cookieconsent'
 
 //used to create a new cookie for the user which covers different cookie types
 export function createCookie(name, value, days, path, domain, secure){
@@ -5,7 +6,7 @@ export function createCookie(name, value, days, path, domain, secure){
     if (days) {
         var date = new Date();
         date.setTime(date.getTime()+(days*24*60*60*1000));
-        var expires=date.toLocaleTimeString();
+        var expires=date.toGMTString();
     }
     else {
         var expires = "";
@@ -14,16 +15,18 @@ export function createCookie(name, value, days, path, domain, secure){
     var cookieString= name + "=" + escape (value);
 
     if (expires)
-    cookieString += "; expires=" + expires;
+    cookieString += ";expires=" + expires;
 
     if (path)
-    cookieString += "; path=" + escape (path);
+    cookieString += ";path=" + escape (path);
 
     if (domain)
-    cookieString += "; domain=" + escape (domain);
+    cookieString += ";domain=" + escape (domain);
 
     if (secure)
-    cookieString += "; secure";
+    cookieString += ";secure";
+
+    cookieString += ";";
 
     //cookiestring now contains all necessary details and is turned into a cookie
     document.cookie=cookieString;
@@ -31,21 +34,32 @@ export function createCookie(name, value, days, path, domain, secure){
 
 //gets a cookie based on the name
 export function getCookie(name) {
-    var cookie = document.cookie;
+    var dc = document.cookie;
     var prefix = name + "=";
-    var begin = cookie.indexOf("; " + prefix);
+    var begin = dc.indexOf("; " + prefix);
     if (begin == -1) {
-        begin = cookie.indexOf(prefix);
+        begin = dc.indexOf(prefix);
         if (begin != 0) return null;
-    } else {
+    }
+    else
+    {
         begin += 2;
         var end = document.cookie.indexOf(";", begin);
         if (end == -1) {
-        end = cookie.length;
+        end = dc.length;
         }
     }
-    return unescape(cookie.substring(begin + prefix.length, end));
+    // because unescape has been deprecated, replaced with decodeURI
+    return decodeURI(dc.substring(begin + prefix.length, end));
 }
+
+export function hideCookieModal() {
+    document.getElementById("cookiebanner").style.display = "none";
+};
+
+export function showCookieConfirmation() {
+    document.getElementById("nhsuk-cookie-confirmation-banner").style.display = "block";
+};
 
 export function insertCookieBanner() {
     document.getElementsByTagName("body")[0].innerHTML += 
@@ -63,14 +77,14 @@ export function insertCookieBanner() {
         '<p>They collect information about how you use our website. This helps us make the website better.</p>' +
         '<p>None of these cookies are used to tell us who you are.</p>' +
         '<div class="center-wrapper">' +
-        '<div class="nhsuk-button" role="button" onclick="acceptConsent();">' +
+        '<div class="nhsuk-button" role="button">' +
         '<p>I understand</p>' +
         '</div>' +
         '<div class="nhsuk-link">' +
         '<a href="https://www.nhs.uk/aboutNHSChoices/aboutnhschoices/termsandconditions/Pages/cookies-policy.aspx">Tell me more about cookies</a>' +
         '</div>' +
         '<div class="nhsuk-link">' +
-        '<a id="later-link" onclick="hideCookieBanner();">Ask me later</a>' +
+        '<a id="later-link">Ask me later</a>' +
         '</div>' +
         '</div>' +
         '</div>' +
@@ -101,7 +115,6 @@ export function insertCookieBanner() {
     head = document.head || document.getElementsByTagName('head')[0],
     style = document.createElement('style');
 
-
     style.type = 'text/css';
     if (style.styleSheet){
         // This is required for IE8 and below.
@@ -111,4 +124,16 @@ export function insertCookieBanner() {
     }
 
     head.appendChild(style);
+
+    document.getElementsByClassName("nhsuk-button")[0].addEventListener ("click", acceptConsent);
+    document.getElementById("later-link").addEventListener("click", hideCookieModal);
+    document.getElementById("later-link").addEventListener("click", askMeLater);
+
+    window.onclick = function(event) {
+        if (event.target == cookiebanner) {
+            askMeLater();
+            hideCookieModal();
+        }
+    };
+    
 };
