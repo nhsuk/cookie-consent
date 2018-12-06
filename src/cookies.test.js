@@ -1,5 +1,6 @@
 import { createCookie, getCookie } from './cookies'
 import { acceptConsent } from './cookieconsent'
+import { create } from 'domain';
 
 /* https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript */
 function deleteAllCookies() {
@@ -25,13 +26,17 @@ test('acceptConsent function exists', () => {
   expect(acceptConsent).toBeInstanceOf(Function)
 })
 
-test('acceptConsent changes the cookie', () => {
-  var cookieTypes = "necessary:true"+delimiter+"preferences:true"+delimiter+"statistics:true"+delimiter+"marketing:false";
-  var cookieTypesAccepted = "necessary:true"+delimiter+"preferences:true"+delimiter+"statistics:true"+delimiter+"marketing:true";
-  
+test('createCookie function exists', () => {
+  expect(createCookie).toBeInstanceOf(Function)
 })
 
-test('get')
+test('createCookie changes the cookie', () => {
+  createCookie("testCookie", "testValue", "");
+  createCookie("testCookie", "testValue2", "");
+  expect(getCookie("testCookie")).toBe("testValue2")
+})
+
+test
 
 test('getCookie gets a cookie', () => {
   document.cookie = "testcookie=testvalue"
@@ -59,9 +64,3 @@ test('getCookie will unescape URL params', () => {
   document.cookie = "testcookie=semi%3Bcolon%3Dequals"
   expect(getCookie("testcookie")).toBe("semi;colon=equals")
 })
-
-/* TODO: write tests for the setCookie function
-test('setCookie function exists', () => {
-  expect(setCookie).toBeInstanceOf(Function)
-})
-*/
