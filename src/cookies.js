@@ -62,10 +62,10 @@ export function showCookieConfirmation() {
 };
 
 export function insertCookieBanner() {
-    document.getElementsByTagName("body")[0].innerHTML += 
+    document.getElementsByTagName("body")[0].innerHTML +=
         '<div class="nhsuk-cookie-banner" id="cookiebanner" role="alert">' +
-        '<div class="modal-content">' + 
-        '<svg class="nhsuk-logo" xmlns="http://www.w3.org/2000/svg" role="presentation" focusable="false">' + 
+        '<div class="modal-content">' +
+        '<svg class="nhsuk-logo" xmlns="http://www.w3.org/2000/svg" role="presentation" focusable="false">' +
         '<g fill="none">' +
         '<path fill="#005EB8" d="M0 39.842h98.203V0H0z"></path>' +
         '<path fill="#FFFFFF" d="M9.548 3.817H20.16l6.52 22.08h.09l4.465-22.08h8.021l-6.74 31.84H21.939l-6.65-22.032h-.09l-4.424 22.031H2.754l6.794-31.84m32.852.001h8.518l-2.502 12.18h10.069l2.508-12.18h8.519l-6.61 31.84h-8.518l2.826-13.638H47.135L44.31 35.656h-8.518L42.4 3.816m49.53 7.209c-1.64-.773-3.873-1.457-7.016-1.457-3.37 0-6.106.498-6.106 3.056 0 4.512 12.35 2.828 12.35 12.499 0 8.802-8.16 11.085-15.54 11.085-3.281 0-7.065-.78-9.842-1.648l2.006-6.477c1.682 1.096 5.058 1.827 7.835 1.827 2.646 0 6.789-.503 6.789-3.786 0-5.111-12.35-3.194-12.35-12.176 0-8.214 7.202-10.676 14.176-10.676 3.92 0 7.608.413 9.75 1.413l-2.052 6.34"></path>' +
@@ -77,14 +77,14 @@ export function insertCookieBanner() {
         '<p>They collect information about how you use our website. This helps us make the website better.</p>' +
         '<p>None of these cookies are used to tell us who you are.</p>' +
         '<div class="center-wrapper">' +
-        '<div class="nhsuk-button" role="button">' +
-        '<p>I understand</p>' +
-        '</div>' +
+        '<button class="nhsuk-button">' +
+        'I understand' +
+        '</button>' +
         '<div class="nhsuk-link">' +
         '<a href="https://www.nhs.uk/aboutNHSChoices/aboutnhschoices/termsandconditions/Pages/cookies-policy.aspx">Tell me more about cookies</a>' +
         '</div>' +
         '<div class="nhsuk-link">' +
-        '<a id="later-link">Ask me later</a>' +
+        '<a id="later-link" href="#">Ask me later</a>' +
         '</div>' +
         '</div>' +
         '</div>' +
@@ -94,7 +94,7 @@ export function insertCookieBanner() {
         '</div>' +
         '</div>';
 
-    var css = '.nhsuk-cookie-banner { display: block; position: fixed; z-index: 20; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: black; background-color: rgba(0, 0, 0, 0.4);} ' + 
+    var css = '.nhsuk-cookie-banner { display: block; position: fixed; z-index: 20; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: black; background-color: rgba(0, 0, 0, 0.4);} ' +
     '#later-link { margin-bottom:16px;} ' +
     '.modal-content { border-radius: 4px; background-color: #fefefe; margin: 15% auto; padding: 20px; border: 1px solid #888; width: 90%;}' +
     '#cookie-desc {margin-bottom: 24px; color: #000000;}' +
@@ -135,5 +135,42 @@ export function insertCookieBanner() {
             hideCookieModal();
         }
     };
-    
+
+
+    // get all focusable elements in the modal
+    var cookiemodal = document.querySelector('.center-wrapper'),
+        inputs = cookiemodal.querySelectorAll('button, a'),
+        firstinput = inputs[0],
+        lastinput = inputs[inputs.length - 1];
+
+    // set focus on first focusable element
+    firstinput.focus();
+
+    // pressing escape will close the model
+    document.onkeydown = function(evt) {
+      evt = evt || window.event;
+      if (evt.keyCode === 27) { // escape key
+          hideCookieModal();
+      }
+    };
+
+    // if focus is on last element, pressing tab will focus on the first element
+    lastinput.onkeydown = function(evt) {
+      evt = evt || window.event;
+      if (evt.keyCode === 9 && !evt.shiftKey) { // tab key
+        evt.preventDefault();
+        firstinput.focus();
+      }
+    }
+
+    // if focus is on first element, shift tab will focus on the last element
+    firstinput.onkeydown = function(evt) {
+      evt = evt || window.event;
+      if (evt.keyCode === 9 && evt.shiftKey) { // shift tab
+        evt.preventDefault();
+        lastinput.focus();
+      }
+    }
+
+
 };
