@@ -1,4 +1,5 @@
-import { getCookie, createCookie, insertCookieBanner, hideCookieModal, showCookieConfirmation } from './cookies'
+import { getCookie, createCookie } from './cookies'
+import { insertCookieBanner, hideCookieModal, showCookieConfirmation } from './modal'
 
 var delimiter = "---"; //used to split cookie into information
 
@@ -13,19 +14,11 @@ window.onload = function checkCookie() {
     if (getCookie(cookieName) == null) {
         createCookie(cookieName, cookieTypes, 365, "/");
         insertCookieBanner();
+    } else if(!isValidVersion(cookieName, COOKIE_VERSION)) {
+        createCookie(cookieName, cookieTypes, 365);
+        insertCookieBanner();
     }
-    else {
-        if (isValidVersion(cookieName, COOKIE_VERSION))
-        {
-            
-        }
-        else
-        {
-            createCookie(cookieName, cookieTypes, 365);
-            insertCookieBanner();
-        }
-    }
-};
+}
 
 //If consent is given, change value of cookie
 export function acceptConsent() {
@@ -34,13 +27,11 @@ export function acceptConsent() {
     createCookie("nhsuk-cookie-consent", cookieTypesAccepted, 365, "/");
     hideCookieModal();
     showCookieConfirmation();
-};
+}
 
 function getCookieVersion(name) {
     var status = getCookie(name).split('|')[1];
     return status.split(';')[0];
-    console.log("status");
-    return status;
 }
 
 function isValidVersion(name, version) {
@@ -54,5 +45,3 @@ export function askMeLater() {
     createCookie("nhsuk-cookie-consent", cookieTypes, "", "/");
     hideCookieModal();
 }
-
-
