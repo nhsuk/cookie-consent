@@ -1,6 +1,4 @@
 import { createCookie, getCookie } from './cookies'
-import { acceptConsent } from './cookieconsent'
-import { create } from 'domain';
 
 /* https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript */
 function deleteAllCookies() {
@@ -20,10 +18,6 @@ afterEach(() => {
 
 test('getCookie function exists', () => {
   expect(getCookie).toBeInstanceOf(Function)
-})
-
-test('acceptConsent function exists', () => {
-  expect(acceptConsent).toBeInstanceOf(Function)
 })
 
 test('createCookie function exists', () => {
