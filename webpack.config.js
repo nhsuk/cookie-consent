@@ -25,6 +25,11 @@ module.exports = {
           attrs: false,
         }
       }
+    }, {
+      test: /\.css$/,
+      use: {
+        loader: "css-loader"
+      },
     }]
   }
 };
