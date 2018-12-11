@@ -28,3 +28,15 @@ To run the [Jest](https://jestjs.io/en/) tests
 ```sh
 npm test
 ```
+
+To run only unit tests
+```sh
+npm run test:unit
+```
+
+To run only integration tests
+```sh
+npm run test:integration
+```
+
+N.B. The integration tests rely on there being a test server available on localhost:8080.
