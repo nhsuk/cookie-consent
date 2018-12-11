@@ -1,11 +1,9 @@
 describe('Popup is usable', () => {
 
   const clearAllCookies = async () => {
-    const cookies = await page.cookies()
-    const operations = cookies.map(async cookie => {
-      await page.deleteCookie(cookie)
-    })
-    await Promise.all(operations)
+    // send clearBrowserCookies to raw devtools protocol.
+    // https://github.com/GoogleChrome/puppeteer/issues/1632#issuecomment-353086292
+    await page._client.send('Network.clearBrowserCookies');
   }
 
   const waitForVisibleModal = async () => {
@@ -17,12 +15,9 @@ describe('Popup is usable', () => {
   }
 
   beforeEach(async () => {
+    await clearAllCookies()
     await page.goto('http://localhost:8080/tests/example/')
     await waitForVisibleModal()
-  })
-
-  afterEach(async () => {
-    await clearAllCookies()
   })
 
   it('should display on first page load', async () => {
@@ -43,4 +38,17 @@ describe('Popup is usable', () => {
     })
     await waitForHiddenModal()
   })
+
+  it('clicking "tell me more" should take the user to another page', async () => {
+    await Promise.all([
+      page.waitForNavigation(),
+      page.click('.nhsuk-link a')
+    ])
+  })
+
+  it('clicking "ask me later" should hide modal', async () => {
+    await page.click('#later-link')
+    await waitForHiddenModal()
+  })
+
 })
