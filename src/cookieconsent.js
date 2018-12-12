@@ -76,13 +76,19 @@ function getScriptSettings() {
 }
 
 window.onload = function checkCookie() {
+  const settings = getScriptSettings();
+
   // If there isn't a user cookie, create one
   if (getCookie() == null) {
     createCookie(cookieTypes, 365, '/');
-    insertCookieBanner(acceptConsent, askMeLater);
+    if (!settings.nobanner) {
+      insertCookieBanner(acceptConsent, askMeLater);
+    }
   } else if (!isValidVersion(COOKIE_VERSION)) {
     createCookie(cookieTypes, 365, '/');
-    insertCookieBanner(acceptConsent, askMeLater);
+    if (!settings.nobanner) {
+      insertCookieBanner(acceptConsent, askMeLater);
+    }
   }
 };
 
