@@ -10,7 +10,23 @@ npm start
 
 Go to http://localhost:8080/tests/example/ for an example site using the cookie javascript.
 
-## API
+## Usage
+
+Include the cookie javascript in your page
+```html
+<script src="/path/to/javascript.js" type="text/javascript"></script>
+```
+
+If you want to prevent the cookie banner from showing automatically, add a
+`data-nobanner` attribute to the script tag
+```html
+<script src="/path/to/javascript.js" data-nobanner type="text/javascript"></script>
+```
+
+If you disable the banner, you will have to write your own logic and interact with
+the javascript API to set user cookie consent.
+
+## Javascript API
 
 The javascript API is exposed on a NHSCookieConsent global variable.
 
