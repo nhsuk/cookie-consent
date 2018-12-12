@@ -8,7 +8,7 @@ var delimiter = "---"; //used to split cookie into information
 var COOKIE_VERSION = 1;
 var cookieTypes = "necessary:true"+delimiter+"preferences:true"+delimiter+"statistics:true"+delimiter+"marketing:false"+"|"+COOKIE_VERSION;
 
-window.onload = function checkCookie() {
+window.addEventListener("load", function checkCookie() {
     var cookieName = "nhsuk-cookie-consent";
     //If there isn't a user cookie, create one
     if (getCookie(cookieName) == null) {
@@ -18,7 +18,7 @@ window.onload = function checkCookie() {
         createCookie(cookieName, cookieTypes, 365);
         insertCookieBanner();
     }
-}
+});
 
 //If consent is given, change value of cookie
 export function acceptConsent() {
