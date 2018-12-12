@@ -10,6 +10,19 @@ npm start
 
 Go to http://localhost:8080/tests/example/ for an example site using the cookie javascript.
 
+## API
+
+The javascript API is exposed on a NHSCookieConsent global variable.
+
+```js
+// shows the current cookie consent library version
+console.log(NHSCookieConsent.VERSION)
+```
+
+### Properties
+
+- `VERSION` the current version as defined in package.json
+
 ## Compiling
 
 This project uses [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/)

@@ -1,5 +1,6 @@
 import { getCookie, createCookie } from './cookies'
 import { insertCookieBanner, hideCookieModal, showCookieConfirmation } from './modal'
+import packageJson from '../package.json'
 
 var delimiter = "---"; //used to split cookie into information
 
@@ -44,4 +45,16 @@ function isValidVersion(name, version) {
 export function askMeLater() {
     createCookie("nhsuk-cookie-consent", cookieTypes, "", "/");
     hideCookieModal();
+}
+
+
+/*
+ * Set the global NHSCookieConsent object that implementors of this library
+ * will interact with.
+ */
+window.NHSCookieConsent = {
+  /*
+   * The version of this package as defined in the package.json
+   */
+  VERSION: packageJson.version,
 }

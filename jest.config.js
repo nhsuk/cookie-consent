@@ -7,5 +7,6 @@ module.exports = {
   ],
   moduleNameMapper: {
     "\\.(html)$": "<rootDir>/__mocks__/htmlMock.js",
+    "\\.(css)$": "<rootDir>/__mocks__/cssMock.js",
   },
 }
