@@ -8,11 +8,11 @@ var delimiter = "---"; //used to split cookie into information
 // It will then give the user the banner again to consent to the new rules
 export var COOKIE_VERSION = 1;
 var cookieTypes = {
-    "Necessary": true,
-    "Preferences": true,
-    "Statistics": true,
-    "Marketing": false,
-    "Version": COOKIE_VERSION,
+    "necessary": true,
+    "preferences": true,
+    "statistics": true,
+    "marketing": false,
+    "version": COOKIE_VERSION,
 };
 
 window.onload = function checkCookie() {
@@ -72,31 +72,31 @@ window.NHSCookieConsent = {
 
 // Can use getCookie beforehand to get a cookie object from a name
 function getPreferences(cookie) {
-    return cookie.Preferences;
+    return cookie.preferences;
 };
 
 function getStatistics(cookie) {
-    return cookie.Statistics;
+    return cookie.statistics;
 };
 
 function getMarketing(cookie) {
-    return cookie.Marketing;
+    return cookie.marketing;
 };
 
 function togglePreferences(cookie) {
     var cookie = JSON.parse(cookie);
-    cookie.Preferences = !cookie.Preferences;
+    cookie.preferences = !cookie.preferences;
     createCookie(name, JSON.stringify(cookie), 365);
 };
 
 function toggleStatistics(name) {
     var cookie = JSON.parse(cookie);
-    cookie.Statistics = !cookie.Statistics;
+    cookie.statistics = !cookie.statistics;
     createCookie(name, JSON.stringify(cookie), 365);
 };
 
 function toggleMarketing(name) {
     var cookie = JSON.parse(cookie);
-    cookie.Marketing = !cookie.Marketing;
+    cookie.marketing = !cookie.marketing;
     createCookie(name, JSON.stringify(cookie), 365);
 };

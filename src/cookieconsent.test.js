@@ -9,7 +9,7 @@ test('getPreferences function exists', () => {
 })
 
 test('getPreferences returns correct value', () => {
-  expect(getPreferences({"Necessary":true,"Preferences":true,"Statistics":true,"Marketing":false,"Version":1})).toBe(true);
+  expect(getPreferences({"necessary":true,"preferences":true,"statistics":true,"marketing":false,"version":1})).toBe(true);
 })
 
 test('togglePreferences function exists', () => {
@@ -21,7 +21,7 @@ test('getStatistics function exists', () => {
 })
 
 test('getStatistics returns correct value', () => {
-  expect(getStatistics({"Necessary":true,"Preferences":true,"Statistics":true,"Marketing":false,"Version":1})).toBe(true);
+  expect(getStatistics({"necessary":true,"preferences":true,"statistics":true,"marketing":false,"version":1})).toBe(true);
 })
 
 test('toggleStatistics function exists', () => {
@@ -33,7 +33,7 @@ test('getMarketing function exists', () => {
 })
 
 test('getMarketing returns correct value', () => {
-  expect(getMarketing({"Necessary":true,"Preferences":true,"Statistics":true,"Marketing":false,"Version":1})).toBe(false);
+  expect(getMarketing({"necessary":true,"preferences":true,"statistics":true,"marketing":false,"version":1})).toBe(false);
 })
 
 test('toggleMarketing function exists', () => {
