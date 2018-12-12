@@ -11,9 +11,8 @@ export function createCookie(name, value, days, path, domain, secure){
         var expires = "";
     }
 
-    var strValue = JSON.stringify(value);
     //appends name to cookie, making it searchable
-    var cookieString= name + "=" + escape (strValue);
+    var cookieString= name + "=" + escape (value);
 
     if (expires)
     cookieString += ";expires=" + expires;
