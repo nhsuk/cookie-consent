@@ -17,7 +17,8 @@ var cookieTypes = {
 
 window.onload = function checkCookie() {
     var cookieName = "nhsuk-cookie-consent";
-    togglePreferences(cookieName);
+    console.log(getCookie("nhsuk-cookie-consent"));
+    console.log(getPreferences({"Necessary":true,"Preferences":true,"Statistics":true,"Marketing":false,"Version":1}));
     //If there isn't a user cookie, create one
     if (getCookie(cookieName) == null) {
         createCookie(cookieName, cookieTypes, 365, "/");
@@ -30,10 +31,7 @@ window.onload = function checkCookie() {
 
 //If consent is given, change value of cookie
 export function acceptConsent() {
-    var cookieTypesAccepted = cookieTypes;
-    cookieTypesAccepted.Marketing = true;
-    createCookie("nhsuk-cookie-consent", cookieTypesAccepted, -1, "/");
-    createCookie("nhsuk-cookie-consent", cookieTypesAccepted, 365, "/");
+    // On a domain where marketing cookies are required, toggleMarketing() would go here
     hideCookieModal();
     showCookieConfirmation();
 }
@@ -65,37 +63,42 @@ window.NHSCookieConsent = {
    * The version of this package as defined in the package.json
    */
   VERSION: packageJson.version,
-}
 
-function getPreferences(name) {
-    var cookie = getCookie(name);
+  getPreferences,
+  getStatistics,
+  getMarketing,
+  togglePreferences,
+  toggleStatistics,
+  toggleMarketing,
+};
+
+// Can use getCookie beforehand to get a cookie object from a name
+function getPreferences(cookie) {
     return cookie.Preferences;
-}
+};
 
-function getStatistics(name) {
-    var cookie = getCookie(name);
+function getStatistics(cookie) {
     return cookie.Statistics;
-}
+};
 
-function getMarketing(name) {
-    var cookie = getCookie(name);
+function getMarketing(cookie) {
     return cookie.Marketing;
-}
+};
 
-function togglePreferences(name) {
-    var cookie = JSON.parse(getCookie(name));
+function togglePreferences(cookie) {
+    var cookie = JSON.parse(cookie);
     cookie.Preferences = !cookie.Preferences;
-    createCookie(name, JSON.stringify(cookie), 365, "/");
-}
+    createCookie(name, JSON.stringify(cookie), 365);
+};
 
 function toggleStatistics(name) {
-    var cookie = JSON.parse(getCookie(name));
+    var cookie = JSON.parse(cookie);
     cookie.Statistics = !cookie.Statistics;
-    createCookie(name, JSON.stringify(cookie), 365, "/");
-}
+    createCookie(name, JSON.stringify(cookie), 365);
+};
 
 function toggleMarketing(name) {
-    var cookie = JSON.parse(getCookie(name));
+    var cookie = JSON.parse(cookie);
     cookie.Marketing = !cookie.Marketing;
-    createCookie(name, JSON.stringify(cookie), 365, "/");
-}
+    createCookie(name, JSON.stringify(cookie), 365);
+};
