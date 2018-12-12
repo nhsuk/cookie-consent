@@ -48,3 +48,20 @@ describe('Popup is usable', () => {
   })
 
 })
+
+describe('nobanner mode', () => {
+
+  beforeEach(async () => {
+    await clearAllCookies()
+    await page.goto('http://localhost:8080/tests/example/no-banner.html')
+  })
+
+  it('prevents banner from showing', async () => {
+    // give the banner a chance to show up
+    page.waitFor(250)
+    const banner = await page.evaluate(async () => {
+      return document.querySelector('.nhsuk-cookie-banner')
+    })
+    expect(banner).toBe(null)
+  })
+})
