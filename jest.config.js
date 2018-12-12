@@ -4,5 +4,8 @@ module.exports = {
   rootDir: ".",
   testMatch: [
     "<rootDir>/src/*.test.js",
-  ]
+  ],
+  moduleNameMapper: {
+    "\\.(html)$": "<rootDir>/__mocks__/htmlMock.js",
+  },
 }
