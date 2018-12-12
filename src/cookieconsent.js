@@ -1,6 +1,6 @@
 import { getCookie as getRawCookie, createCookie as createRawCookie } from './cookies';
 import { insertCookieBanner, hideCookieModal, showCookieConfirmation } from './modal';
-import { enableScriptsByCategory, enableIframesByCategory } from './enable'
+import { enableScriptsByCategory, enableIframesByCategory } from './enable';
 import packageJson from '../package.json';
 
 /**
@@ -49,6 +49,30 @@ export function acceptConsent() {
 export function askMeLater() {
   createCookie(COOKIE_NAME, cookieTypes, '', '/');
   hideCookieModal();
+}
+
+// N.B document.currentScript needs to be executed outside of any callbacks
+// https://developer.mozilla.org/en-US/docs/Web/API/Document/currentScript#Notes
+const scriptTag = document.currentScript;
+
+/**
+ * Get properties from the script tag that is including this javascript
+ */
+function getScriptSettings() {
+  const defaults = {
+    nobanner: false,
+  };
+  if (!scriptTag) {
+    return defaults;
+  }
+
+  const dataNobanner = scriptTag.getAttribute('data-nobanner');
+
+  // overwrite the default settings with attributes found on the <script> tag
+  return {
+    ...defaults,
+    nobanner: dataNobanner === 'true' || dataNobanner === '',
+  };
 }
 
 window.onload = function checkCookie() {
