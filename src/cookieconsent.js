@@ -1,5 +1,6 @@
 import { getCookie, createCookie } from './cookies'
 import { insertCookieBanner, hideCookieModal, showCookieConfirmation } from './modal'
+import { enableScriptsByCategory, enableIframesByCategory } from './enable'
 import packageJson from '../package.json'
 
 var delimiter = "---"; //used to split cookie into information
