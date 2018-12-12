@@ -75,23 +75,6 @@ function getScriptSettings() {
   };
 }
 
-window.onload = function checkCookie() {
-  const settings = getScriptSettings();
-
-  // If there isn't a user cookie, create one
-  if (getCookie() == null) {
-    createCookie(cookieTypes, 365, '/');
-    if (!settings.nobanner) {
-      insertCookieBanner(acceptConsent, askMeLater);
-    }
-  } else if (!isValidVersion(COOKIE_VERSION)) {
-    createCookie(cookieTypes, 365, '/');
-    if (!settings.nobanner) {
-      insertCookieBanner(acceptConsent, askMeLater);
-    }
-  }
-};
-
 function getConsentSetting(key) {
   const cookie = getCookie(COOKIE_NAME);
   return cookie[key];
@@ -143,4 +126,34 @@ window.NHSCookieConsent = {
   togglePreferences,
   toggleStatistics,
   toggleMarketing,
+};
+
+window.onload = function checkCookie() {
+  const settings = getScriptSettings();
+
+  // If there isn't a user cookie, create one
+  if (getCookie() == null) {
+    createCookie(cookieTypes, 365, '/');
+    if (!settings.nobanner) {
+      insertCookieBanner(acceptConsent, askMeLater);
+    }
+  } else if (!isValidVersion(COOKIE_VERSION)) {
+    createCookie(cookieTypes, 365, '/');
+    if (!settings.nobanner) {
+      insertCookieBanner(acceptConsent, askMeLater);
+    }
+  }
+
+  if (getStatistics() === true) {
+    enableScriptsByCategory('statistics');
+    enableIframesByCategory('statistics');
+  }
+  if (getPreferences() === true) {
+    enableScriptsByCategory('preferences');
+    enableIframesByCategory('preferences');
+  }
+  if (getMarketing() === true) {
+    enableScriptsByCategory('marketing');
+    enableIframesByCategory('marketing');
+  }
 };
