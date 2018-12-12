@@ -1,4 +1,4 @@
-import { getCookie, createCookie } from './cookies'
+import { getCookie as getRawCookie, createCookie as createRawCookie } from './cookies'
 import { insertCookieBanner, hideCookieModal, showCookieConfirmation } from './modal'
 import { enableScriptsByCategory, enableIframesByCategory } from './enable'
 import packageJson from '../package.json'
@@ -7,7 +7,9 @@ var delimiter = "---"; //used to split cookie into information
 
 // If cookie rules/regulations change and the cookie itself needs to change, bump this version up afterwards.
 // It will then give the user the banner again to consent to the new rules
-export var COOKIE_VERSION = 1;
+export const COOKIE_VERSION = 1;
+const COOKIE_NAME = 'nhsuk-cookie-consent';
+
 var cookieTypes = {
     "necessary": true,
     "preferences": true,
@@ -16,14 +18,23 @@ var cookieTypes = {
     "version": COOKIE_VERSION,
 };
 
+function getCookie() {
+  const rawCookie = getRawCookie(COOKIE_NAME)
+  return JSON.parse(rawCookie)
+}
+
+function createCookie(value, days, path, domain, secure) {
+  const stringValue = JSON.stringify(value)
+  return createRawCookie(COOKIE_NAME, stringValue, days, path, domain, secure)
+}
+
 window.onload = function checkCookie() {
-    var cookieName = "nhsuk-cookie-consent";
     //If there isn't a user cookie, create one
-    if (getCookie(cookieName) == null) {
-        createCookie(cookieName, cookieTypes, 365, "/");
+    if (getCookie() == null) {
+        createCookie(cookieTypes, 365, "/");
         insertCookieBanner();
-    } else if(!isValidVersion(cookieName, COOKIE_VERSION)) {
-        createCookie(cookieName, cookieTypes, 365);
+    } else if(!isValidVersion(COOKIE_NAME, COOKIE_VERSION)) {
+        createCookie(cookieTypes, 365, "/");
         insertCookieBanner();
     }
 }
@@ -36,8 +47,7 @@ export function acceptConsent() {
 }
 
 function getCookieVersion(name) {
-    var status = getCookie(name).split('|')[1];
-    return status.split(';')[0];
+  return getCookie(name).version
 }
 
 function isValidVersion(name, version) {
@@ -48,10 +58,45 @@ function isValidVersion(name, version) {
 }
 
 export function askMeLater() {
-    createCookie("nhsuk-cookie-consent", cookieTypes, "", "/");
+    createCookie(COOKIE_NAME, cookieTypes, "", "/");
     hideCookieModal();
 }
 
+function getConsentSetting(key) {
+  const cookie = getCookie(COOKIE_NAME)
+  return cookie[key]
+}
+
+// Can use getCookie beforehand to get a cookie object from a name
+function getPreferences() {
+  return getConsentSetting('preferences')
+};
+
+function getStatistics() {
+  return getConsentSetting('statistics')
+};
+
+function getMarketing() {
+  return getConsentSetting('marketing')
+};
+
+function togglePreferences() {
+  const cookie = getCookie()
+  cookie.preferences = !cookie.preferences;
+  createCookie(cookie, 365, "/");
+};
+
+function toggleStatistics() {
+  const cookie = getCookie()
+  cookie.statistics = !cookie.statistics;
+  createCookie(cookie, 365, "/");
+};
+
+function toggleMarketing() {
+  const cookie = getCookie()
+  cookie.marketing = !cookie.marketing;
+  createCookie(cookie, 365, "/");
+};
 
 /*
  * Set the global NHSCookieConsent object that implementors of this library
@@ -69,35 +114,4 @@ window.NHSCookieConsent = {
   togglePreferences,
   toggleStatistics,
   toggleMarketing,
-};
-
-// Can use getCookie beforehand to get a cookie object from a name
-function getPreferences(cookie) {
-    return cookie.preferences;
-};
-
-function getStatistics(cookie) {
-    return cookie.statistics;
-};
-
-function getMarketing(cookie) {
-    return cookie.marketing;
-};
-
-function togglePreferences(cookie) {
-    var cookie = JSON.parse(cookie);
-    cookie.preferences = !cookie.preferences;
-    createCookie(name, JSON.stringify(cookie), 365);
-};
-
-function toggleStatistics(name) {
-    var cookie = JSON.parse(cookie);
-    cookie.statistics = !cookie.statistics;
-    createCookie(name, JSON.stringify(cookie), 365);
-};
-
-function toggleMarketing(name) {
-    var cookie = JSON.parse(cookie);
-    cookie.marketing = !cookie.marketing;
-    createCookie(name, JSON.stringify(cookie), 365);
 };
