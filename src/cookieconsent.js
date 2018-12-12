@@ -17,8 +17,6 @@ var cookieTypes = {
 
 window.onload = function checkCookie() {
     var cookieName = "nhsuk-cookie-consent";
-    console.log(getCookie("nhsuk-cookie-consent"));
-    console.log(getPreferences({"Necessary":true,"Preferences":true,"Statistics":true,"Marketing":false,"Version":1}));
     //If there isn't a user cookie, create one
     if (getCookie(cookieName) == null) {
         createCookie(cookieName, cookieTypes, 365, "/");
