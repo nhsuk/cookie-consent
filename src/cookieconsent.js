@@ -6,8 +6,14 @@ var delimiter = "---"; //used to split cookie into information
 
 // If cookie rules/regulations change and the cookie itself needs to change, bump this version up afterwards.
 // It will then give the user the banner again to consent to the new rules
-var COOKIE_VERSION = 1;
-var cookieTypes = "necessary:true"+delimiter+"preferences:true"+delimiter+"statistics:true"+delimiter+"marketing:false"+"|"+COOKIE_VERSION;
+export var COOKIE_VERSION = 1;
+var cookieTypes = {
+    "necessary": true,
+    "preferences": true,
+    "statistics": true,
+    "marketing": false,
+    "version": COOKIE_VERSION,
+};
 
 window.onload = function checkCookie() {
     var cookieName = "nhsuk-cookie-consent";
@@ -23,9 +29,7 @@ window.onload = function checkCookie() {
 
 //If consent is given, change value of cookie
 export function acceptConsent() {
-    var cookieTypesAccepted = "necessary:true"+delimiter+"preferences:true"+delimiter+"statistics:true"+delimiter+"marketing:true"+"|"+COOKIE_VERSION;
-    createCookie("nhsuk-cookie-consent", cookieTypesAccepted, -1, "/");
-    createCookie("nhsuk-cookie-consent", cookieTypesAccepted, 365, "/");
+    // On a domain where marketing cookies are required, toggleMarketing() would go here
     hideCookieModal();
     showCookieConfirmation();
 }
@@ -36,7 +40,7 @@ function getCookieVersion(name) {
 }
 
 function isValidVersion(name, version) {
-    if (getCookieVersion(name) == version)
+    if (getCookieVersion(name) <= version)
         return true;
     else
         return false;
@@ -57,4 +61,42 @@ window.NHSCookieConsent = {
    * The version of this package as defined in the package.json
    */
   VERSION: packageJson.version,
-}
+
+  getPreferences,
+  getStatistics,
+  getMarketing,
+  togglePreferences,
+  toggleStatistics,
+  toggleMarketing,
+};
+
+// Can use getCookie beforehand to get a cookie object from a name
+function getPreferences(cookie) {
+    return cookie.preferences;
+};
+
+function getStatistics(cookie) {
+    return cookie.statistics;
+};
+
+function getMarketing(cookie) {
+    return cookie.marketing;
+};
+
+function togglePreferences(cookie) {
+    var cookie = JSON.parse(cookie);
+    cookie.preferences = !cookie.preferences;
+    createCookie(name, JSON.stringify(cookie), 365);
+};
+
+function toggleStatistics(name) {
+    var cookie = JSON.parse(cookie);
+    cookie.statistics = !cookie.statistics;
+    createCookie(name, JSON.stringify(cookie), 365);
+};
+
+function toggleMarketing(name) {
+    var cookie = JSON.parse(cookie);
+    cookie.marketing = !cookie.marketing;
+    createCookie(name, JSON.stringify(cookie), 365);
+};

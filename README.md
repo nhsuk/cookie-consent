@@ -19,6 +19,13 @@ The javascript API is exposed on a NHSCookieConsent global variable.
 console.log(NHSCookieConsent.VERSION)
 ```
 
+- getPreferences: gets the status of the preferences cookie allowance
+- getStatistics: gets the status of the statistics cookie allowance
+- getMarketing: gets the status of the marketing cookie allowance
+- togglePreferences: changes the users preferences allowance to true if false and vice versa
+- toggleStatistics: changes the users statistics allowance to true if false and vice versa
+- toggleMarketing: changes the users marketing allowance to true if false and vice versa
+
 ### Properties
 
 - `VERSION` the current version as defined in package.json

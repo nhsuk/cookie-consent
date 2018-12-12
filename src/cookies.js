@@ -1,3 +1,4 @@
+
 //used to create a new cookie for the user which covers different cookie types
 export function createCookie(name, value, days, path, domain, secure){
     //if number of days is given, sets expiry time
@@ -9,8 +10,10 @@ export function createCookie(name, value, days, path, domain, secure){
     else {
         var expires = "";
     }
+
+    var strValue = JSON.stringify(value);
     //appends name to cookie, making it searchable
-    var cookieString= name + "=" + escape (value);
+    var cookieString= name + "=" + escape (strValue);
 
     if (expires)
     cookieString += ";expires=" + expires;
