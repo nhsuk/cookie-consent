@@ -12,6 +12,7 @@ export const COOKIE_VERSION = 1;
 const COOKIE_NAME = 'nhsuk-cookie-consent';
 
 /* eslint-disable sort-keys */
+// Pre-defined cookie types in line with cookiebot categories
 const cookieTypes = {
   necessary: true,
   preferences: true,
@@ -26,6 +27,7 @@ function getCookie() {
   return JSON.parse(rawCookie);
 }
 
+// Creates a new cookie or replaces a cookie if one exists with the same name
 function createCookie(value, days, path, domain, secure) {
   const stringValue = JSON.stringify(value);
   return createRawCookie(COOKIE_NAME, stringValue, days, path, domain, secure);
@@ -46,6 +48,7 @@ export function acceptConsent() {
   showCookieConfirmation();
 }
 
+// overwrites cookie with no expiry, making it a session cookie
 export function askMeLater() {
   createCookie(COOKIE_NAME, cookieTypes, '', '/');
   hideCookieModal();
@@ -74,6 +77,26 @@ function getScriptSettings() {
     nobanner: dataNobanner === 'true' || dataNobanner === '',
   };
 }
+
+// function that needs to fire when every page loads
+function checkCookie() {
+  const settings = getScriptSettings();
+
+  // If there isn't a user cookie, create one
+  if (getCookie() == null) {
+    createCookie(cookieTypes, 365, '/');
+    if (!settings.nobanner) {
+      insertCookieBanner(acceptConsent, askMeLater);
+    }
+  } else if (!isValidVersion(COOKIE_VERSION)) {
+    createCookie(cookieTypes, 365, '/');
+    if (!settings.nobanner) {
+      insertCookieBanner(acceptConsent, askMeLater);
+    }
+  }
+}
+
+window.addEventListener('load', checkCookie);
 
 function getConsentSetting(key) {
   const cookie = getCookie(COOKIE_NAME);
