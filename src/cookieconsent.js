@@ -109,6 +109,7 @@ function isValidVersion(version) {
 // If consent is given, change value of cookie
 export function acceptConsent() {
   // On a domain where marketing cookies are required, toggleMarketing() would go here
+  setConsent(defaultConsent);
   hideCookieModal();
   showCookieConfirmation();
 }
@@ -197,12 +198,12 @@ function checkCookie() {
 
   // If there isn't a user cookie, create one
   if (getCookie() == null) {
-    setConsent(defaultConsent);
+    setConsent(defaultConsent, COOKIE_TYPE.SESSION);
     if (!settings.nobanner) {
       insertCookieBanner(acceptConsent, askMeLater);
     }
   } else if (!isValidVersion(COOKIE_VERSION)) {
-    setConsent(defaultConsent);
+    setConsent(defaultConsent, COOKIE_TYPE.SESSION);
     if (!settings.nobanner) {
       insertCookieBanner(acceptConsent, askMeLater);
     }
