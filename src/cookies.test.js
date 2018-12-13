@@ -46,7 +46,7 @@ test('getCookie can handle multiple cookies', () => {
   document.cookie = "testcookie=testvalue"
   document.cookie = "anothertestcookie=anothertestvalue"
   expect(getCookie("testcookie")).toBe("testvalue")
-  expect(getCookie("anothertestcookie").toBe("anothertestvalue"))
+  expect(getCookie("anothertestcookie")).toBe("anothertestvalue")
 })
 
 test('getCookie can handle cookies with extra data', () => {

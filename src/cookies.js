@@ -3,7 +3,7 @@
 // used to create a new cookie for the user which covers different cookie types
 export function createCookie(name, value, days, path, domain, secure) {
   // if number of days is given, sets expiry time
-  var expires;
+  let expires;
   if (days) {
     const date = new Date();
     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
@@ -15,13 +15,21 @@ export function createCookie(name, value, days, path, domain, secure) {
   // appends name to cookie, making it searchable
   let cookieString = `${name}=${escape(value)}`;
 
-  if (expires) { cookieString += ';expires=' + expires; }
+  if (expires) {
+    cookieString += ';expires=' + expires;
+  }
 
-  if (path) { cookieString += ';path=' + escape(path); }
+  if (path) {
+    cookieString += ';path=' + escape(path);
+  }
 
-  if (domain) { cookieString += ';domain=' + escape(domain); }
+  if (domain) {
+    cookieString += ';domain=' + escape(domain);
+  }
 
-  if (secure) { cookieString += ';secure'; }
+  if (secure) {
+    cookieString += ';secure';
+  }
 
   cookieString += ';';
 
@@ -29,22 +37,22 @@ export function createCookie(name, value, days, path, domain, secure) {
   document.cookie = cookieString;
 }
 
-// gets a cookie based on the name
+/*
+ * Get a cookie value by name
+ */
 export function getCookie(name) {
-  const dc = document.cookie;
-  const prefix = `${name}=`;
-  let end;
-  let begin = dc.indexOf('; ' + prefix);
-  if (begin === -1) {
-    begin = dc.indexOf(prefix);
-    if (begin !== 0) return null;
-  } else {
-    begin += 2;
-    end = document.cookie.indexOf(';', begin);
-    if (end === -1) {
-      end = dc.length;
-    }
-  }
-  // because unescape has been deprecated, replaced with decodeURI
-  return decodeURIComponent(dc.substring(begin + prefix.length, end));
+  const cookiesString = document.cookie || '';
+  const cookiesArray = cookiesString.split(';')
+    .filter(cookie => cookie !== '')
+    .map(cookie => cookie.trim());
+
+  // Turn the cookie array into an object of key/value pairs
+  const cookies = cookiesArray.reduce((acc, currentValue) => {
+    const [key, value] = currentValue.split('=');
+    const decodedValue = decodeURIComponent(value); // URI decoding
+    acc[key] = decodedValue; // Assign the value to the object
+    return acc;
+  }, {});
+
+  return cookies[name] || null;
 }
