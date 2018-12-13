@@ -145,7 +145,8 @@ function getScriptSettings() {
 
 function getConsentSetting(key) {
   const cookie = getConsent();
-  return cookie[key];
+  // double ! to convert truthy/falsy values into true/false
+  return !!cookie[key];
 }
 
 function getPreferences() {
