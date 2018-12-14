@@ -26,6 +26,14 @@ If you want to prevent the cookie banner from showing automatically, add a
 If you disable the banner, you will have to write your own logic and interact with
 the javascript API to set user cookie consent.
 
+Any scripts that use cookies must be given a type="text/plain" attribute to stop the
+javascript from running, and a data-cookieconsent attribute so that cookie-consent knows
+which scripts to enable based on the user's consent settings.
+
+```html
+<script src="/path/to/js-that-uses-cookies.js" data-cookieconsent="marketing" type="text/plain"></script>
+```
+
 ## Javascript API
 
 The javascript API is exposed on a NHSCookieConsent global variable.
@@ -35,12 +43,14 @@ The javascript API is exposed on a NHSCookieConsent global variable.
 console.log(NHSCookieConsent.VERSION)
 ```
 
-- getPreferences: gets the status of the preferences cookie allowance
-- getStatistics: gets the status of the statistics cookie allowance
-- getMarketing: gets the status of the marketing cookie allowance
-- togglePreferences: changes the users preferences allowance to true if false and vice versa
-- toggleStatistics: changes the users statistics allowance to true if false and vice versa
-- toggleMarketing: changes the users marketing allowance to true if false and vice versa
+### Methods
+
+- `getPreferences` gets the status of the preferences cookie allowance
+- `getStatistics` gets the status of the statistics cookie allowance
+- `getMarketing` gets the status of the marketing cookie allowance
+- `togglePreferences` changes the users preferences allowance to true if false and vice versa
+- `toggleStatistics` changes the users statistics allowance to true if false and vice versa
+- `toggleMarketing` changes the users marketing allowance to true if false and vice versa
 
 ### Properties
 
