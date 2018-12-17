@@ -37,7 +37,7 @@ describe('Popup is usable', () => {
 
   it('clicking "tell me more" should take the user to another page', async () => {
     await Promise.all([
-      page.waitForNavigation(),
+      page.waitForRequest('https://www.nhs.uk/our-policies/cookies-policy/'),
       page.click('.nhsuk-link a')
     ])
   })
