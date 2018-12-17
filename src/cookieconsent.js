@@ -98,12 +98,13 @@ function setConsent(consent, mode = COOKIE_TYPE.LONG) {
   createCookie(cookieValue, days, path);
 }
 
-function getCookieVersion() {
-  return getCookie(COOKIE_NAME).version;
+function getUserCookieVersion() {
+  const cookie = getCookie();
+  return cookie.version;
 }
 
-function isValidVersion(version) {
-  return getCookieVersion() <= version;
+function isValidVersion() {
+  return getUserCookieVersion() >= COOKIE_VERSION;
 }
 
 // If consent is given, change value of cookie
