@@ -8,7 +8,7 @@
   },
   "scripts": {
     "build": "webpack",
-    "lint": "eslint",
+    "lint": "eslint --ignore-pattern '*.test.js' src/*.js",
     "start": "npm run watch & npm run testserver",
     "test": "npm run test:unit; npm run test:integration",
     "test:unit": "jest",
@@ -33,6 +33,7 @@
     "babel-core": "^7.0.0-bridge.0",
     "babel-jest": "^23.6.0",
     "babel-loader": "^8.0.4",
+    "babel-plugin-rewire": "^1.2.0",
     "css-loader": "^2.0.0",
     "eslint": "^5.9.0",
     "eslint-config-nhsuk": "^0.16.0",

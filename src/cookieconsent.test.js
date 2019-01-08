@@ -1,4 +1,13 @@
-import { acceptConsent } from './cookieconsent'
+import { acceptConsent, isValidVersion } from './cookieconsent'
+
+import cookieconsent from './cookieconsent'
+
+const getPreferences = cookieconsent.__get__('getPreferences')
+const getStatistics = cookieconsent.__get__('getStatistics')
+const getMarketing = cookieconsent.__get__('getMarketing')
+const togglePreferences = cookieconsent.__get__('togglePreferences')
+const toggleStatistics = cookieconsent.__get__('toggleStatistics')
+const toggleMarketing = cookieconsent.__get__('toggleMarketing')
 
 test('acceptConsent function exists', () => {
   expect(acceptConsent).toBeInstanceOf(Function)
@@ -9,11 +18,26 @@ test('getPreferences function exists', () => {
 })
 
 test('getPreferences returns correct value', () => {
-  expect(getPreferences({"necessary":true,"preferences":true,"statistics":true,"marketing":false,"version":1})).toBe(true);
+  cookieconsent.__with__({
+    getConsent: () => ({
+      'necessary': false,
+      'preferences': true,
+      'statistics': false,
+      'marketing': false,
+    }),
+  })(() => {
+    expect(getPreferences()).toBe(true)
+  })
 })
 
 test('togglePreferences function exists', () => {
   expect(togglePreferences).toBeInstanceOf(Function)
+})
+
+test('togglePreferences toggles the prefrences', () => {
+  const value = getPreferences()
+  togglePreferences()
+  expect(getPreferences()).toBe(!value)
 })
 
 test('getStatistics function exists', () => {
@@ -21,7 +45,16 @@ test('getStatistics function exists', () => {
 })
 
 test('getStatistics returns correct value', () => {
-  expect(getStatistics({"necessary":true,"preferences":true,"statistics":true,"marketing":false,"version":1})).toBe(true);
+  cookieconsent.__with__({
+    getConsent: () => ({
+      'necessary': false,
+      'preferences': false,
+      'statistics': true,
+      'marketing': false,
+    }),
+  })(() => {
+    expect(getStatistics()).toBe(true)
+  })
 })
 
 test('toggleStatistics function exists', () => {
@@ -33,11 +66,18 @@ test('getMarketing function exists', () => {
 })
 
 test('getMarketing returns correct value', () => {
-  expect(getMarketing({"necessary":true,"preferences":true,"statistics":true,"marketing":false,"version":1})).toBe(false);
+  cookieconsent.__with__({
+    getConsent: () => ({
+      'necessary': false,
+      'preferences': false,
+      'statistics': false,
+      'marketing': true,
+    }),
+  })(() => {
+    expect(getMarketing()).toBe(true)
+  })
 })
 
 test('toggleMarketing function exists', () => {
   expect(toggleMarketing).toBeInstanceOf(Function)
 })
-
-//add tests for toggling marketing
