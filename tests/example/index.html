@@ -23,30 +23,12 @@
   <body>
     <main class="main">
       <h1>Cookies:</h1>
-      <button onclick="listCookies()">Refresh</button>
+      <button id="cookie-list-refresh">Refresh</button>
       <div id="cookie-list"></div>
 
       <iframe data-src="https://example.com" data-cookieconsent="statistics"></iframe>
 
-      <script type="text/javascript">
-        function listCookies() {
-          // Get all cookies and render them in the cookie-list div
-          var cookies = document.cookie ? document.cookie.split(";") : []
-          var container = document.getElementById("cookie-list");
-
-          // set the cookie list
-          container.innerHTML = "";
-          if(cookies.length) {
-            cookies.forEach(function(cookie) {
-              var lineItem = "<li>" + cookie + "</li>";
-              container.insertAdjacentHTML('beforeend', lineItem);
-            })
-          } else {
-            container.innerHTML = "<p>No cookies to show</p>";
-          }
-        }
-        listCookies();
-      </script>
+      <script src="./js/show-cookie-data.js"></script>
     </main>
   </body>
 </html>
