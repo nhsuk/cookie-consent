@@ -15,7 +15,7 @@ const COOKIE_NAME = 'nhsuk-cookie-consent';
 const cookieTypes = {
   necessary: true,
   preferences: true,
-  statistics: true,
+  statistics: false,
   marketing: false,
   version: COOKIE_VERSION,
 };
@@ -43,7 +43,6 @@ function isValidVersion(version) {
 export function acceptConsent() {
   // On a domain where marketing cookies are required, toggleMarketing() would go here
   hideCookieModal();
-  showCookieConfirmation();
 }
 
 export function askMeLater() {
