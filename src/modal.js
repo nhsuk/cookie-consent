@@ -3,6 +3,8 @@ import modalCss from './style.css';
 
 export function hideCookieModal() {
   document.getElementById('cookiebanner').style.display = 'none';
+  const header = document.getElementsByClassName('nhsuk-global-header')[0];
+  header.style.marginTop = 0;
 }
 
 export function showCookieConfirmation() {
@@ -14,14 +16,9 @@ export function insertCookieBanner(acceptConsent, askMeLater) {
   const html = `${modalHtml} <style>${modalCss.toString()}</style>`;
   document.getElementsByTagName('body')[0].innerHTML += html;
 
-  document.getElementsByClassName('nhsuk-accept')[0].addEventListener('click', acceptConsent);
+  document.getElementsByClassName('nhsuk-cookie-banner__link_accept')[0].addEventListener('click', acceptConsent);
 
-  const cookiebanner = document.getElementById('cookiebanner');
-
-  window.onclick = function windowOnClick(event) {
-    if (event.target === cookiebanner) {
-      askMeLater();
-      hideCookieModal();
-    }
-  };
+  const cookieBannerHeight = document.getElementById('cookiebanner').offsetHeight;
+  const header = document.getElementsByClassName('nhsuk-global-header')[0];
+  header.style.marginTop = cookieBannerHeight.toString() + 'px';
 }

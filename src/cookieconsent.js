@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow-callback */
 import { getCookie as getRawCookie, createCookie as createRawCookie } from './cookies';
 import { insertCookieBanner, hideCookieModal, showCookieConfirmation } from './modal';
 import { enableScriptsByCategory, enableIframesByCategory } from './enable';
@@ -127,7 +128,7 @@ window.NHSCookieConsent = {
   toggleMarketing,
 };
 
-window.onload = function checkCookie() {
+window.addEventListener("load", function checkCookie() {
   const settings = getScriptSettings();
 
   // If there isn't a user cookie, create one
@@ -155,4 +156,4 @@ window.onload = function checkCookie() {
     enableScriptsByCategory('marketing');
     enableIframesByCategory('marketing');
   }
-};
+});
