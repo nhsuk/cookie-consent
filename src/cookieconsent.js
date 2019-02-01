@@ -19,6 +19,7 @@ const cookieTypes = {
   statistics: false,
   marketing: false,
   version: COOKIE_VERSION,
+  consented: false,
 };
 /* eslint-enable sort-key */
 
@@ -38,17 +39,6 @@ function getCookieVersion() {
 
 function isValidVersion(version) {
   return getCookieVersion() <= version;
-}
-
-// If consent is given, change value of cookie
-export function acceptConsent() {
-  // On a domain where marketing cookies are required, toggleMarketing() would go here
-  hideCookieModal();
-}
-
-export function askMeLater() {
-  createCookie(COOKIE_NAME, cookieTypes, '', '/');
-  hideCookieModal();
 }
 
 // N.B document.currentScript needs to be executed outside of any callbacks
@@ -92,9 +82,19 @@ function getMarketing() {
   return getConsentSetting('marketing');
 }
 
+function getConsented() {
+  return getConsentSetting('consented');
+}
+
 function togglePreferences() {
   const cookie = getCookie();
   cookie.preferences = !cookie.preferences;
+  createCookie(cookie, 365, '/');
+}
+
+function toggleConsented() {
+  const cookie = getCookie();
+  cookie.consented = !cookie.consented;
   createCookie(cookie, 365, '/');
 }
 
@@ -108,6 +108,18 @@ function toggleMarketing() {
   const cookie = getCookie();
   cookie.marketing = !cookie.marketing;
   createCookie(cookie, 365, '/');
+}
+
+// If consent is given, change value of cookie
+export function acceptConsent() {
+  // On a domain where marketing cookies are required, toggleMarketing() would go here
+  hideCookieModal();
+  toggleConsented();
+}
+
+export function askMeLater() {
+  createCookie(COOKIE_NAME, cookieTypes, '', '/');
+  hideCookieModal();
 }
 
 /*
@@ -129,17 +141,16 @@ window.NHSCookieConsent = {
 };
 
 window.addEventListener("load", function checkCookie() {
-  const settings = getScriptSettings();
 
   // If there isn't a user cookie, create one
   if (getCookie() == null) {
     createCookie(cookieTypes, 365, '/');
-    if (!settings.nobanner) {
+    if (getCookie(COOKIE_NAME).consented === false) {
       insertCookieBanner(acceptConsent, askMeLater);
     }
   } else if (!isValidVersion(COOKIE_VERSION)) {
     createCookie(cookieTypes, 365, '/');
-    if (!settings.nobanner) {
+    if (getCookie(COOKIE_NAME).consented === false) {
       insertCookieBanner(acceptConsent, askMeLater);
     }
   }
