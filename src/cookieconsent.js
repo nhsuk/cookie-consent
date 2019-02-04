@@ -1,6 +1,6 @@
 /* eslint-disable prefer-arrow-callback */
 import { getCookie as getRawCookie, createCookie as createRawCookie } from './cookies';
-import { insertCookieBanner, hideCookieModal, showCookieConfirmation } from './modal';
+import { insertCookieBanner, hideCookieModal } from './modal';
 import { enableScriptsByCategory, enableIframesByCategory } from './enable';
 import packageJson from '../package.json';
 
@@ -116,11 +116,6 @@ export function acceptConsent() {
   hideCookieModal();
 }
 
-export function askMeLater() {
-  createCookie(COOKIE_NAME, cookieTypes, '', '/');
-  hideCookieModal();
-}
-
 /*
  * Set the global NHSCookieConsent object that implementors of this library
  * will interact with.
@@ -143,12 +138,12 @@ window.addEventListener('load', function checkCookie() {
   // If there isn't a user cookie, create one
   if (getCookie() == null) {
     createCookie(cookieTypes, 365, '/');
-    insertCookieBanner(acceptConsent, askMeLater);
+    insertCookieBanner(acceptConsent);
   } else if (!isValidVersion(COOKIE_VERSION)) {
     createCookie(cookieTypes, 365, '/');
-    insertCookieBanner(acceptConsent, askMeLater);
+    insertCookieBanner(acceptConsent);
   } else if (getCookie(COOKIE_NAME).consented == false) {
-    insertCookieBanner(acceptConsent, askMeLater);
+    insertCookieBanner(acceptConsent);
   }
 
   if (getStatistics() === true) {

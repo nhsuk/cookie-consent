@@ -7,11 +7,7 @@ export function hideCookieModal() {
   header.style.marginTop = 0;
 }
 
-export function showCookieConfirmation() {
-  document.getElementById('nhsuk-cookie-confirmation-banner').style.display = 'block';
-}
-
-export function insertCookieBanner(acceptConsent, askMeLater) {
+export function insertCookieBanner(acceptConsent) {
   // add a css block to the inserted html
   const html = `${modalHtml} <style>${modalCss.toString()}</style>`;
   document.getElementsByTagName('body')[0].innerHTML += html;
