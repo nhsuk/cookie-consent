@@ -112,9 +112,8 @@ function toggleMarketing() {
 
 // If consent is given, change value of cookie
 export function acceptConsent() {
-  // On a domain where marketing cookies are required, toggleMarketing() would go here
-  hideCookieModal();
   toggleConsented();
+  hideCookieModal();
 }
 
 export function askMeLater() {
@@ -140,19 +139,16 @@ window.NHSCookieConsent = {
   toggleMarketing,
 };
 
-window.addEventListener("load", function checkCookie() {
-
+window.addEventListener('load', function checkCookie() {
   // If there isn't a user cookie, create one
   if (getCookie() == null) {
     createCookie(cookieTypes, 365, '/');
-    if (getCookie(COOKIE_NAME).consented === false) {
-      insertCookieBanner(acceptConsent, askMeLater);
-    }
+    insertCookieBanner(acceptConsent, askMeLater);
   } else if (!isValidVersion(COOKIE_VERSION)) {
     createCookie(cookieTypes, 365, '/');
-    if (getCookie(COOKIE_NAME).consented === false) {
-      insertCookieBanner(acceptConsent, askMeLater);
-    }
+    insertCookieBanner(acceptConsent, askMeLater);
+  } else if (getCookie(COOKIE_NAME).consented == false) {
+    insertCookieBanner(acceptConsent, askMeLater);
   }
 
   if (getStatistics() === true) {
