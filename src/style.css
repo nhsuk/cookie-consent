@@ -28,14 +28,20 @@
     margin-right: 20px;
   }
   
-  .nhsuk-success-banner {
+  #nhsuk-cookie-confirmation-banner {
     background-color: #007f3b;
-    color: #fff;
-    padding: 8px 0 8px 0;
+    top: 0;
+    box-shadow: 0 -4px 0 0 #003317;
+    display: none;
+    margin: 0 auto;
+    padding: 16px 0 16px 0;
     position: relative;
+    width: 100%;
+    color: #ffffff;
   }
-  .nhsuk-success-banner p {
-    margin: 0;
+  
+  #nhsuk-cookie-confirmation-banner p {
+    margin-bottom: 0px;
   }
   
   @media (max-width: 768px) {
