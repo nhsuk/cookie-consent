@@ -10,11 +10,8 @@ export function hideCookieModal() {
 export function insertCookieBanner(acceptConsent) {
   // add a css block to the inserted html
   const html = `${modalHtml} <style>${modalCss.toString()}</style>`;
-  let bod = document.getElementsByTagName('body')[0].innerHTML;
-  bod = html + bod;
+  document.getElementsByTagName('body')[0].innerHTML = html + document.getElementsByTagName('body')[0].innerHTML;
 
   document.getElementById('nhsuk-cookie-banner__link_accept').addEventListener('click', acceptConsent);
-  const cookieBannerHeight = document.getElementById('cookiebanner').offsetHeight;
-  const header = document.getElementsByClassName('nhsuk-global-header')[0];
-  header.style.marginTop = cookieBannerHeight.toString() + 'px';
+  document.getElementById('nhsuk-cookie-banner__link').addEventListener('click', hideCookieModal);
 }
