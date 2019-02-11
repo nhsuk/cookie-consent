@@ -1,6 +1,6 @@
 /* eslint-disable prefer-arrow-callback */
 import { getCookie as getRawCookie, createCookie as createRawCookie } from './cookies';
-import { insertCookieBanner, hideCookieModal } from './modal';
+import { insertCookieBanner, hideCookieModal, showCookieConfirmation } from './modal';
 import { enableScriptsByCategory, enableIframesByCategory } from './enable';
 import packageJson from '../package.json';
 
@@ -16,7 +16,7 @@ const COOKIE_NAME = 'nhsuk-cookie-consent';
 const cookieTypes = {
   necessary: true,
   preferences: true,
-  statistics: false,
+  statistics: true,
   marketing: false,
   version: COOKIE_VERSION,
   consented: false,
@@ -92,7 +92,7 @@ function togglePreferences() {
   createCookie(cookie, 365, '/');
 }
 
-function toggleConsented() {
+export function toggleConsented() {
   const cookie = getCookie();
   cookie.consented = !cookie.consented;
   createCookie(cookie, 365, '/');
@@ -114,6 +114,7 @@ function toggleMarketing() {
 export function acceptConsent() {
   toggleConsented();
   hideCookieModal();
+  showCookieConfirmation();
 }
 
 /*
@@ -129,9 +130,11 @@ window.NHSCookieConsent = {
   getPreferences,
   getStatistics,
   getMarketing,
+  getConsented,
   togglePreferences,
   toggleStatistics,
   toggleMarketing,
+  toggleConsented,
 };
 
 window.addEventListener('load', function checkCookie() {

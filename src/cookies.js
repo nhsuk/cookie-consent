@@ -24,7 +24,7 @@ export function createCookie(name, value, days, path, domain, secure){
     cookieString += ";domain=" + escape (domain);
 
     if (secure)
-    cookieString += ";secure";
+    cookieString += ";secure" + escape (secure);
 
     cookieString += ";";
 
@@ -32,23 +32,22 @@ export function createCookie(name, value, days, path, domain, secure){
     document.cookie=cookieString;
 };
 
-//gets a cookie based on the name
+// gets a cookie based on the name
 export function getCookie(name) {
-    var dc = document.cookie;
-    var prefix = name + "=";
-    var begin = dc.indexOf("; " + prefix);
-    if (begin == -1) {
-        begin = dc.indexOf(prefix);
-        if (begin != 0) return null;
+  var getCookieValues = function(cookie) {
+    if (document.cookie != "") {
+      var cookieArray = cookie.split('=');
+      return cookieArray[1].trim();
     }
-    else
-    {
-        begin += 2;
-        var end = document.cookie.indexOf(";", begin);
-        if (end == -1) {
-        end = dc.length;
-        }
-    }
-    // because unescape has been deprecated, replaced with decodeURI
-    return decodeURIComponent(dc.substring(begin + prefix.length, end));
+  };
+
+  var getCookieNames = function(cookie) {
+	var cookieArray = cookie.split('=');
+    return cookieArray[0].trim();
+  };
+
+  var cookies = document.cookie.split(';');
+  var cookieValue = cookies.map(getCookieValues)[cookies.map(getCookieNames).indexOf(name)];
+
+  return (cookieValue === undefined) ? null : decodeURIComponent(cookieValue);
 }

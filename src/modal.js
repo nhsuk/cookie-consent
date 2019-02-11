@@ -1,10 +1,14 @@
 import modalHtml from './modal.html';
 import modalCss from './style.css';
+import { toggleConsented as consent } from './cookieconsent';
 
 export function hideCookieModal() {
   document.getElementById('cookiebanner').style.display = 'none';
-  const header = document.getElementsByClassName('nhsuk-global-header')[0];
-  header.style.marginTop = 0;
+  consent();
+}
+
+export function showCookieConfirmation() {
+  document.getElementById('nhsuk-cookie-confirmation-banner').style.display = 'block';
 }
 
 export function insertCookieBanner(acceptConsent) {
