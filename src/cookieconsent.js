@@ -112,7 +112,6 @@ function toggleMarketing() {
 
 // If consent is given, change value of cookie
 export function acceptConsent() {
-  toggleConsented();
   hideCookieModal();
   showCookieConfirmation();
 }
