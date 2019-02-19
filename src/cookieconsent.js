@@ -17,7 +17,7 @@ const cookieTypes = {
   necessary: true,
   preferences: true,
   statistics: true,
-  marketing: false,
+  marketing: true,
   version: COOKIE_VERSION,
   consented: false,
 };
@@ -140,12 +140,8 @@ window.addEventListener('load', function checkCookie() {
   // If there isn't a user cookie, create one
   if (getCookie() == null) {
     createCookie(cookieTypes, 365, '/');
-    insertCookieBanner(acceptConsent);
   } else if (!isValidVersion(COOKIE_VERSION)) {
     createCookie(cookieTypes, 365, '/');
-    insertCookieBanner(acceptConsent);
-  } else if (getCookie(COOKIE_NAME).consented == false) {
-    insertCookieBanner(acceptConsent);
   }
 
   if (getStatistics() === true) {
