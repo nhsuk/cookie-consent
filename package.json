@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "webpack",
+    "build:production": "webpack --mode=production",
     "lint": "eslint --ignore-pattern '*.test.js' src/*.js",
     "start": "npm run watch & npm run testserver",
     "test": "npm run test:unit; npm run test:integration",

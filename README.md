@@ -60,9 +60,14 @@ console.log(NHSCookieConsent.VERSION)
 
 This project uses [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/)
 
-To compile the javascript, run
+To compile the javascript in development mode, run
 ```sh
 npm run build
+```
+
+For production mode, run
+```sh
+npm run build:production
 ```
 
 Compiled javascript will be saved to dist/main.js
