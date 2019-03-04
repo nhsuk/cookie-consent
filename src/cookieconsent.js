@@ -15,8 +15,8 @@ const COOKIE_NAME = 'nhsuk-cookie-consent';
 /* eslint-disable sort-keys */
 const cookieTypes = {
   necessary: true,
-  preferences: false,
-  statistics: false,
+  preferences: true,
+  statistics: true,
   marketing: false,
   version: COOKIE_VERSION,
   consented: false,
