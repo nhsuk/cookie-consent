@@ -28,10 +28,12 @@ jobs:
   pool:
     vmImage: 'Ubuntu-16.04'
   dependsOn: 'Test'
-  inputs:
-    versionSpec: '8.x'
 
   steps:
+
+  - task: NodeTool@0
+  inputs:
+    versionSpec: '8.x'
 
   - script: npm install
 
@@ -47,4 +49,3 @@ jobs:
     inputs:
       pathtoPublish: $(Build.ArtifactStagingDirectory)
       artifactName: dist
-
