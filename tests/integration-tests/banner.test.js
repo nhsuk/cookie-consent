@@ -1,6 +1,6 @@
 import { clearAllCookies } from './util'
 
-describe('Popup is usable', () => {
+describe('Banner is usable', () => {
 
   const waitForVisibleModal = async () => {
     await page.waitForSelector('.nhsuk-cookie-banner', { visible: true })
@@ -17,36 +17,20 @@ describe('Popup is usable', () => {
   })
 
   it('should display on first page load', async () => {
-    await expect(page).toMatch("Cookies on our website")
+    await expect(page).toMatch("We've put small files called cookies on your device")
   })
 
-  it('clicking the accept button should hide modal', async () => {
-    await page.click('.nhsuk-cookie-banner button')
+  it('clicking the accept button should hide banner', async () => {
+    await page.click('#nhsuk-cookie-banner__link_accept')
     await waitForHiddenModal()
   })
 
-  it('clicking outside of the modal should hide modal', async () => {
-    // Click the cookie banner background with javascript in-browser.
-    // for some reason, page.click('.nhsuk-cookie-banner') throws a pupeteer error
-    // TypeError: Cannot read property 'addExpectationResult' of undefined
-    await page.evaluate(async () => {
-      document.querySelector('.nhsuk-cookie-banner').click()
-    })
-    await waitForHiddenModal()
-  })
-
-  it('clicking "tell me more" should take the user to another page', async () => {
+  it('clicking "change cookie settings" should take the user to another page', async () => {
     await Promise.all([
-      page.waitForRequest('https://www.nhs.uk/our-policies/cookies-policy/'),
-      page.click('.nhsuk-link a')
+      page.waitForRequest('http://localhost:8080/our-policies/cookies-policy'),
+      page.click('#nhsuk-cookie-banner__link')
     ])
   })
-
-  it('clicking "ask me later" should hide modal', async () => {
-    await page.click('#later-link')
-    await waitForHiddenModal()
-  })
-
 })
 
 describe('nobanner mode', () => {
