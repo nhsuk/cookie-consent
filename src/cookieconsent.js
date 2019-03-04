@@ -28,6 +28,7 @@ const defaultConsent = {
   preferences: true,
   statistics: true,
   marketing: false,
+  consented: false,
 };
 /* eslint-enable sort-key */
 
@@ -110,15 +111,12 @@ function isValidVersion() {
 // If consent is given, change value of cookie
 export function acceptConsent() {
   // On a domain where marketing cookies are required, toggleMarketing() would go here
-  setConsent(defaultConsent);
+  setConsent({
+    ...defaultConsent,
+    consented: true,
+  });
   hideCookieModal();
   showCookieConfirmation();
-}
-
-// overwrites cookie with no expiry, making it a session cookie
-export function askMeLater() {
-  setConsent(defaultConsent, COOKIE_TYPE.SESSION);
-  hideCookieModal();
 }
 
 // N.B document.currentScript needs to be executed outside of any callbacks
@@ -163,6 +161,10 @@ function getMarketing() {
   return getConsentSetting('marketing');
 }
 
+function getConsented() {
+  return getConsentSetting('consented');
+}
+
 function togglePreferences() {
   setConsent({ preferences: !getPreferences() });
 }
@@ -173,6 +175,10 @@ function toggleStatistics() {
 
 function toggleMarketing() {
   setConsent({ marketing: !getMarketing() });
+}
+
+export function toggleConsented() {
+  setConsent({ consented: !getConsented() });
 }
 
 /*
@@ -188,9 +194,11 @@ window.NHSCookieConsent = {
   getPreferences,
   getStatistics,
   getMarketing,
+  getConsent,
   togglePreferences,
   toggleStatistics,
   toggleMarketing,
+  toggleConsented,
 };
 
 // function that needs to fire when every page loads
@@ -201,12 +209,16 @@ function checkCookie() {
   if (getCookie() == null) {
     setConsent(defaultConsent, COOKIE_TYPE.SESSION);
     if (!settings.nobanner) {
-      insertCookieBanner(acceptConsent, askMeLater);
+      insertCookieBanner(acceptConsent);
     }
   } else if (!isValidVersion(COOKIE_VERSION)) {
     setConsent(defaultConsent, COOKIE_TYPE.SESSION);
     if (!settings.nobanner) {
-      insertCookieBanner(acceptConsent, askMeLater);
+      insertCookieBanner(acceptConsent);
+    }
+  } else if (getConsented() === false) {
+    if (!settings.nobanner) {
+      insertCookieBanner(acceptConsent);
     }
   }
 
