@@ -8,6 +8,7 @@
   },
   "scripts": {
     "build": "webpack",
+    "build:production": "webpack --mode=production",
     "lint": "eslint",
     "start": "npm run watch & npm run testserver",
     "test": "npm run test:unit; npm run test:integration",
