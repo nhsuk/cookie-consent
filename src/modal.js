@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import modalHtml from './modal.html';
 import modalCss from './style.css';
 import { toggleConsented as consent } from './cookieconsent';
@@ -7,6 +8,7 @@ export function hideCookieModal() {
   consent();
 }
 
+// confirmation banner is the green banner that appears after the user accepts consent
 export function showCookieConfirmation() {
   document.getElementById('nhsuk-cookie-confirmation-banner').style.display = 'block';
 }

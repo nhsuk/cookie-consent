@@ -12,8 +12,19 @@ import packageJson from '../package.json';
 export const COOKIE_VERSION = 1;
 const COOKIE_NAME = 'nhsuk-cookie-consent';
 
+/**
+ * enum for different types of cookie.
+ * LONG - a long lasting cookie
+ * SESSION - a cookie that should expire after the current session
+ */
+const COOKIE_TYPE = {
+  LONG: 'long',
+  SESSION: 'session',
+};
+
 /* eslint-disable sort-keys */
-const cookieTypes = {
+// Pre-defined cookie types in line with cookiebot categories
+const defaultConsent = {
   necessary: true,
   preferences: true,
   statistics: true,
@@ -23,22 +34,80 @@ const cookieTypes = {
 };
 /* eslint-enable sort-key */
 
+/**
+ * Get the consent cookie and parse it into an object
+ */
 function getCookie() {
   const rawCookie = getRawCookie(COOKIE_NAME);
   return JSON.parse(rawCookie);
 }
 
+/**
+ * Set the consent cookie, turning the value object into a string
+ * Creates a new cookie or replaces a cookie if one exists with the same name
+ */
 function createCookie(value, days, path, domain, secure) {
   const stringValue = JSON.stringify(value);
   return createRawCookie(COOKIE_NAME, stringValue, days, path, domain, secure);
 }
 
-function getCookieVersion() {
-  return getCookie(COOKIE_NAME).version;
+/**
+ * returns an object containing consent boolean values for each consent type
+ */
+function getConsent() {
+  const cookieValue = getCookie();
+  if (!cookieValue) {
+    return {};
+  }
+  delete cookieValue.version;
+  return cookieValue;
 }
 
-function isValidVersion(version) {
-  return getCookieVersion() <= version;
+/**
+ * Create the consent cookie.
+ * `consent` is an object of key/boolean pairs
+ * e.g { marketing: false, statistics: true }
+ *
+ * `mode` is a COOKIE_TYPE const e.g COOKIE_TYPE.SESSION.
+ * Defaults to COOKIE_TYPE.LONG
+ *
+ * This function will respect any consent settings that already exist in a cookie,
+ * using keys defined in the `consent` object to overwrite the consent.
+ */
+function setConsent(consent, mode = COOKIE_TYPE.LONG) {
+  const path = '/';
+
+  let days;
+  // default cookie mode is COOKIE_TYPE.LONG
+  if (mode === COOKIE_TYPE.LONG) {
+    days = 365;
+  } else if (mode === COOKIE_TYPE.SESSION || !mode) {
+    days = null;
+  } else {
+    // cookie mode not recognised
+    throw new Error(`Cookie mode ${mode} not recognised`);
+  }
+
+  const existingConsent = getConsent();
+
+  const cookieValue = {
+    // merge the consent that already exists with the new consent setting
+    ...existingConsent,
+    ...consent,
+    // add version information to the cookie consent settings
+    version: COOKIE_VERSION,
+  };
+
+  createCookie(cookieValue, days, path);
+}
+
+function getUserCookieVersion() {
+  const cookie = getCookie();
+  return cookie.version;
+}
+
+function isValidVersion() {
+  return getUserCookieVersion() >= COOKIE_VERSION;
 }
 
 // N.B document.currentScript needs to be executed outside of any callbacks
@@ -66,8 +135,9 @@ function getScriptSettings() {
 }
 
 function getConsentSetting(key) {
-  const cookie = getCookie(COOKIE_NAME);
-  return cookie[key];
+  const cookie = getConsent();
+  // double ! to convert truthy/falsy values into true/false
+  return !!cookie[key];
 }
 
 function getPreferences() {
@@ -87,9 +157,7 @@ function getConsented() {
 }
 
 function togglePreferences() {
-  const cookie = getCookie();
-  cookie.preferences = !cookie.preferences;
-  createCookie(cookie, 365, '/');
+  setConsent({ preferences: !getPreferences() });
 }
 
 export function toggleConsented() {
@@ -99,15 +167,11 @@ export function toggleConsented() {
 }
 
 function toggleStatistics() {
-  const cookie = getCookie();
-  cookie.statistics = !cookie.statistics;
-  createCookie(cookie, 365, '/');
+  setConsent({ statistics: !getStatistics() });
 }
 
 function toggleMarketing() {
-  const cookie = getCookie();
-  cookie.marketing = !cookie.marketing;
-  createCookie(cookie, 365, '/');
+  setConsent({ marketing: !getMarketing() });
 }
 
 // If consent is given, change value of cookie
