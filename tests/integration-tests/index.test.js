@@ -29,20 +29,20 @@ describe('Cookies set on first load', () => {
 
 describe('Cookies are set after accepting statistics', () => {
 
-  const waitForVisibleModal = async () => {
+  const waitForVisibleBanner = async () => {
     await page.waitForSelector('.nhsuk-cookie-banner', { visible: true })
   }
 
-  const waitForHiddenModal = async () => {
+  const waitForHiddenBanner = async () => {
     await page.waitForSelector('.nhsuk-cookie-banner', { hidden: true })
   }
 
   beforeAll(async () => {
     await clearAllCookies()
     await page.goto('http://localhost:8080/tests/example/')
-    await waitForVisibleModal()
+    await waitForVisibleBanner()
     await page.click('.nhsuk-cookie-banner button')
-    await waitForHiddenModal()
+    await waitForHiddenBanner()
   })
 
   it('should load accepted cookies', async () => {

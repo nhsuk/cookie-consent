@@ -1,5 +1,5 @@
 import { getCookie as getRawCookie, createCookie as createRawCookie } from './cookies';
-import { insertCookieBanner, hideCookieModal, showCookieConfirmation } from './modal';
+import { insertCookieBanner, hideCookieBanner, showCookieConfirmation } from './banner';
 import { enableScriptsByCategory, enableIframesByCategory } from './enable';
 import packageJson from '../package.json';
 
@@ -115,7 +115,7 @@ export function acceptConsent() {
     ...defaultConsent,
     consented: true,
   });
-  hideCookieModal();
+  hideCookieBanner();
   showCookieConfirmation();
 }
 
