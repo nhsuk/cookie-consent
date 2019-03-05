@@ -1,0 +1,51 @@
+
+trigger:
+- master
+- azure-pipelines
+
+jobs:
+- job: Test
+  pool:
+    vmImage: 'Ubuntu-16.04'
+
+  steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '8.x'
+    displayName: 'Install Node.js'
+
+  - script: npm install
+    displayName: npm install
+
+  - script: 'echo TODO: linting'
+    displayName: 'TODO: linting'
+
+  - script: npm run test
+    displayName: tests
+
+- job: 'Build'
+  dependsOn: 'Test'
+  pool:
+    vmImage: 'Ubuntu-16.04'
+
+  steps:
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '8.x'
+    displayName: 'Install Node.js'
+
+  - script: npm install
+    displayName: npm install
+
+  - script: npm run build:production
+    displayName: 'build'
+
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: $(Build.SourcesDirectory)/dist
+      targetFolder: $(Build.ArtifactStagingDirectory)
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: $(Build.ArtifactStagingDirectory)
+      artifactName: dist

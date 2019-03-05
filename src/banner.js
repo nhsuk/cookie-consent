@@ -20,6 +20,9 @@ export function insertCookieBanner(acceptConsent) {
   const html = `${bannerHtml} <style>${bannerCss.toString()}</style>`;
   document.getElementsByTagName('body')[0].innerHTML = html + document.getElementsByTagName('body')[0].innerHTML;
 
-  document.getElementById('nhsuk-cookie-banner__link_accept').addEventListener('click', acceptConsent);
+  document.getElementById('nhsuk-cookie-banner__link_accept').addEventListener('click', (e) => {
+    e.preventDefault();
+    acceptConsent();
+  });
   document.getElementById('nhsuk-cookie-banner__link').addEventListener('click', goToCookieSettings);
 }

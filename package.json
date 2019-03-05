@@ -11,7 +11,8 @@
     "build:production": "webpack --mode=production",
     "lint": "eslint --ignore-pattern '*.test.js' src/*.js",
     "start": "npm run watch & npm run testserver",
-    "test": "npm run test:unit; npm run test:integration",
+    "test": "npm run build && start-server-and-test testserver http://localhost:8080 test-all",
+    "test-all": "npm-run-all --continue-on-error test:*",
     "test:unit": "jest",
     "test:integration": "jest -c tests/integration-tests/jest.config.js",
     "testserver": "./node_modules/.bin/http-server",
@@ -42,8 +43,10 @@
     "http-server": "^0.11.1",
     "jest": "^23.6.0",
     "jest-puppeteer": "^3.5.2",
+    "npm-run-all": "^4.1.5",
     "puppeteer": "^1.11.0",
     "regenerator-runtime": "^0.13.1",
+    "start-server-and-test": "^1.7.11",
     "webpack": "^4.26.1",
     "webpack-cli": "^3.1.2"
   }
