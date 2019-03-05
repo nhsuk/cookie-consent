@@ -1,0 +1,29 @@
+.nhsuk-cookie-banner {
+  background: white;
+  position: relative;
+  box-shadow: 0 0 4px 0 black;
+  padding: 24px 0 24px 0;
+  width: 100%;
+  z-index: 1;
+
+  p {
+    margin: 0;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 8px 0 0 0;
+
+    li {
+      display: block;
+    }
+  }
+
+  @include mq($from: desktop) {
+    ul li {
+      display: inline;
+      margin-right: 20px;
+    }
+  }
+}

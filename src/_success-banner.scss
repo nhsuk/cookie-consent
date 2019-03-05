@@ -1,0 +1,14 @@
+.nhsuk-success-banner {
+  background-color: $color_nhsuk-green;
+  color: white;
+  padding: 8px 0 8px 0;
+  position: relative;
+
+  p {
+    margin: 0;
+  }
+
+  a, a:focus, a:visited {
+    color: white;
+  }
+}
