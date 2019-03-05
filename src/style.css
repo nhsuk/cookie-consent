@@ -1,11 +1,69 @@
-#cookie-banner {background: #034484; font-size: 10px;}
-#cookie-banner .cookie-text { background: #034484; margin: 0 auto; text-align: center; max-width: 960px;}  
-@media (max-width: 1019px) {#cookie-banner .cookie-text {margin: 0 32px;}}
-@media (max-width: 769px) {#cookie-banner .cookie-text {margin: 0 16px;}} 
-#cookie-banner .cookie-text:after {content: "."; display: block; height: 0; clear: both; visibility: hidden;}
-#cookie-banner .cookie-text p {background: #034484;color: #fff;float: left;font-size: 13px;font-weight: 600; margin: 0; padding: 1.2em 0; text-align: left; width: 90%;}
-#cookie-banner .cookie-text .cookie-banner-close {text-align: right; width: 10%;}
-#cookie-banner .cookie-text a {color: #fff; text-decoration: underline;}
-#cookie-banner .cookie-text a:hover, #cookie-banner .cookie-text a:active, #cookie-banner .cookie-text a:focus {text-decoration: none; color: #212b32;} 
-#cookie-banner .cookie-banner-close a:hover, #cookie-banner .cookie-banner-close a:focus {background: none; box-shadow: none;}
-#cookie-banner .cookie-banner-close img {display: inline; position: relative;}
+#cookie-banner {
+  background: #034484;
+  font-size: 10px;
+}
+
+#cookie-banner .cookie-text {
+  background: #034484;
+  /* background color needed due to ipad issue showing a line */
+  margin: 0 auto;
+  text-align: center;
+  max-width: 960px;
+}
+@media (max-width: 1019px) {
+  #cookie-banner .cookie-text {
+    margin: 0 32px;
+  }
+}
+
+@media (max-width: 769px) {
+  #cookie-banner .cookie-text {
+    margin: 0 16px;
+  }
+}
+#cookie-banner .cookie-text:after {
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
+
+#cookie-banner .cookie-text p {
+  background: #034484;
+  color: #fff;
+  float: left;
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0;
+  padding: 1.2em 0;
+  text-align: left;
+  width: 90%;
+}
+
+#cookie-banner .cookie-text .cookie-banner-close {
+  text-align: right;
+  width: 10%;
+}
+
+#cookie-banner .cookie-text a {
+  color: #fff;
+  text-decoration: underline;
+}
+
+#cookie-banner .cookie-text a:hover,
+#cookie-banner .cookie-text a:active,
+#cookie-banner .cookie-text a:focus {
+  text-decoration: none; color: #212b32; 
+}
+
+#cookie-banner .cookie-banner-close a:hover,
+#cookie-banner .cookie-banner-close a:focus {
+  background: none;
+  box-shadow: none;
+}
+
+#cookie-banner .cookie-banner-close img {
+  display: inline;
+  position: relative;
+}
