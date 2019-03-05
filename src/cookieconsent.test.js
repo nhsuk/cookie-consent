@@ -1,83 +1,86 @@
-import { acceptConsent, isValidVersion } from './cookieconsent'
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable no-undef */ // eslint not picking up jest expect
 
-import cookieconsent from './cookieconsent'
+import cookieconsent, { acceptConsent } from './cookieconsent';
 
-const getPreferences = cookieconsent.__get__('getPreferences')
-const getStatistics = cookieconsent.__get__('getStatistics')
-const getMarketing = cookieconsent.__get__('getMarketing')
-const togglePreferences = cookieconsent.__get__('togglePreferences')
-const toggleStatistics = cookieconsent.__get__('toggleStatistics')
-const toggleMarketing = cookieconsent.__get__('toggleMarketing')
+// TODO Need to test isValidVersion etc but that requires rewire
+
+const getPreferences = cookieconsent.__get__('getPreferences');
+const getStatistics = cookieconsent.__get__('getStatistics');
+const getMarketing = cookieconsent.__get__('getMarketing');
+const togglePreferences = cookieconsent.__get__('togglePreferences');
+const toggleStatistics = cookieconsent.__get__('toggleStatistics');
+const toggleMarketing = cookieconsent.__get__('toggleMarketing');
 
 test('acceptConsent function exists', () => {
-  expect(acceptConsent).toBeInstanceOf(Function)
-})
+  expect(acceptConsent).toBeInstanceOf(Function);
+});
 
 test('getPreferences function exists', () => {
-  expect(getPreferences).toBeInstanceOf(Function)
-})
+  expect(getPreferences).toBeInstanceOf(Function);
+});
 
 test('getPreferences returns correct value', () => {
   cookieconsent.__with__({
     getConsent: () => ({
-      'necessary': false,
-      'preferences': true,
-      'statistics': false,
-      'marketing': false,
+      marketing: false,
+      necessary: false,
+      preferences: true,
+      statistics: false,
     }),
   })(() => {
-    expect(getPreferences()).toBe(true)
-  })
-})
+    expect(getPreferences()).toBe(true);
+  });
+});
 
 test('togglePreferences function exists', () => {
-  expect(togglePreferences).toBeInstanceOf(Function)
-})
+  expect(togglePreferences).toBeInstanceOf(Function);
+});
 
 test('togglePreferences toggles the prefrences', () => {
-  const value = getPreferences()
-  togglePreferences()
-  expect(getPreferences()).toBe(!value)
-})
+  const value = getPreferences();
+  togglePreferences();
+  expect(getPreferences()).toBe(!value);
+});
 
 test('getStatistics function exists', () => {
-  expect(getStatistics).toBeInstanceOf(Function)
-})
+  expect(getStatistics).toBeInstanceOf(Function);
+});
 
 test('getStatistics returns correct value', () => {
   cookieconsent.__with__({
     getConsent: () => ({
-      'necessary': false,
-      'preferences': false,
-      'statistics': true,
-      'marketing': false,
+      marketing: false,
+      necessary: false,
+      preferences: false,
+      statistics: true,
     }),
   })(() => {
-    expect(getStatistics()).toBe(true)
-  })
-})
+    expect(getStatistics()).toBe(true);
+  });
+});
 
 test('toggleStatistics function exists', () => {
-  expect(toggleStatistics).toBeInstanceOf(Function)
-})
+  expect(toggleStatistics).toBeInstanceOf(Function);
+});
 
 test('getMarketing function exists', () => {
-  expect(getMarketing).toBeInstanceOf(Function)
-})
+  expect(getMarketing).toBeInstanceOf(Function);
+});
 
 test('getMarketing returns correct value', () => {
   cookieconsent.__with__({
     getConsent: () => ({
-      'necessary': false,
-      'preferences': false,
-      'statistics': false,
-      'marketing': true,
+      marketing: true,
+      necessary: false,
+      preferences: false,
+      statistics: false,
     }),
   })(() => {
-    expect(getMarketing()).toBe(true)
-  })
-})
+    expect(getMarketing()).toBe(true);
+  });
+});
 
 test('toggleMarketing function exists', () => {
-  expect(toggleMarketing).toBeInstanceOf(Function)
-})
+  expect(toggleMarketing).toBeInstanceOf(Function);
+});
