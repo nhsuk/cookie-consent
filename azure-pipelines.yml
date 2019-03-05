@@ -15,10 +15,13 @@ jobs:
     displayName: 'Install Node.js'
 
   - script: npm install
+    displayName: npm install
 
   - script: 'echo TODO: linting'
+    displayName: 'TODO: linting'
 
   - script: npm run test
+    displayName: tests
 
 - job: 'Build'
   dependsOn: 'Test'
@@ -32,6 +35,7 @@ jobs:
     displayName: 'Install Node.js'
 
   - script: npm install
+    displayName: npm install
 
   - script: npm run build:production
     displayName: 'build'
