@@ -2,7 +2,7 @@
   "name": "cookie-consent",
   "version": "0.0.1",
   "description": "In-house solution for managing cookies on nhs.uk",
-  "main": "src/cookieconsent.js",
+  "main": "src/banner.js",
   "directories": {
     "test": "tests"
   },
