@@ -18,7 +18,7 @@ jobs:
 
   - script: 'echo TODO: linting'
 
-  - script: 'echo TODO: tests'
+  - script: npm run test
 
 - job: 'Build'
   dependsOn: 'Test'
