@@ -23,27 +23,10 @@
   <body>
     <main class="main">
       <h1>Cookies:</h1>
-      <button onclick="listCookies()">Refresh</button>
-      <div id="cookie-list"></div>
-      <script type="text/javascript">
-        function listCookies() {
-          // Get all cookies and render them in the cookie-list div
-          var cookies = document.cookie ? document.cookie.split(";") : []
-          var container = document.getElementById("cookie-list");
+      <button id="cookie-list-refresh">Refresh</button>
 
-          // set the cookie list
-          container.innerHTML = "";
-          if(cookies.length) {
-            cookies.forEach(function(cookie) {
-              var lineItem = "<li>" + cookie + "</li>";
-              container.insertAdjacentHTML('beforeend', lineItem);
-            })
-          } else {
-            container.innerHTML = "<p>No cookies to show</p>";
-          }
-        }
-        listCookies();
-      </script>
+      <div id="cookie-list"></div>
+      <script src="./js/show-cookie-data.js"></script>
     </main>
   </body>
 </html>
