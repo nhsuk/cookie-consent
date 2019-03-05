@@ -1,8 +1,8 @@
 module.exports = {
-  displayName: "Integration tests",
-  preset: "jest-puppeteer",
-  rootDir: ".",
+  displayName: 'Integration tests',
+  preset: 'jest-puppeteer',
+  rootDir: '.',
   testMatch: [
-    "<rootDir>/*.test.js",
-  ]
-}
+    '<rootDir>/*.test.js',
+  ],
+};
