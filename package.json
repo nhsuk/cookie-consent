@@ -43,9 +43,12 @@
     "http-server": "^0.11.1",
     "jest": "^23.6.0",
     "jest-puppeteer": "^3.5.2",
+    "nhsuk-frontend": "^1.0.1",
+    "node-sass": "^4.11.0",
     "npm-run-all": "^4.1.5",
     "puppeteer": "^1.11.0",
     "regenerator-runtime": "^0.13.1",
+    "sass-loader": "^7.1.0",
     "start-server-and-test": "^1.7.11",
     "webpack": "^4.26.1",
     "webpack-cli": "^3.1.2"
