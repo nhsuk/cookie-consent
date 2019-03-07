@@ -1,4 +1,5 @@
-/* eslint-disable no-undef */
+/* global expect */
+
 import { createCookie, getCookie } from './cookies';
 
 /* https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript */

@@ -1,5 +1,5 @@
+/* global expect */
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable no-undef */ // eslint not picking up jest expect
 
 import cookieconsent, { acceptConsent } from './cookieconsent';
 
