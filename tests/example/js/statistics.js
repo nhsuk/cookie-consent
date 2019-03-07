@@ -1,1 +1,1 @@
-document.cookie = "statistics=This is a statistics cookie";
+document.cookie = 'statistics=This is a statistics cookie';

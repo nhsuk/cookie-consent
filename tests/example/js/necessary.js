@@ -1,1 +1,1 @@
-document.cookie = "necessary=This is a necessary cookie;path=/";
+document.cookie = 'necessary=This is a necessary cookie;path=/';
