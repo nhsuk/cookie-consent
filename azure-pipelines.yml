@@ -17,8 +17,8 @@ jobs:
   - script: npm install
     displayName: npm install
 
-  - script: 'echo TODO: linting'
-    displayName: 'TODO: linting'
+  - script: npm run lint
+    displayName: linting
 
   - script: npm run test
     displayName: tests
