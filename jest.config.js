@@ -1,7 +1,7 @@
 module.exports = {
   displayName: 'Unit tests',
   moduleNameMapper: {
-    '\\.(css)$': '<rootDir>/__mocks__/cssMock.js',
+    '\\.(scss)$': '<rootDir>/__mocks__/sassMock.js',
     '\\.(html)$': '<rootDir>/__mocks__/htmlMock.js',
   },
   rootDir: '.',

@@ -1,0 +1,40 @@
+// font-face declarations must go outside of any selectors
+@import 'node_modules/nhsuk-frontend/packages/core/generic/font-face';
+
+
+/**
+ * Wrap all of our CSS inside an id selector. This will prevent our styles from
+ * conflicting with the host site.
+ */
+#nhsuk-cookie-banner {
+  /**
+   * We want this library to be lightweight, so don't include all of the
+   * frontend library. Only include the parts we need.
+   */
+  @import 'node_modules/nhsuk-frontend/packages/core/settings/all';
+  @import 'node_modules/nhsuk-frontend/packages/core/tools/all';
+
+  @import 'node_modules/nhsuk-frontend/packages/core/elements/links';
+  @import 'node_modules/nhsuk-frontend/packages/core/objects/width-container';
+  @import 'node_modules/nhsuk-frontend/packages/core/styles/typography';
+  @import 'node_modules/nhsuk-frontend/packages/core/styles/lists';
+
+  /**
+   * The following statements are font styles which are applied to the body
+   * and html selectors in the frontend library.
+   * Since we have put our CSS inside a #nhsuk-cookie-banner scope, those selectors
+   * do not apply.
+   */
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  font-family: $nhsuk-font, $nhsuk-font-fallback;
+  color: $nhsuk-text-color;
+  font-size: $nhsuk-base-font-size;
+  line-height: _nhsuk-line-height($nhsuk-base-line-height, $nhsuk-base-font-size);
+
+  /**
+   * Import the custom banner CSS
+   */
+  @import './cookie-banner.scss';
+  @import './success-banner.scss';
+}

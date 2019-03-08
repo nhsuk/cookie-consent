@@ -26,10 +26,16 @@ module.exports = {
         }
       }
     }, {
-      test: /\.css$/,
-      use: {
-        loader: "css-loader"
+      test: /\.scss$/,
+      use: [{
+        loader: 'css-loader',
       },
+      {
+        loader: 'sass-loader',
+        options: {
+          outputStyle: 'compressed',
+        },
+      }],
     }]
   }
 };

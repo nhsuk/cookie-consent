@@ -1,5 +1,5 @@
 import bannerHtml from './banner.html';
-import bannerCss from './style.css';
+import bannerCss from './style.scss';
 import { toggleConsented as consent } from './cookieconsent';
 
 export function hideCookieBanner() {
