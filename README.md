@@ -45,12 +45,20 @@ console.log(NHSCookieConsent.VERSION)
 
 ### Methods
 
-- `getPreferences` gets the status of the preferences cookie allowance
-- `getStatistics` gets the status of the statistics cookie allowance
-- `getMarketing` gets the status of the marketing cookie allowance
-- `togglePreferences` changes the users preferences allowance to true if false and vice versa
-- `toggleStatistics` changes the users statistics allowance to true if false and vice versa
-- `toggleMarketing` changes the users marketing allowance to true if false and vice versa
+`get...` Gets the status of the cookie consent for that type of cookie.  
+Returns a boolean
+
+- `getPreferences()`
+- `getStatistics()`
+- `getMarketing()`
+
+`set...` Sets the status of the cookie consent for that type of cookie.  
+set methods should only be used in response to a user interaction accepting that type of cookie.  
+Expects a boolean `value` argument.
+
+- `setPreferences(value)`
+- `setStatistics(value)`
+- `setMarketing(value)`
 
 ### Properties
 
