@@ -1,7 +1,6 @@
 import { getCookie as getRawCookie, createCookie as createRawCookie } from './cookies';
-import { insertCookieBanner, hideCookieBanner, showCookieConfirmation } from './banner';
+import { insertCookieBanner } from './banner';
 import { enableScriptsByCategory, enableIframesByCategory } from './enable';
-import packageJson from '../package.json';
 
 /**
  * If cookie rules/regulations change and the cookie itself needs to change,
@@ -108,15 +107,13 @@ function isValidVersion() {
   return getUserCookieVersion() >= COOKIE_VERSION;
 }
 
-// If consent is given, change value of cookie
-export function acceptConsent() {
+// If consent is given, change the value of the cookie
+function acceptConsent() {
   // On a domain where marketing cookies are required, toggleMarketing() would go here
   setConsent({
     ...defaultConsent,
     consented: true,
   });
-  hideCookieBanner();
-  showCookieConfirmation();
 }
 
 // N.B document.currentScript needs to be executed outside of any callbacks
@@ -143,97 +140,68 @@ function getScriptSettings() {
   };
 }
 
-function getConsentSetting(key) {
+export function getConsentSetting(key) {
   const cookie = getConsent();
   // double ! to convert truthy/falsy values into true/false
   return !!cookie[key];
 }
 
-function getPreferences() {
-  return getConsentSetting('preferences');
+export function setConsentSetting(key, value) {
+  // double ! to convert truthy/falsy values into true/false
+  setConsent({ [key]: !!value });
 }
 
-function getStatistics() {
-  return getConsentSetting('statistics');
-}
+/**
+ * Should the banner be shown to a user?
+ * Returns true or false
+ */
+function shouldShowBanner() {
+  // If the `nobanner` setting is used, never show the banner.
+  const settings = getScriptSettings();
+  if (settings.nobanner) {
+    return false;
+  }
 
-function getMarketing() {
-  return getConsentSetting('marketing');
-}
+  // Show the banner if there is no cookie. This user is a first-time visitor
+  if (getCookie() === null) {
+    return true;
+  }
 
-function getConsented() {
-  return getConsentSetting('consented');
-}
+  // Show the banner if the user has consented before, but on an old version
+  if (!isValidVersion(COOKIE_VERSION)) {
+    return true;
+  }
 
-function togglePreferences() {
-  setConsent({ preferences: !getPreferences() });
-}
+  // Show the banner if the user has a cookie, but didn't actively consent.
+  // For example, they didn't interact with the banner on a previous visit.
+  if (getConsentSetting('consented') === false) {
+    return true;
+  }
 
-function toggleStatistics() {
-  setConsent({ statistics: !getStatistics() });
-}
-
-function toggleMarketing() {
-  setConsent({ marketing: !getMarketing() });
-}
-
-export function toggleConsented() {
-  setConsent({ consented: !getConsented() });
+  return false;
 }
 
 /*
- * Set the global NHSCookieConsent object that implementors of this library
- * will interact with.
+ * function that needs to fire when every page loads.
+ * - shows the cookie banner
+ * - sets default consent
+ * - enables scripts and iframes depending on the consent
  */
-window.NHSCookieConsent = {
-  /*
-   * The version of this package as defined in the package.json
-   */
-  VERSION: packageJson.version,
+export function onload() {
+  if (shouldShowBanner()) {
+    insertCookieBanner(acceptConsent);
+  }
 
-  getPreferences,
-  getStatistics,
-  getMarketing,
-  getConsent,
-  togglePreferences,
-  toggleStatistics,
-  toggleMarketing,
-  toggleConsented,
-};
-
-// function that needs to fire when every page loads
-function checkCookie() {
-  const settings = getScriptSettings();
-
-  // If there isn't a user cookie, create one
-  if (getCookie() == null) {
+  // If there isn't a valid user cookie, create one with default consent
+  if (getCookie() === null || !isValidVersion(COOKIE_VERSION)) {
     setConsent(defaultConsent, COOKIE_TYPE.SESSION);
-    if (!settings.nobanner) {
-      insertCookieBanner(acceptConsent);
-    }
-  } else if (!isValidVersion(COOKIE_VERSION)) {
-    setConsent(defaultConsent, COOKIE_TYPE.SESSION);
-    if (!settings.nobanner) {
-      insertCookieBanner(acceptConsent);
-    }
-  } else if (getConsented() === false) {
-    if (!settings.nobanner) {
-      insertCookieBanner(acceptConsent);
-    }
   }
 
-  if (getStatistics() === true) {
-    enableScriptsByCategory('statistics');
-    enableIframesByCategory('statistics');
-  }
-  if (getPreferences() === true) {
-    enableScriptsByCategory('preferences');
-    enableIframesByCategory('preferences');
-  }
-  if (getMarketing() === true) {
-    enableScriptsByCategory('marketing');
-    enableIframesByCategory('marketing');
-  }
+  // For each type, check the consent setting and enable the appropriate scripts and iframes
+  ['statistics', 'preferences', 'marketing'].forEach((cookieCategory) => {
+    if (getConsentSetting(cookieCategory) === true) {
+      enableScriptsByCategory(cookieCategory);
+      enableIframesByCategory(cookieCategory);
+    }
+  });
 }
-
-window.addEventListener('load', checkCookie);

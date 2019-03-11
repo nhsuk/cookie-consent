@@ -1,83 +1,329 @@
-import { acceptConsent, isValidVersion } from './cookieconsent'
+/* global expect, jest, beforeEach, afterEach */
+/* eslint-disable no-underscore-dangle */
 
-import cookieconsent from './cookieconsent'
+import cookieconsent, { getConsentSetting, setConsentSetting, onload } from './cookieconsent';
 
-const getPreferences = cookieconsent.__get__('getPreferences')
-const getStatistics = cookieconsent.__get__('getStatistics')
-const getMarketing = cookieconsent.__get__('getMarketing')
-const togglePreferences = cookieconsent.__get__('togglePreferences')
-const toggleStatistics = cookieconsent.__get__('toggleStatistics')
-const toggleMarketing = cookieconsent.__get__('toggleMarketing')
+const COOKIE_NAME = cookieconsent.__get__('COOKIE_NAME');
+const COOKIE_VERSION = cookieconsent.__get__('COOKIE_VERSION');
+const COOKIE_TYPE = cookieconsent.__get__('COOKIE_TYPE');
 
-test('acceptConsent function exists', () => {
-  expect(acceptConsent).toBeInstanceOf(Function)
-})
+describe('getCookie', () => {
+  const getCookie = cookieconsent.__get__('getCookie');
 
-test('getPreferences function exists', () => {
-  expect(getPreferences).toBeInstanceOf(Function)
-})
+  test('getCookie returns null if getRawCookie returns null', () => {
+    cookieconsent.__Rewire__('getRawCookie', () => null);
+    expect(getCookie()).toBe(null);
+    cookieconsent.__ResetDependency__('getRawCookie');
+  });
 
-test('getPreferences returns correct value', () => {
-  cookieconsent.__with__({
-    getConsent: () => ({
-      'necessary': false,
-      'preferences': true,
-      'statistics': false,
-      'marketing': false,
-    }),
-  })(() => {
-    expect(getPreferences()).toBe(true)
-  })
-})
+  test('getCookie returns object if getRawCookie returns json', () => {
+    cookieconsent.__Rewire__('getRawCookie', () => '{"a":123, "b":456}');
+    expect(getCookie()).toEqual({ a: 123, b: 456 });
+    cookieconsent.__ResetDependency__('getRawCookie');
+  });
 
-test('togglePreferences function exists', () => {
-  expect(togglePreferences).toBeInstanceOf(Function)
-})
+  test('getCookie throws an error if getRawCookie returns invalid json', () => {
+    cookieconsent.__Rewire__('getRawCookie', () => '{abc}');
+    expect(() => {
+      getCookie();
+    }).toThrow(SyntaxError);
+    cookieconsent.__ResetDependency__('getRawCookie');
+  });
+});
 
-test('togglePreferences toggles the prefrences', () => {
-  const value = getPreferences()
-  togglePreferences()
-  expect(getPreferences()).toBe(!value)
-})
+describe('createCookie', () => {
+  const createCookie = cookieconsent.__get__('createCookie');
 
-test('getStatistics function exists', () => {
-  expect(getStatistics).toBeInstanceOf(Function)
-})
+  test('createCookie calls createRawCookie', () => {
+    const spy = jest.fn();
+    cookieconsent.__Rewire__('createRawCookie', spy);
+    createCookie({ a: 123, b: 456 }, 10, '/', 'domain', false);
+    expect(spy).toHaveBeenCalledWith(COOKIE_NAME, '{"a":123,"b":456}', 10, '/', 'domain', false);
+    cookieconsent.__ResetDependency__('createRawCookie');
+  });
+});
 
-test('getStatistics returns correct value', () => {
-  cookieconsent.__with__({
-    getConsent: () => ({
-      'necessary': false,
-      'preferences': false,
-      'statistics': true,
-      'marketing': false,
-    }),
-  })(() => {
-    expect(getStatistics()).toBe(true)
-  })
-})
+describe('getConsent', () => {
+  const getConsent = cookieconsent.__get__('getConsent');
 
-test('toggleStatistics function exists', () => {
-  expect(toggleStatistics).toBeInstanceOf(Function)
-})
+  test('getConsent returns an object of consent settings', () => {
+    cookieconsent.__Rewire__('getCookie', () => ({
+      marketing: true,
+      preferences: true,
+      statistics: false,
+      version: 1,
+    }));
+    expect(getConsent()).toEqual({
+      marketing: true,
+      preferences: true,
+      statistics: false,
+    });
+    cookieconsent.__ResetDependency__('getCookie');
+  });
+});
 
-test('getMarketing function exists', () => {
-  expect(getMarketing).toBeInstanceOf(Function)
-})
+describe('setConsent', () => {
+  const setConsent = cookieconsent.__get__('setConsent');
+  let spy;
 
-test('getMarketing returns correct value', () => {
-  cookieconsent.__with__({
-    getConsent: () => ({
-      'necessary': false,
-      'preferences': false,
-      'statistics': false,
-      'marketing': true,
-    }),
-  })(() => {
-    expect(getMarketing()).toBe(true)
-  })
-})
+  beforeEach(() => {
+    spy = jest.fn();
+    cookieconsent.__Rewire__('createCookie', spy);
+  });
 
-test('toggleMarketing function exists', () => {
-  expect(toggleMarketing).toBeInstanceOf(Function)
-})
+  afterEach(() => {
+    cookieconsent.__ResetDependency__('createCookie');
+  });
+
+  test('setConsent creates a year-long cookie containing consent settings', () => {
+    setConsent({
+      marketing: true,
+      preferences: true,
+      statistics: false,
+    });
+    expect(spy).toHaveBeenCalledWith({
+      marketing: true,
+      preferences: true,
+      statistics: false,
+      version: COOKIE_VERSION,
+    }, 365, '/');
+  });
+
+  test('setConsent creates a session cookie containing consent settings', () => {
+    setConsent({
+      marketing: true,
+      preferences: true,
+      statistics: false,
+    }, COOKIE_TYPE.SESSION);
+    expect(spy).toHaveBeenCalledWith({
+      marketing: true,
+      preferences: true,
+      statistics: false,
+      version: COOKIE_VERSION,
+    }, null, '/');
+  });
+
+  test('setConsent mixes the pre-existing consent', () => {
+    cookieconsent.__Rewire__('getConsent', () => ({
+      marketing: false,
+      preferences: false,
+      statistics: false,
+    }));
+    setConsent({
+      marketing: true,
+    });
+    expect(spy).toHaveBeenCalledWith({
+      marketing: true,
+      preferences: false,
+      statistics: false,
+      version: COOKIE_VERSION,
+    }, 365, '/');
+    cookieconsent.__ResetDependency__('getConsent');
+  });
+});
+
+test('getUserCookieVersion gets the user\'s cookie version', () => {
+  cookieconsent.__Rewire__('getCookie', () => ({
+    marketing: true,
+    preferences: false,
+    statistics: false,
+    version: 999,
+  }));
+  const getUserCookieVersion = cookieconsent.__get__('getUserCookieVersion');
+  expect(getUserCookieVersion()).toBe(999);
+  cookieconsent.__ResetDependency__('getCookie');
+});
+
+describe('isValidVersion', () => {
+  const isValidVersion = cookieconsent.__get__('isValidVersion');
+
+  test('isValidVersion returns true for valid cookie version', () => {
+    cookieconsent.__Rewire__('getCookie', () => ({
+      marketing: true,
+      preferences: false,
+      statistics: false,
+      version: COOKIE_VERSION + 1,
+    }));
+    expect(isValidVersion()).toBe(true);
+    cookieconsent.__ResetDependency__('getCookie');
+  });
+
+  test('isValidVersion returns false for invalid cookie version', () => {
+    cookieconsent.__Rewire__('getCookie', () => ({
+      marketing: true,
+      preferences: false,
+      statistics: false,
+      version: COOKIE_VERSION - 1,
+    }));
+    expect(isValidVersion()).toBe(false);
+    cookieconsent.__ResetDependency__('getCookie');
+  });
+});
+
+describe('getScriptSettings', () => {
+  const getScriptSettings = cookieconsent.__get__('getScriptSettings');
+
+  test('getScriptSettings gets the default settings when scriptTag is not set', () => {
+    expect(getScriptSettings()).toEqual({
+      nobanner: false,
+    });
+  });
+
+  test('getScriptSettings for <script></script>', () => {
+    const scriptTag = document.createElement('script');
+    cookieconsent.__Rewire__('scriptTag', scriptTag);
+    expect(getScriptSettings()).toEqual({
+      nobanner: false,
+    });
+    cookieconsent.__ResetDependency__('scriptTag');
+  });
+
+  test('getScriptSettings for <script data-nobanner="true"></script>', () => {
+    const scriptTag = document.createElement('script');
+    scriptTag.setAttribute('data-nobanner', 'true');
+    cookieconsent.__Rewire__('scriptTag', scriptTag);
+    expect(getScriptSettings()).toEqual({
+      nobanner: true,
+    });
+    cookieconsent.__ResetDependency__('scriptTag');
+  });
+
+  test('getScriptSettings for <script data-nobanner></script>', () => {
+    const scriptTag = document.createElement('script');
+    scriptTag.setAttribute('data-nobanner', '');
+    cookieconsent.__Rewire__('scriptTag', scriptTag);
+    expect(getScriptSettings()).toEqual({
+      nobanner: true,
+    });
+    cookieconsent.__ResetDependency__('scriptTag');
+  });
+});
+
+describe('getConsentSetting', () => {
+  test('getConsentSetting gets consent value by key', () => {
+    cookieconsent.__Rewire__('getConsent', () => ({
+      marketing: true,
+      preferences: false,
+      statistics: false,
+    }));
+
+    const marketing = getConsentSetting('marketing');
+    expect(marketing).toBe(true);
+
+    const preferences = getConsentSetting('preferences');
+    expect(preferences).toBe(false);
+
+    cookieconsent.__ResetDependency__('getConsent');
+  });
+});
+
+describe('setConsentSetting', () => {
+  let spy;
+
+  beforeEach(() => {
+    spy = jest.fn();
+    cookieconsent.__Rewire__('setConsent', spy);
+  });
+  afterEach(() => {
+    cookieconsent.__ResetDependency__('setConsent');
+  });
+
+  test('setConsentSetting sets consent value by key', () => {
+    setConsentSetting('marketing', false);
+    expect(spy).toHaveBeenCalledWith({ marketing: false });
+  });
+
+  test('setConsentSetting converts value to boolean', () => {
+    setConsentSetting('marketing', 1);
+    expect(spy).toHaveBeenCalledWith({ marketing: true });
+  });
+});
+
+describe('shouldShowBanner', () => {
+  const shouldShowBanner = cookieconsent.__get__('shouldShowBanner');
+
+  test('shouldShowBanner returns false if nobanner is enabled', () => {
+    cookieconsent.__Rewire__('getScriptSettings', () => ({ nobanner: true }));
+    expect(shouldShowBanner()).toBe(false);
+    cookieconsent.__ResetDependency__('getScriptSettings');
+  });
+
+  test('shouldShowBanner returns true if no cookie is found', () => {
+    // tests are run in new browser context, no cookie is set yet.
+    expect(shouldShowBanner()).toBe(true);
+  });
+
+  test('shouldShowBanner returns true if cookie version is out of date', () => {
+    cookieconsent.__Rewire__('getCookie', () => ({
+      version: COOKIE_VERSION - 1,
+    }));
+    expect(shouldShowBanner()).toBe(true);
+    cookieconsent.__ResetDependency__('getCookie');
+  });
+
+  test('shouldShowBanner returns true if cookie does not have "active" consent', () => {
+    cookieconsent.__Rewire__('getCookie', () => ({
+      consented: false,
+      version: COOKIE_VERSION,
+    }));
+    expect(shouldShowBanner()).toBe(true);
+    cookieconsent.__ResetDependency__('getCookie');
+  });
+
+  test('shouldShowBanner returns false if cookie is up-to-date', () => {
+    cookieconsent.__Rewire__('getCookie', () => ({
+      consented: true,
+      version: COOKIE_VERSION,
+    }));
+    expect(shouldShowBanner()).toBe(false);
+    cookieconsent.__ResetDependency__('getCookie');
+  });
+});
+
+describe('onload', () => {
+  const acceptConsent = cookieconsent.__get__('acceptConsent');
+  const defaultConsent = cookieconsent.__get__('defaultConsent');
+
+  beforeEach(() => {
+    cookieconsent.__Rewire__('insertCookieBanner', () => null);
+  });
+  afterEach(() => {
+    cookieconsent.__ResetDependency__('insertCookieBanner');
+  });
+
+  test('shows the banner with an acceptConsent callback', () => {
+    const spy = jest.fn();
+    cookieconsent.__Rewire__('insertCookieBanner', spy);
+    onload();
+    expect(spy).toHaveBeenCalledWith(acceptConsent);
+    cookieconsent.__ResetDependency__('insertCookieBanner');
+  });
+
+  test('creates a default cookie if needed', () => {
+    const spy = jest.fn();
+    cookieconsent.__Rewire__('getCookie', () => null);
+    cookieconsent.__Rewire__('setConsent', spy);
+    onload();
+    expect(spy).toHaveBeenCalledWith(defaultConsent, COOKIE_TYPE.SESSION);
+    cookieconsent.__ResetDependency__('getCookie');
+    cookieconsent.__ResetDependency__('setConsent');
+  });
+
+  test('enables the appropriate scripts', () => {
+    const spy = jest.fn();
+    cookieconsent.__Rewire__('enableScriptsByCategory', spy);
+    onload();
+    expect(spy).toHaveBeenCalledWith('preferences');
+    expect(spy).not.toHaveBeenCalledWith('marketing');
+    cookieconsent.__ResetDependency__('enableScriptsByCategory');
+  });
+
+  test('enables the appropriate iframes', () => {
+    const spy = jest.fn();
+    cookieconsent.__Rewire__('enableIframesByCategory', spy);
+    onload();
+    expect(spy).toHaveBeenCalledWith('preferences');
+    expect(spy).not.toHaveBeenCalledWith('marketing');
+    cookieconsent.__ResetDependency__('enableIframesByCategory');
+  });
+});
