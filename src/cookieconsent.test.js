@@ -327,3 +327,35 @@ describe('onload', () => {
     cookieconsent.__ResetDependency__('enableIframesByCategory');
   });
 });
+
+describe('NO_BANNER mode', () => {
+  beforeEach(() => {
+    cookieconsent.__Rewire__('NO_BANNER', true);
+  });
+
+  afterEach(() => {
+    cookieconsent.__ResetDependency__('NO_BANNER');
+  });
+
+  test('does not show the banner', () => {
+    const spy = jest.fn();
+    cookieconsent.__Rewire__('insertCookieBanner', spy);
+    onload();
+    expect(spy).not.toHaveBeenCalled();
+    cookieconsent.__ResetDependency__('insertCookieBanner');
+  });
+
+  test('sets an implicit consent to all cookie types', () => {
+    const spy = jest.fn();
+    cookieconsent.__Rewire__('setConsent', spy);
+    onload();
+    expect(spy).toHaveBeenCalledWith({
+      consented: false,
+      marketing: true,
+      necessary: true,
+      preferences: true,
+      statistics: true,
+    }, 'long');
+    cookieconsent.__ResetDependency__('setConsent');
+  });
+});

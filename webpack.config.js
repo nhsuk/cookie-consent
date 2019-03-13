@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 
 module.exports = {
   mode: 'development',
@@ -36,6 +37,11 @@ module.exports = {
           outputStyle: 'compressed',
         },
       }],
-    }]
-  }
+    }],
+  },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NO_BANNER': JSON.stringify(process.env.NO_BANNER),
+    }),
+  ],
 };
