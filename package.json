@@ -9,6 +9,7 @@
   "scripts": {
     "build": "webpack",
     "build:production": "webpack --mode=production",
+    "build:nobanner": "NO_BANNER=true npm run build:production",
     "lint": "eslint --ignore-pattern src/*.js",
     "start": "npm run watch & npm run testserver",
     "test": "npm run build && start-server-and-test testserver http://localhost:8080 test-all",

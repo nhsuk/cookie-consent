@@ -20,6 +20,14 @@ const COOKIE_TYPE = {
   SESSION: 'session',
 };
 
+/*
+ * NO_BANNER mode means that the banner will never be shown, and users will
+ * have all cookie-types activated.
+ * We need this switch to be able to totally disable the functionality of this
+ * cookie-consent library for a co-ordinated cross-platform release.
+ */
+const NO_BANNER = (process.env.NO_BANNER === 'true');
+
 /* eslint-disable sort-keys */
 // Pre-defined cookie types in line with cookiebot categories
 const defaultConsent = {
@@ -189,7 +197,19 @@ function shouldShowBanner() {
  */
 export function onload() {
   if (shouldShowBanner()) {
-    insertCookieBanner(acceptConsent);
+    if (NO_BANNER) {
+      // If NO_BANNER mode, we need to set "implied consent" to every cookie type
+      setConsent({
+        necessary: true,
+        preferences: true,
+        statistics: true,
+        marketing: true,
+        consented: false,
+      },
+      COOKIE_TYPE.LONG);
+    } else {
+      insertCookieBanner(acceptConsent);
+    }
   }
 
   // If there isn't a valid user cookie, create one with default consent

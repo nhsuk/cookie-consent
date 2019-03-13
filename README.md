@@ -80,6 +80,20 @@ npm run build:production
 
 Compiled javascript will be saved to dist/main.js
 
+## NO_BANNER environment variable
+
+A custom build-time `NO_BANNER` environment variable can be set to `true` which
+will produce a javascript file that won't show the cookie banner to users.
+Instead, consent will be implied.
+
+To build the "no-banner" version, run
+```sh
+NO_BANNER=true npm run build:production
+```
+
+This mode will be used to coordinate a cross-platform release so that we can toggle
+the banner on in all systems at one point in time.
+
 ## Tests
 
 To run the [Jest](https://jestjs.io/en/) tests
