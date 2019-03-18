@@ -16,8 +16,10 @@ export function showCookieConfirmation() {
  */
 export function insertCookieBanner(onAccept) {
   // add a css block to the inserted html
-  const html = `${bannerHtml} <style>${bannerCss.toString()}</style>`;
-  document.getElementsByTagName('body')[0].innerHTML = html + document.getElementsByTagName('body')[0].innerHTML;
+  const div = document.createElement('div');
+  div.innerHTML = bannerHtml;
+  div.innerHTML += `<style>${bannerCss.toString()}</style>`;
+  document.body.insertBefore(div, document.body.firstChild);
 
   document.getElementById('nhsuk-cookie-banner__link_accept').addEventListener('click', (e) => {
     e.preventDefault();
