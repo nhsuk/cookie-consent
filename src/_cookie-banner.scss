@@ -8,6 +8,13 @@
 
   p {
     margin: 0;
+    font-size: 16px;
+  }
+
+  @include mq($from: tablet) {
+    p {
+      font-size: 19px;
+    }
   }
 
   ul {
