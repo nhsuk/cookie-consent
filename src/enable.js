@@ -3,9 +3,11 @@
  * We need to add a sibling and then remove the original node.
  */
 function enableScript(script) {
-  const newScript = script.cloneNode(true);
+  const newScript = document.createElement('script');
+  newScript.text = script.text;
   const parent = script.parentElement;
   newScript.setAttribute('type', 'text/javascript');
+  newScript.setAttribute('src', script.getAttribute('src'));
   parent.insertBefore(newScript, script);
   script.remove();
 }
