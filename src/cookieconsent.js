@@ -1,4 +1,4 @@
-import { getCookie as getRawCookie, createCookie as createRawCookie } from './cookies';
+import { getCookie as getRawCookie, createCookie as createRawCookie, deleteCookies } from './cookies';
 import { insertCookieBanner } from './banner';
 import { enableScriptsByCategory, enableIframesByCategory } from './enable';
 
@@ -117,7 +117,6 @@ function isValidVersion() {
 
 // If consent is given, change the value of the cookie
 function acceptConsent() {
-  // On a domain where marketing cookies are required, toggleMarketing() would go here
   setConsent({
     ...defaultConsent,
     consented: true,
@@ -155,6 +154,9 @@ export function getConsentSetting(key) {
 }
 
 export function setConsentSetting(key, value) {
+  if (!value) {
+    deleteCookies();
+  }
   // double ! to convert truthy/falsy values into true/false
   setConsent({ [key]: !!value });
 }
