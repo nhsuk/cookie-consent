@@ -56,3 +56,29 @@ export function getCookie(name) {
 
   return cookies[name] || null;
 }
+
+/*
+ * Remove all cookies other than nhsuk-cookie-consent cookie
+ */
+export function deleteCookies() {
+  const cookies = document.cookie.split('; ');
+  for (let i = 0; i < cookies.length; i++) {
+    const domain = window.location.hostname.split('.');
+    while (domain.length > 0) {
+      const cookieBase = encodeURIComponent(cookies[i].split(';')[0].split('=')[0]) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' + domain.join('.') + ' ;path=';
+      if (cookieBase.split('=')[0] !== 'nhsuk-cookie-consent') {
+        const path = window.location.pathname.split('/');
+        // give all cookies same domain so they can be deleted
+        document.cookie = cookieBase + '/';
+        while (path.length > 0) {
+          document.cookie = cookieBase + path.join('/');
+          path.pop();
+        }
+        // remove 0th index
+        domain.shift();
+      } else {
+        break;
+      }
+    }
+  }
+}
