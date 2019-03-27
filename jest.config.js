@@ -1,3 +1,5 @@
+const jsdom = require('jsdom');
+
 module.exports = {
   displayName: 'Unit tests',
   moduleNameMapper: {
@@ -5,7 +7,10 @@ module.exports = {
     '\\.(html)$': '<rootDir>/__mocks__/htmlMock.js',
   },
   rootDir: '.',
-  testEnvironment: 'jsdom',
+  testEnvironment: './cookie-test-environment.js',
+  testEnvironmentOptions: {
+    cookieJar: new jsdom.CookieJar(),
+  },
   testMatch: [
     '<rootDir>/src/*.test.js',
   ],
