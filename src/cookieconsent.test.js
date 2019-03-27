@@ -237,6 +237,22 @@ describe('setConsentSetting', () => {
     setConsentSetting('marketing', 1);
     expect(spy).toHaveBeenCalledWith({ marketing: true });
   });
+
+  test('setConsentSetting with false triggers cookie deletion', () => {
+    const deleteCookiesSpy = jest.fn();
+    cookieconsent.__Rewire__('deleteCookies', deleteCookiesSpy);
+    setConsentSetting('marketing', false);
+    expect(deleteCookiesSpy).toHaveBeenCalled();
+    cookieconsent.__ResetDependency__('deleteCookies');
+  });
+
+  test('setConsentSetting with true does not trigger cookie deletion', () => {
+    const deleteCookiesSpy = jest.fn();
+    cookieconsent.__Rewire__('deleteCookies', deleteCookiesSpy);
+    setConsentSetting('marketing', true);
+    expect(deleteCookiesSpy).not.toHaveBeenCalled();
+    cookieconsent.__ResetDependency__('deleteCookies');
+  });
 });
 
 describe('shouldShowBanner', () => {
