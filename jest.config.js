@@ -14,4 +14,6 @@ module.exports = {
   testMatch: [
     '<rootDir>/src/*.test.js',
   ],
+  // Set a url with a path so we can write cookie tests that use paths.
+  testURL: 'http://localhost/path1/path2/path3/',
 };
