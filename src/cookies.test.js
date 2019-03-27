@@ -80,7 +80,6 @@ describe('deleteCookies', () => {
     document.cookie = 'testcookie=testvalue';
     document.cookie = 'anothertestcookie=anothertestvalue';
     deleteCookies();
-    document.cookie = 'anothertestcookie=anothertestvalue; Expires=Thu, 01 Jan 1970 00:00:00 GMT; Domain=localhost; Path=/';
     expect(document.cookie).toBe('nhsuk-cookie-consent=consentvalue');
   });
 
