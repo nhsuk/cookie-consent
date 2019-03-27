@@ -40,9 +40,10 @@ export function createCookie(name, value, days, path, domain, secure) {
 }
 
 /*
- * Get a cookie value by name
+ * Get all cookies from document.cookie and parse them.
+ * Returns an object of key/value pairs
  */
-export function getCookie(name) {
+function getAllCookies() {
   const cookiesString = document.cookie || '';
   const cookiesArray = cookiesString.split(';')
     .filter(cookie => cookie !== '')
@@ -56,6 +57,14 @@ export function getCookie(name) {
     return acc;
   }, {});
 
+  return cookies || {};
+}
+
+/*
+ * Get a cookie value by name
+ */
+export function getCookie(name) {
+  const cookies = getAllCookies();
   return cookies[name] || null;
 }
 
@@ -63,24 +72,29 @@ export function getCookie(name) {
  * Remove all cookies other than nhsuk-cookie-consent cookie
  */
 export function deleteCookies() {
-  const cookies = document.cookie.split('; ');
-  for (let i = 0; i < cookies.length; i++) {
-    const domain = window.location.hostname.split('.');
-    while (domain.length > 0) {
-      const cookieBase = encodeURIComponent(cookies[i].split(';')[0].split('=')[0]) + '=; expires=Thu, 01-Jan-1970 00:00:01 GMT; domain=' + domain.join('.') + ' ;path=';
-      if (cookieBase.split('=')[0] !== 'nhsuk-cookie-consent') {
-        const path = window.location.pathname.split('/');
-        // give all cookies same domain so they can be deleted
-        document.cookie = cookieBase + '/';
-        while (path.length > 0) {
-          document.cookie = cookieBase + path.join('/');
-          path.pop();
-        }
-        // remove 0th index
-        domain.shift();
-      } else {
-        break;
-      }
-    }
-  }
+  const cookies = getAllCookies();
+  const cookieNames = Object.keys(cookies);
+  // We want to delete all cookies except for our consent cookie
+  const cookieNamesToDelete = cookieNames.filter(name => name !== 'nhsuk-cookie-consent');
+
+  // generate a list of domains that the cookie could possibly belong to
+  const domainParts = window.location.hostname.split('.');
+  const domains = domainParts.map((domainPart, i) => { // eslint-disable-line arrow-body-style
+    return domainParts.slice(i).join('.');
+  });
+
+  // generate a list of paths that the cookie could possibly belong to
+  const pathParts = window.location.pathname.split('/');
+  const paths = pathParts.map((pathPart, i) => { // eslint-disable-line arrow-body-style
+    return pathParts.slice(0, i).join('/');
+  }).filter(path => !!path);
+
+  // Loop over every combination of path and domain for each cookie we want to delete
+  cookieNamesToDelete.forEach((cookieName) => {
+    paths.forEach((path) => {
+      domains.forEach((domain) => {
+        createCookie(cookieName, '', -1, path, domain);
+      });
+    });
+  });
 }
