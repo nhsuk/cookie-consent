@@ -23,7 +23,9 @@ export function createCookie(name, value, days, path, domain, secure) {
     cookieString += ';path=' + escape(path);
   }
 
-  if (domain) {
+  // In the cookie spec, domains must have a '.' so e.g `localhost` is not valid
+  // and should never be set as the domain.
+  if (domain && domain.indexOf('.') !== -1) {
     cookieString += ';domain=' + escape(domain);
   }
 
