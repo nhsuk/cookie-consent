@@ -9,7 +9,7 @@ function enableScript(script) {
   newScript.setAttribute('type', 'text/javascript');
   newScript.setAttribute('src', script.getAttribute('src'));
   parent.insertBefore(newScript, script);
-  script.remove();
+  parent.removeChild(script);
 }
 
 /*
@@ -25,7 +25,10 @@ function enableIframe(iframe) {
  */
 export function enableScriptsByCategory(category) {
   const scripts = document.querySelectorAll(`script[data-cookieconsent="${category}"]`);
-  scripts.forEach(script => enableScript(script));
+  // Do not use scripts.forEach due to poor browser support with NodeList.forEach
+  for (let i = 0; i < scripts.length; i++) {
+    enableScript(scripts[i]);
+  }
 }
 
 /**
@@ -33,5 +36,7 @@ export function enableScriptsByCategory(category) {
  */
 export function enableIframesByCategory(category) {
   const iframes = document.querySelectorAll(`iframe[data-cookieconsent="${category}"]`);
-  iframes.forEach(iframe => enableIframe(iframe));
+  for (let i = 0; i < iframes.length; i++) {
+    enableIframe(iframes[i]);
+  }
 }
