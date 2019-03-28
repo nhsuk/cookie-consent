@@ -3,10 +3,10 @@ const webpack = require('webpack');
 
 module.exports = {
   mode: 'development',
-  entry: './src/main.js',
+  entry: ['@babel/polyfill', './src/main.js'],
   output: {
     filename: 'main.js',
-    path: path.resolve(__dirname, 'dist')
+    path: path.resolve(__dirname, 'dist'),
   },
   module: {
     rules: [{
