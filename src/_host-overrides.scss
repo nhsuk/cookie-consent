@@ -1,0 +1,29 @@
+/*
+ * Some host sites do quite strange things with CSS. These overrides are here
+ * to address specific issues in those sites.
+ * Really, we should expect the host site to fix their css rules but as a
+ * convenience, we will add some overrides here.
+ */
+
+p {
+  margin: 0px;
+  padding: 0px;
+
+  font-size: 16px;
+  @include mq($from: tablet) {
+    font-size: 19px;
+  }
+}
+
+a {
+  text-decoration: underline;
+
+  font-size: 16px;
+  @include mq($from: tablet) {
+    font-size: 19px;
+  }
+}
+
+a:hover {
+  text-decoration: none;
+}
