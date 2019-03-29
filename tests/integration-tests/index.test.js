@@ -50,4 +50,9 @@ describe('Cookies are set after accepting statistics', () => {
     expect(cookieNames).toContainEqual('necessary');
     expect(cookieNames).toContainEqual('statistics');
   });
+
+  it('should load cookies from inline javascript', async () => {
+    const cookieNames = await getCookieNames();
+    expect(cookieNames).toContainEqual('inline-js');
+  });
 });

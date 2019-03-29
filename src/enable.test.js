@@ -17,6 +17,18 @@ test('enableScriptsByCategory enables javascript snippets', () => {
   expect(src).toBe('./abc.js');
 });
 
+test('enableScriptsByCategory enables inline javascript snippets', () => {
+  window.inlineJsEnabled = false;
+  document.body.innerHTML = `
+    <script data-cookieconsent="abc" type="text/plain">
+      window.inlineJsEnabled = true;
+    </script>
+  `;
+  enableScriptsByCategory('abc');
+
+  expect(window.inlineJsEnabled).toBe(true);
+});
+
 test('enableIframesByCategory is a function', () => {
   expect(enableScriptsByCategory).toBeInstanceOf(Function);
 });

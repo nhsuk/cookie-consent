@@ -7,7 +7,10 @@ function enableScript(script) {
   newScript.text = script.text;
   const parent = script.parentElement;
   newScript.setAttribute('type', 'text/javascript');
-  newScript.setAttribute('src', script.getAttribute('src'));
+  const src = script.getAttribute('src');
+  if (src) {
+    newScript.setAttribute('src', src);
+  }
   parent.insertBefore(newScript, script);
   parent.removeChild(script);
 }
