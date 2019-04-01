@@ -8,7 +8,11 @@
     margin: 0;
   }
 
-  a, a:focus, a:visited {
+  a, a:visited {
     color: white;
+  }
+  
+  a:hover, a:focus {
+    color: black;
   }
 }
