@@ -1,7 +1,7 @@
-import packageJson from '../package.json';
 import { getConsentSetting, setConsentSetting, onload } from './cookieconsent';
+import { version } from '../package.json';
 
-export const VERSION = packageJson.version;
+export const VERSION = version;
 
 export function getPreferences() {
   return getConsentSetting('preferences');
