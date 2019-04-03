@@ -14,15 +14,19 @@ module.exports = {
       exclude: /node_modules/,
       use: {
         loader: 'babel-loader',
-      }
+        options: {
+          presets: ['@babel/preset-env'],
+        },
+      },
     }, {
       test: /\.(html)$/,
       use: {
         loader: 'html-loader',
         options: {
           attrs: false,
-        }
-      }
+          interpolate: true,
+        },
+      },
     }, {
       test: /\.scss$/,
       use: [{
@@ -39,6 +43,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NO_BANNER': JSON.stringify(process.env.NO_BANNER),
+      'process.env.POLICY_URL': JSON.stringify(process.env.NO_BANNER),
     }),
   ],
 };

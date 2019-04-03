@@ -1,3 +1,4 @@
+/* eslint-disable no-else-return */
 import bannerHtml from './banner.html';
 import bannerCss from './style.scss';
 
@@ -20,6 +21,23 @@ export function removeFocusCookieConfirmation() {
   cookieConfirmationMessage.addEventListener('blur', (e) => {
     cookieConfirmationMessage.removeAttribute('tabIndex');
   });
+}
+
+export function getPolicyUrl() {
+  // get the policy url if defined in the script
+  const dataPolicyScript = document.currentScript;
+
+  const defaultURL = './our-policies/cookies-policy';
+
+  if (dataPolicyScript.getAttribute('data-policy-url')) {
+    // always use defined URL in base html first
+    return dataPolicyScript.getAttribute('data-policy-url');
+  } else if (process.env.POLICY_URL) {
+    // secondly, check for an env variable for the URL
+    return process.env.POLICY_URL;
+  }
+  // if other two are not set, us the nhs.uk default URL
+  return defaultURL;
 }
 
 /**

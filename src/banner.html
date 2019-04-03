@@ -3,15 +3,15 @@
     <div class="nhsuk-width-container">
       <p>We've put small files called cookies on your device to make the website better.</p>
       <ul>
-        <li id="nhsuk-cookie-banner__link_accept"><a href="#"><strong>I'm OK with cookies</strong></a></li>
-        <li id="nhsuk-cookie-banner__link"><a href="/our-policies/cookies-policy">Turn cookies on or off</a></li>
+        <li id="nhsuk-cookie-banner__link_accept"><a href="#" tabindex="1"><strong>I'm OK with cookies</strong></a></li>
+        <li id="nhsuk-cookie-banner__link"><a href="${require('./banner.js').getPolicyUrl()}" tabindex="2">Turn cookies on or off</a></li>
       </ul>
     </div>
   </div>
 
   <div class="nhsuk-success-banner" id="nhsuk-cookie-confirmation-banner" style="display:none;">
     <div class="nhsuk-width-container">
-      <p><span id="nhsuk-success-banner__message">Your cookie settings have been saved.</span> <a href="/our-policies/cookies-policy/">Turn cookies on or off</a></p>
+      <p>Your cookie settings have been saved. <a href="${require('./banner.js').getPolicyUrl()}" style="color: #ffffff;">Turn cookies on or off</a></p>
     </div>
   </div>
 </div>
