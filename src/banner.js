@@ -9,6 +9,19 @@ export function showCookieConfirmation() {
   document.getElementById('nhsuk-cookie-confirmation-banner').style.display = 'block';
 }
 
+export function addFocusCookieConfirmation() {
+  const cookieConfirmationMessage = document.getElementById('nhsuk-success-banner__message');
+  cookieConfirmationMessage.setAttribute('tabIndex', '-1');
+  cookieConfirmationMessage.focus();
+}
+
+export function removeFocusCookieConfirmation() {
+  const cookieConfirmationMessage = document.getElementById('nhsuk-success-banner__message');
+  cookieConfirmationMessage.addEventListener('blur', (e) => {
+    cookieConfirmationMessage.removeAttribute('tabIndex');
+  });
+}
+
 /**
  * Insert the cookie banner at the top of a page.
  * args:
@@ -26,6 +39,8 @@ export function insertCookieBanner(onAccept) {
     onAccept();
     hideCookieBanner();
     showCookieConfirmation();
+    addFocusCookieConfirmation();
+    removeFocusCookieConfirmation();
   });
   document.getElementById('nhsuk-cookie-banner__link').addEventListener('click', () => {
     onAccept();
