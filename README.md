@@ -84,15 +84,21 @@ Compiled javascript will be saved to dist/main.js
 
 A custom build-time `NO_BANNER` environment variable can be set to `true` which
 will produce a javascript file that won't show the cookie banner to users.
-Instead, consent will be implied.
+Instead, consent will be implied for all cookie types
 
-To build the "no-banner" version, run
-```sh
-NO_BANNER=true npm run build:production
+## Customising the banner URL
+
+By default, the banner will point to '/our-policies/cookies' for the policy page.
+This is to keep it consistant across the nhs.uk domains.
+
+It is possible to customise the URL to link to your own policy page. It can be done by
+adding a parameter where the cookie script is defined. E.g.
+
+```
+<script src="./cookie-consent.js" data-policy-url="URL HERE" type="text/javascript"></script>
 ```
 
-This mode will be used to coordinate a cross-platform release so that we can toggle
-the banner on in all systems at one point in time.
+It's also possible to set the POLICY_URL environment variable to a url of your choosing for the same effect.
 
 ## Tests
 
