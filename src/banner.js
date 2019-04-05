@@ -2,6 +2,10 @@
 import bannerHtml from './banner.html';
 import bannerCss from './style.scss';
 
+// N.B document.currentScript needs to be executed outside of any callbacks
+// https://developer.mozilla.org/en-US/docs/Web/API/Document/currentScript#Notes
+const dataPolicyScript = document.currentScript;
+
 export function hideCookieBanner() {
   document.getElementById('cookiebanner').style.display = 'none';
 }
@@ -24,11 +28,8 @@ export function removeFocusCookieConfirmation() {
 }
 
 export function getPolicyUrl() {
-  // get the policy url if defined in the script
-  const dataPolicyScript = document.currentScript;
-
+  // gets Url of policy page for links
   const defaultURL = './our-policies/cookies-policy';
-
   if (dataPolicyScript.getAttribute('data-policy-url')) {
     // always use defined URL in base html first
     return dataPolicyScript.getAttribute('data-policy-url');
