@@ -2,10 +2,6 @@
 import bannerHtml from './banner.html';
 import bannerCss from './style.scss';
 
-// N.B document.currentScript needs to be executed outside of any callbacks
-// https://developer.mozilla.org/en-US/docs/Web/API/Document/currentScript#Notes
-const dataPolicyScript = document.currentScript;
-
 export function hideCookieBanner() {
   document.getElementById('cookiebanner').style.display = 'none';
 }
@@ -25,20 +21,6 @@ export function removeFocusCookieConfirmation() {
   cookieConfirmationMessage.addEventListener('blur', (e) => {
     cookieConfirmationMessage.removeAttribute('tabIndex');
   });
-}
-
-export function getPolicyUrl() {
-  // gets Url of policy page for links
-  const defaultURL = './our-policies/cookies-policy';
-  if (dataPolicyScript.getAttribute('data-policy-url')) {
-    // always use defined URL in base html first
-    return dataPolicyScript.getAttribute('data-policy-url');
-  } else if (process.env.POLICY_URL) {
-    // secondly, check for an env variable for the URL
-    return process.env.POLICY_URL;
-  }
-  // if other two are not set, us the nhs.uk default URL
-  return defaultURL;
 }
 
 /**

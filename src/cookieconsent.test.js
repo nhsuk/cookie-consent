@@ -2,6 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 
 import cookieconsent, { getConsentSetting, setConsentSetting, onload } from './cookieconsent';
+import settings, { getNoBanner } from './settings';
 
 const COOKIE_NAME = cookieconsent.__get__('COOKIE_NAME');
 const COOKIE_VERSION = cookieconsent.__get__('COOKIE_VERSION');
@@ -160,45 +161,6 @@ describe('isValidVersion', () => {
   });
 });
 
-describe('getScriptSettings', () => {
-  const getScriptSettings = cookieconsent.__get__('getScriptSettings');
-
-  test('getScriptSettings gets the default settings when scriptTag is not set', () => {
-    expect(getScriptSettings()).toEqual({
-      nobanner: false,
-    });
-  });
-
-  test('getScriptSettings for <script></script>', () => {
-    const scriptTag = document.createElement('script');
-    cookieconsent.__Rewire__('scriptTag', scriptTag);
-    expect(getScriptSettings()).toEqual({
-      nobanner: false,
-    });
-    cookieconsent.__ResetDependency__('scriptTag');
-  });
-
-  test('getScriptSettings for <script data-nobanner="true"></script>', () => {
-    const scriptTag = document.createElement('script');
-    scriptTag.setAttribute('data-nobanner', 'true');
-    cookieconsent.__Rewire__('scriptTag', scriptTag);
-    expect(getScriptSettings()).toEqual({
-      nobanner: true,
-    });
-    cookieconsent.__ResetDependency__('scriptTag');
-  });
-
-  test('getScriptSettings for <script data-nobanner></script>', () => {
-    const scriptTag = document.createElement('script');
-    scriptTag.setAttribute('data-nobanner', '');
-    cookieconsent.__Rewire__('scriptTag', scriptTag);
-    expect(getScriptSettings()).toEqual({
-      nobanner: true,
-    });
-    cookieconsent.__ResetDependency__('scriptTag');
-  });
-});
-
 describe('getConsentSetting', () => {
   test('getConsentSetting gets consent value by key', () => {
     cookieconsent.__Rewire__('getConsent', () => ({
@@ -259,9 +221,9 @@ describe('shouldShowBanner', () => {
   const shouldShowBanner = cookieconsent.__get__('shouldShowBanner');
 
   test('shouldShowBanner returns false if nobanner is enabled', () => {
-    cookieconsent.__Rewire__('getScriptSettings', () => ({ nobanner: true }));
+    settings.__Rewire__('getScriptSettings', () => ({ nobanner: true }));
     expect(shouldShowBanner()).toBe(false);
-    cookieconsent.__ResetDependency__('getScriptSettings');
+    settings.__ResetDependency__('getScriptSettings');
   });
 
   test('shouldShowBanner returns true if no cookie is found', () => {

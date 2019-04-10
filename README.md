@@ -94,7 +94,7 @@ This is to keep it consistant across the nhs.uk domains.
 It is possible to customise the URL to link to your own policy page. It can be done by
 adding a parameter where the cookie script is defined. E.g.
 
-```
+```html
 <script src="./cookie-consent.js" data-policy-url="URL HERE" type="text/javascript"></script>
 ```
 
