@@ -1,10 +1,9 @@
-/* global expect, jest, beforeEach, afterEach */
+/* global expect, jest, afterEach */
 /* eslint-disable no-underscore-dangle */
 
 import settings, { getNoBanner, getPolicyUrl } from './settings';
 
 describe('getScriptSettings()', () => {
-
   afterEach(() => {
     settings.__ResetDependency__('scriptTag');
   });
