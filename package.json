@@ -16,6 +16,7 @@
     "test:unit": "jest --runInBand",
     "test:integration": "jest -c tests/integration-tests/jest.config.js",
     "testserver": "./node_modules/.bin/http-server",
+    "clear_jest": "jest --clearCache",
     "watch": "webpack --watch"
   },
   "repository": {
