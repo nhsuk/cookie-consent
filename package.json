@@ -14,7 +14,7 @@
     "start": "npm run watch & npm run testserver",
     "test": "npm run build && start-server-and-test testserver http://localhost:8080 test-all",
     "test-all": "npm-run-all --continue-on-error test:*",
-    "test:unit": "jest",
+    "test:unit": "jest --runInBand",
     "test:integration": "jest -c tests/integration-tests/jest.config.js",
     "testserver": "./node_modules/.bin/http-server",
     "watch": "webpack --watch"
