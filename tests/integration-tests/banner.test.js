@@ -55,7 +55,7 @@ describe('Remember cookie state', () => {
     await waitForHiddenBanner();
     await page.goto('http://localhost:8080/tests/example/');
     const banner = await page.evaluate(async () => document.querySelector('.nhsuk-cookie-banner'));
-    expect(banner).toBeTruthy();
+    expect(banner).toBe(null);
   });
 
   it('not accepting should show the banner again if revisited', async () => {
