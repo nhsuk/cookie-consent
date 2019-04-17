@@ -63,7 +63,7 @@ console.log(NHSCookieConsent.VERSION)
 
 - `getPreferences()`
 - `getStatistics()`
-- `getMarketing()` 
+- `getMarketing()`
 
 These methods get the status of the cookie consent for that type of cookie.  
 Returns a boolean.
@@ -72,6 +72,10 @@ Returns a boolean.
 
 This method gets the status of whether the user has positively interacted with the banner.
 It is primarily used to hide the banner once consent has been given.
+
+- `getConfirmation()`
+
+This method is used to turn the green confirmation banner on and off when a user changes their settings
 
 - `setPreferences(value)`
 - `setStatistics(value)`
@@ -87,6 +91,10 @@ This method is used to set the consent that the user has given.
 It should be set to true when the user has taken an action which gives their consent.
 It should not be used to make the banner appear again for a user, as that is handled by the
 expiry date of the cookie.
+
+- `setConfirmation(value)`
+
+This method is used to turn the green confirmation banner on and off when a user saves their settings
 
 ### Properties
 

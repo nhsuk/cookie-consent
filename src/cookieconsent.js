@@ -37,6 +37,7 @@ const defaultConsent = {
   statistics: true,
   marketing: false,
   consented: false,
+  confirmation: false,
 };
 /* eslint-enable sort-key */
 
@@ -183,6 +184,7 @@ export function onload() {
         statistics: true,
         marketing: true,
         consented: false,
+        confirmation: false,
       },
       COOKIE_TYPE.LONG);
     } else {

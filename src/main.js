@@ -19,6 +19,10 @@ export function getConsented() {
   return getConsentSetting('consented');
 }
 
+export function getConfirmation() {
+  return getConsentSetting('confirmation');
+}
+
 export function setPreferences(value) {
   setConsentSetting('preferences', value);
 }
@@ -33,6 +37,10 @@ export function setMarketing(value) {
 
 export function setConsented(value) {
   setConsentSetting('consented', value);
+}
+
+export function setConfirmation(value) {
+  setConsentSetting('confirmation', value);
 }
 
 /**
@@ -50,11 +58,13 @@ window.NHSCookieConsent = {
   getStatistics,
   getMarketing,
   getConsented,
+  getConfirmation,
 
   setPreferences,
   setStatistics,
   setMarketing,
   setConsented,
+  setConfirmation,
 };
 /* eslint-enable sort-keys */
 
