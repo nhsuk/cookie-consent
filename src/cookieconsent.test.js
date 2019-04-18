@@ -311,20 +311,18 @@ describe('onload', () => {
 
   test('enables the appropriate scripts', () => {
     const spy = jest.fn();
-    cookieconsent.__Rewire__('enableScriptsByCategory', spy);
+    cookieconsent.__Rewire__('enableScriptsByCategories', spy);
     onload();
-    expect(spy).toHaveBeenCalledWith('preferences');
-    expect(spy).not.toHaveBeenCalledWith('marketing');
-    cookieconsent.__ResetDependency__('enableScriptsByCategory');
+    expect(spy).toHaveBeenCalledWith(['preferences', 'statistics']);
+    cookieconsent.__ResetDependency__('enableScriptsByCategories');
   });
 
   test('enables the appropriate iframes', () => {
     const spy = jest.fn();
-    cookieconsent.__Rewire__('enableIframesByCategory', spy);
+    cookieconsent.__Rewire__('enableIframesByCategories', spy);
     onload();
-    expect(spy).toHaveBeenCalledWith('preferences');
-    expect(spy).not.toHaveBeenCalledWith('marketing');
-    cookieconsent.__ResetDependency__('enableIframesByCategory');
+    expect(spy).toHaveBeenCalledWith(['preferences', 'statistics']);
+    cookieconsent.__ResetDependency__('enableIframesByCategories');
   });
 });
 
