@@ -66,11 +66,11 @@ describe('Remember cookie state', () => {
     expect(banner).not.toBe(null);
   });
 
-  it('going to "change cookie settings" should not show the banner again if revisited', async () => {
+  it('going to "change cookie settings" should show the banner again, as consent not given', async () => {
     await page.click('#nhsuk-cookie-banner__link');
     await page.goto('http://localhost:8080/tests/example/');
     const banner = await page.evaluate(async () => document.querySelector('.nhsuk-cookie-banner'));
-    expect(banner).toBe(null);
+    expect(banner).not.toBe(null);
   });
 });
 
