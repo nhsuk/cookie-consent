@@ -1,6 +1,6 @@
 import { getCookie as getRawCookie, createCookie as createRawCookie, deleteCookies } from './cookies';
 import { insertCookieBanner } from './banner';
-import { enableScriptsByCategory, enableIframesByCategory } from './enable';
+import { enableScriptsByCategories, enableIframesByCategories } from './enable';
 
 /**
  * If cookie rules/regulations change and the cookie itself needs to change,
@@ -219,11 +219,10 @@ export function onload() {
     setConsent(defaultConsent, COOKIE_TYPE.SESSION);
   }
 
-  // For each type, check the consent setting and enable the appropriate scripts and iframes
-  ['statistics', 'preferences', 'marketing'].forEach((cookieCategory) => {
-    if (getConsentSetting(cookieCategory) === true) {
-      enableScriptsByCategory(cookieCategory);
-      enableIframesByCategory(cookieCategory);
-    }
-  });
+  const allCategories = ['preferences', 'statistics', 'marketing'];
+  // Filter out categories that do not have user consent
+  const allowedCategories = allCategories.filter(category => getConsentSetting(category) === true);
+
+  enableScriptsByCategories(allowedCategories);
+  enableIframesByCategories(allowedCategories);
 }

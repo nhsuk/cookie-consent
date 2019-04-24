@@ -23,23 +23,46 @@ function enableIframe(iframe) {
   iframe.setAttribute('src', src);
 }
 
+/*
+ * Should a script or iframe be enabled, given it has a cookieconsent attribute
+ * value `cookieConsentAttribute` and the allowed categories are `allowedCategories`
+ * Returns true or false
+ */
+function shouldEnable(allowedCategories, cookieConsentAttribute) {
+  const cookieConsentTypes = cookieConsentAttribute.split(',');
+  for (let i = 0; i < cookieConsentTypes.length; i++) {
+    if (allowedCategories.indexOf(cookieConsentTypes[i]) === -1) {
+      // If *any* of the cookieConsentTypes are not in the allowedCategories array, return false.
+      return false;
+    }
+  }
+  return true;
+}
+
 /**
  * Enable all scripts for a given data-cookieconsent category
  */
-export function enableScriptsByCategory(category) {
-  const scripts = document.querySelectorAll(`script[data-cookieconsent="${category}"]`);
+export function enableScriptsByCategories(categories) {
+  const scripts = document.querySelectorAll('script[data-cookieconsent]');
   // Do not use scripts.forEach due to poor browser support with NodeList.forEach
   for (let i = 0; i < scripts.length; i++) {
-    enableScript(scripts[i]);
+    const cookieconsent = scripts[i].getAttribute('data-cookieconsent');
+    if (shouldEnable(categories, cookieconsent)) {
+      enableScript(scripts[i]);
+    }
   }
 }
 
 /**
  * Enable all iframes for a given data-cookieconsent category
  */
-export function enableIframesByCategory(category) {
-  const iframes = document.querySelectorAll(`iframe[data-cookieconsent="${category}"]`);
+export function enableIframesByCategories(categories) {
+  const iframes = document.querySelectorAll('iframe[data-cookieconsent]');
+  // Do not use iframes.forEach due to poor browser support with NodeList.forEach
   for (let i = 0; i < iframes.length; i++) {
-    enableIframe(iframes[i]);
+    const cookieconsent = iframes[i].getAttribute('data-cookieconsent');
+    if (shouldEnable(categories, cookieconsent)) {
+      enableIframe(iframes[i]);
+    }
   }
 }
