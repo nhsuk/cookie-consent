@@ -43,7 +43,7 @@ module.exports = {
   plugins: [
     new webpack.DefinePlugin({
       'process.env.NO_BANNER': JSON.stringify(process.env.NO_BANNER),
-      'process.env.POLICY_URL': JSON.stringify(process.env.NO_BANNER),
+      'process.env.POLICY_URL': JSON.stringify(process.env.POLICY_URL),
     }),
   ],
 };
