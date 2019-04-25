@@ -14,7 +14,7 @@
     "start": "npm run watch & npm run testserver",
     "test": "npm run build && start-server-and-test testserver http://localhost:8080 test-all",
     "test-all": "npm-run-all --continue-on-error test:*",
-    "test:unit": "jest",
+    "test:unit": "jest --runInBand",
     "test:integration": "jest -c tests/integration-tests/jest.config.js",
     "testserver": "./node_modules/.bin/http-server",
     "watch": "webpack --watch"
@@ -44,7 +44,9 @@
     "html-loader": "^0.5.5",
     "http-server": "^0.11.1",
     "jest": "^24.5.0",
+    "jest-environment-jsdom": "^24.5.0",
     "jest-puppeteer": "^4.1.0",
+    "jsdom": "^11.12.0",
     "nhsuk-frontend": "^1.0.1",
     "node-sass": "^4.11.0",
     "npm-run-all": "^4.1.5",
