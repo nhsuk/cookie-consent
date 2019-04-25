@@ -17,21 +17,37 @@ Include the cookie javascript in your page
 <script src="/path/to/javascript.js" type="text/javascript"></script>
 ```
 
-If you want to prevent the cookie banner from showing automatically, add a
-`data-nobanner` attribute to the script tag
+Any scripts that use cookies must be given a type="text/plain" attribute to stop the
+javascript from running, and a data-cookieconsent attribute so that cookie-consent knows
+which scripts to enable based on the user's consent settings.
+
+Possible data-cookieconsent values are `preferences`, `statistics` and `marketing`.
+
 ```html
-<script src="/path/to/javascript.js" data-nobanner type="text/javascript"></script>
+<script src="/path/to/js-that-uses-cookies.js" data-cookieconsent="marketing" type="text/plain"></script>
+```
+
+### Script Options
+
+#### `data-no-banner`
+
+If you want to prevent the cookie banner from showing automatically, add a
+`data-nobanner` attribute to the script tag.
+
+```html
+<script src="./cookie-consent.js" data-nobanner type="text/javascript"></script>
 ```
 
 If you disable the banner, you will have to write your own logic and interact with
 the javascript API to set user cookie consent.
 
-Any scripts that use cookies must be given a type="text/plain" attribute to stop the
-javascript from running, and a data-cookieconsent attribute so that cookie-consent knows
-which scripts to enable based on the user's consent settings.
+#### `data-policy-url`
+
+By default, the cookie policy link takes users to `/our-policies/cookies/`.
+If you need the link to use a different url, you can set the `data-policy-url` attribute.
 
 ```html
-<script src="/path/to/js-that-uses-cookies.js" data-cookieconsent="marketing" type="text/plain"></script>
+<script src="./cookie-consent.js" data-policy-url="/custom/policy/url" type="text/javascript"></script>
 ```
 
 ## Javascript API
@@ -80,25 +96,27 @@ npm run build:production
 
 Compiled javascript will be saved to dist/main.js
 
-## NO_BANNER environment variable
+### Environment variables
 
-A custom build-time `NO_BANNER` environment variable can be set to `true` which
-will produce a javascript file that won't show the cookie banner to users.
-Instead, consent will be implied for all cookie types
+Environment variables can be used at compile-time to change the cookie script behaviour.
 
-## Customising the banner URL
+#### `NO_BANNER`
 
-By default, the banner will point to '/our-policies/cookies' for the policy page.
-This is to keep it consistant across the nhs.uk domains.
+Set to `true` to produce a javascript file that doesn't show the cookie banner.
+Instead consent will be implied for all cookie types.
 
-It is possible to customise the URL to link to your own policy page. It can be done by
-adding a parameter where the cookie script is defined. E.g.
-
-```html
-<script src="./cookie-consent.js" data-policy-url="URL HERE" type="text/javascript"></script>
+```sh
+NO_BANNER=true npm run build:production
 ```
 
-It's also possible to set the POLICY_URL environment variable to a url of your choosing for the same effect.
+#### `POLICY_URL`
+
+By default, the cookie policy link takes users to `/our-policies/cookies/`.
+If you need the link to use a different url, you can set this variable
+
+```sh
+POLICY_URL=/custom/policy/url/ npm run build:production
+```
 
 ## Tests
 
