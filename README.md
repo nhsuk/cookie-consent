@@ -61,20 +61,32 @@ console.log(NHSCookieConsent.VERSION)
 
 ### Methods
 
-`get...` Gets the status of the cookie consent for that type of cookie.  
-Returns a boolean
-
 - `getPreferences()`
 - `getStatistics()`
-- `getMarketing()`
+- `getMarketing()` 
 
-`set...` Sets the status of the cookie consent for that type of cookie.  
-set methods should only be used in response to a user interaction accepting that type of cookie.  
-Expects a boolean `value` argument.
+These methods get the status of the cookie consent for that type of cookie.  
+Returns a boolean.
+
+- `getConsented()`
+
+This method gets the status of whether the user has positively interacted with the banner.
+It is primarily used to hide the banner once consent has been given.
 
 - `setPreferences(value)`
 - `setStatistics(value)`
 - `setMarketing(value)`
+
+These methods set the status of the cookie consent for that type of cookie.  
+set methods should only be used in response to a user interaction accepting that type of cookie.  
+Expects a boolean `value` argument.
+
+- `setConsented(value)`
+
+This method is used to set the consent that the user has given.
+It should be set to true when the user has taken an action which gives their consent.
+It should not be used to make the banner appear again for a user, as that is handled by the
+expiry date of the cookie.
 
 ### Properties
 
