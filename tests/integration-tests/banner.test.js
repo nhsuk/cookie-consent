@@ -39,7 +39,7 @@ describe('Banner is usable', () => {
 
   it('clicking "change cookie settings" should take the user to another page', async () => {
     await page.click('#nhsuk-cookie-banner__link');
-    expect(page.url()).toEqual('http://localhost:8080/tests/example/our-policies/cookies-policy');
+    expect(page.url()).toEqual('http://localhost:8080/our-policies/cookies-policy');
   });
 });
 

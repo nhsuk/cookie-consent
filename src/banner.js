@@ -1,4 +1,3 @@
-/* eslint-disable no-else-return */
 import bannerHtml from './banner.html';
 import bannerCss from './style.scss';
 

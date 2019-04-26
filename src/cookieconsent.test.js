@@ -220,12 +220,6 @@ describe('setConsentSetting', () => {
 describe('shouldShowBanner', () => {
   const shouldShowBanner = cookieconsent.__get__('shouldShowBanner');
 
-  test('shouldShowBanner returns false if nobanner is enabled', () => {
-    settings.__Rewire__('getScriptSettings', () => ({ nobanner: true }));
-    expect(shouldShowBanner()).toBe(false);
-    settings.__ResetDependency__('getScriptSettings');
-  });
-
   test('shouldShowBanner returns true if no cookie is found', () => {
     // tests are run in new browser context, no cookie is set yet.
     expect(shouldShowBanner()).toBe(true);
