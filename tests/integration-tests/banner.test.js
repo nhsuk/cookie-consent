@@ -93,6 +93,6 @@ describe('custom banner url link', () => {
     await waitForVisibleBanner();
     // give the banner a chance to show up
     await page.click('#nhsuk-cookie-banner__link');
-    expect(page.url()).toEqual('http://localhost:8080/tests/example/mytest');
+    expect(page.url()).toEqual('http://localhost:8080/mytest');
   });
 });
