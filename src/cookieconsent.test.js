@@ -2,7 +2,6 @@
 /* eslint-disable no-underscore-dangle */
 
 import cookieconsent, { getConsentSetting, setConsentSetting, onload } from './cookieconsent';
-import settings from './settings';
 
 const COOKIE_NAME = cookieconsent.__get__('COOKIE_NAME');
 const COOKIE_VERSION = cookieconsent.__get__('COOKIE_VERSION');

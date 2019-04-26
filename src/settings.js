@@ -4,7 +4,6 @@ const scriptTag = document.currentScript;
 
 // get properties from the scriptTag for the policy URL
 export function getPolicyUrl() {
-
   const defaults = '/our-policies/cookies-policy';
   let dataPolicyUrl = '';
 
