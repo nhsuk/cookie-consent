@@ -11,7 +11,9 @@ export function getPolicyUrl() {
 
   if (!scriptTag) {
     return dataPolicyUrl;
-  } else if (scriptTag.getAttribute('data-policy-url')) {
+  }
+
+  if (scriptTag.getAttribute('data-policy-url')) {
     dataPolicyUrl = scriptTag.getAttribute('data-policy-url');
   }
 
