@@ -50,7 +50,7 @@ describe('testing getPolicyUrl with environment variables and custom tags', () =
     process.env = { ...OLD_ENV };
     process.env.POLICY_URL = 'http://www.example.com/';
     expect(getPolicyUrl()).toEqual('http://www.example.com/');
-    delete process.env.POLICY_URL;
+    process.env = OLD_ENV;
   });
 
   test('getPolicyUrl returns custom tag when one is set', () => {
