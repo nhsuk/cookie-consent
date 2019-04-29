@@ -40,20 +40,29 @@ const defaultConsent = {
 /* eslint-enable sort-key */
 
 /**
- * Get the consent cookie and parse it into an object
- */
-function getCookie() {
-  const rawCookie = getRawCookie(COOKIE_NAME);
-  return JSON.parse(rawCookie);
-}
-
-/**
  * Set the consent cookie, turning the value object into a string
  * Creates a new cookie or replaces a cookie if one exists with the same name
  */
 function createCookie(value, days, path, domain, secure) {
   const stringValue = JSON.stringify(value);
   return createRawCookie(COOKIE_NAME, stringValue, days, path, domain, secure);
+}
+
+/**
+ * Get the consent cookie and parse it into an object
+ */
+function getCookie() {
+  const rawCookie = getRawCookie(COOKIE_NAME);
+  const cookieValue = defaultConsent + COOKIE_VERSION;
+  let parsedCookie = '';
+  try {
+    parsedCookie = JSON.parse(rawCookie);
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.warn('Malformed cookie value, resetting the cookie');
+    createCookie(cookieValue, 365, '/');
+  }
+  return parsedCookie;
 }
 
 /**
