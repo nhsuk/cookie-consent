@@ -1,6 +1,7 @@
 import { getCookie as getRawCookie, createCookie as createRawCookie, deleteCookies } from './cookies';
 import { insertCookieBanner } from './banner';
 import { enableScriptsByCategories, enableIframesByCategories } from './enable';
+import { getNoBanner } from './settings';
 
 /**
  * If cookie rules/regulations change and the cookie itself needs to change,
@@ -123,30 +124,6 @@ function acceptConsent() {
   });
 }
 
-// N.B document.currentScript needs to be executed outside of any callbacks
-// https://developer.mozilla.org/en-US/docs/Web/API/Document/currentScript#Notes
-const scriptTag = document.currentScript;
-
-/**
- * Get properties from the script tag that is including this javascript
- */
-function getScriptSettings() {
-  const defaults = {
-    nobanner: false,
-  };
-  if (!scriptTag) {
-    return defaults;
-  }
-
-  const dataNobanner = scriptTag.getAttribute('data-nobanner');
-
-  // overwrite the default settings with attributes found on the <script> tag
-  return {
-    ...defaults,
-    nobanner: dataNobanner === 'true' || dataNobanner === '',
-  };
-}
-
 export function getConsentSetting(key) {
   const cookie = getConsent();
   // double ! to convert truthy/falsy values into true/false
@@ -167,8 +144,7 @@ export function setConsentSetting(key, value) {
  */
 function shouldShowBanner() {
   // If the `nobanner` setting is used, never show the banner.
-  const settings = getScriptSettings();
-  if (settings.nobanner) {
+  if (getNoBanner()) {
     return false;
   }
 

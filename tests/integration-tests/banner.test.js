@@ -38,10 +38,8 @@ describe('Banner is usable', () => {
   });
 
   it('clicking "change cookie settings" should take the user to another page', async () => {
-    await Promise.all([
-      page.waitForRequest('http://localhost:8080/our-policies/cookies-policy'),
-      page.click('#nhsuk-cookie-banner__link'),
-    ]);
+    await page.click('#nhsuk-cookie-banner__link');
+    expect(page.url()).toEqual('http://localhost:8080/our-policies/cookies-policy');
   });
 });
 
@@ -85,5 +83,16 @@ describe('nobanner mode', () => {
     page.waitFor(250);
     const banner = await page.evaluate(async () => document.querySelector('.nhsuk-cookie-banner'));
     expect(banner).toBe(null);
+  });
+});
+
+describe('custom banner url link', () => {
+  it('links to custom url', async () => {
+    await clearAllCookies();
+    await page.goto('http://localhost:8080/tests/example/custom-link.html');
+    await waitForVisibleBanner();
+    // give the banner a chance to show up
+    await page.click('#nhsuk-cookie-banner__link');
+    expect(page.url()).toEqual('http://localhost:8080/mytest');
   });
 });
