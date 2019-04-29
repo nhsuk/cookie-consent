@@ -4,19 +4,15 @@ const scriptTag = document.currentScript;
 
 // get properties from the scriptTag for the policy URL
 export function getPolicyUrl() {
-  const defaults = '/our-policies/cookies-policy';
-  let dataPolicyUrl = '';
-
-  if (!scriptTag) {
-    return defaults;
+  let dataPolicyUrl = '/our-policies/cookies-policy';
+  if (process.env.POLICY_URL) {
+    dataPolicyUrl = process.env.POLICY_URL;
   }
 
-  if (scriptTag.getAttribute('data-policy-url')) {
+  if (!scriptTag) {
+    return dataPolicyUrl;
+  } else if (scriptTag.getAttribute('data-policy-url')) {
     dataPolicyUrl = scriptTag.getAttribute('data-policy-url');
-  } else if (process.env.POLICY_URL) {
-    dataPolicyUrl = process.env.POLICY_URL;
-  } else {
-    dataPolicyUrl = defaults;
   }
 
   return dataPolicyUrl;
