@@ -319,6 +319,7 @@ describe('NO_BANNER mode', () => {
     cookieconsent.__Rewire__('setConsent', spy);
     onload();
     expect(spy).toHaveBeenCalledWith({
+      confirmation: false,
       consented: false,
       marketing: true,
       necessary: true,
