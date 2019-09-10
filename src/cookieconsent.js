@@ -8,7 +8,7 @@ import { getNoBanner } from './settings';
  * bump this version up afterwards. It will then give the user the banner again
  * to consent to the new rules
  */
-export const COOKIE_VERSION = 1;
+export const COOKIE_VERSION = 2;
 const COOKIE_NAME = 'nhsuk-cookie-consent';
 
 /**
@@ -33,8 +33,8 @@ const NO_BANNER = (process.env.NO_BANNER === 'true');
 // Pre-defined cookie types in line with cookiebot categories
 const defaultConsent = {
   necessary: true,
-  preferences: true,
-  statistics: true,
+  preferences: false,
+  statistics: false,
   marketing: false,
   consented: false,
 };
