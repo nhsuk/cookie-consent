@@ -37,18 +37,30 @@ describe('Cookies are set after accepting statistics', () => {
     await page.waitForSelector('.nhsuk-cookie-banner', { hidden: true });
   };
 
+  const acceptStatistics = async () => {
+    /**
+      * Use the NHSCookieConsent API to set statistics to true,
+      * then reload to make the preference change take effect.
+      */
+    await page.evaluate(() => {
+      NHSCookieConsent.setStatistics(true);
+    });
+    await page.reload({waitUntil: ['networkidle0']});
+  };
+
   beforeAll(async () => {
     await clearAllCookies();
     await page.goto('http://localhost:8080/tests/example/');
     await waitForVisibleModal();
     await page.click('#nhsuk-cookie-banner__link_accept');
     await waitForHiddenModal();
+    await acceptStatistics();
   });
 
   it('should load accepted cookies', async () => {
     const cookieNames = await getCookieNames();
     expect(cookieNames).toContainEqual('necessary');
-    expect(cookieNames).not.toContainEqual('statistics');
+    expect(cookieNames).toContainEqual('statistics');
   });
 
   it('should load cookies from inline javascript', async () => {
