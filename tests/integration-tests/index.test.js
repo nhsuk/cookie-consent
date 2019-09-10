@@ -48,7 +48,7 @@ describe('Cookies are set after accepting statistics', () => {
   it('should load accepted cookies', async () => {
     const cookieNames = await getCookieNames();
     expect(cookieNames).toContainEqual('necessary');
-    expect(cookieNames).toContainEqual('statistics');
+    expect(cookieNames).not.toContainEqual('statistics');
   });
 
   it('should load cookies from inline javascript', async () => {
