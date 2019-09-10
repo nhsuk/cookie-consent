@@ -282,22 +282,18 @@ describe('onload', () => {
 
   test('enables the appropriate scripts', () => {
     const spy = jest.fn();
-    setConsentSetting('preferences', true);
     cookieconsent.__Rewire__('enableScriptsByCategories', spy);
     onload();
-    expect(spy).toHaveBeenCalledWith(['preferences']);
+    expect(spy).toHaveBeenCalledWith([]);
     cookieconsent.__ResetDependency__('enableScriptsByCategories');
-    setConsentSetting('preferences', false);
   });
 
   test('enables the appropriate iframes', () => {
     const spy = jest.fn();
-    setConsentSetting('statistics', true);
     cookieconsent.__Rewire__('enableIframesByCategories', spy);
     onload();
-    expect(spy).toHaveBeenCalledWith(['statistics']);
+    expect(spy).toHaveBeenCalledWith([]);
     cookieconsent.__ResetDependency__('enableIframesByCategories');
-    setConsentSetting('statistics', false);
   });
 });
 
