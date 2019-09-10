@@ -17,7 +17,7 @@ export function addFocusCookieConfirmation() {
 
 export function removeFocusCookieConfirmation() {
   const cookieConfirmationMessage = document.getElementById('nhsuk-success-banner__message');
-  cookieConfirmationMessage.addEventListener('blur', (e) => {
+  cookieConfirmationMessage.addEventListener('blur', () => {
     cookieConfirmationMessage.removeAttribute('tabIndex');
   });
 }
