@@ -19,7 +19,7 @@ describe('Cookies set on first load', () => {
 
   it('should not load unecessary cookeis', async () => {
     const cookieNames = await getCookieNames();
-    expect(cookieNames).not.toContainEqual('unecessary');
+    expect(cookieNames).not.toContainEqual('statistics');
   });
 
   it('one cookie should be the consent preference', async () => {
