@@ -295,6 +295,22 @@ describe('onload', () => {
     expect(spy).toHaveBeenCalledWith([]);
     cookieconsent.__ResetDependency__('enableIframesByCategories');
   });
+
+  test('removes cookies if consent version is out-of-date', () => {
+    const spy = jest.fn();
+    cookieconsent.__Rewire__('deleteCookies', spy);
+    cookieconsent.__Rewire__('isValidVersion', () => false);
+    onload();
+    expect(spy).toHaveBeenCalled();
+  });
+
+  test('does not remove cookies if no current cookie version is found', () => {
+    const spy = jest.fn();
+    cookieconsent.__Rewire__('deleteCookies', spy);
+    cookieconsent.__Rewire__('isValidVersion', () => null);
+    onload();
+    expect(spy).not.toHaveBeenCalled();
+  });
 });
 
 describe('NO_BANNER mode', () => {

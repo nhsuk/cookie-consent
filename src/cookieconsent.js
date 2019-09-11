@@ -107,13 +107,24 @@ function setConsent(consent, mode = COOKIE_TYPE.LONG) {
   createCookie(cookieValue, days, path);
 }
 
+/**
+ * Get the cookie version that is currently set on the browser.
+ * Returns integer, or null if no cookie is set.
+ */
 function getUserCookieVersion() {
   const cookie = getCookie();
-  return cookie.version;
+  return cookie === null ? null : cookie.version;
 }
 
+/**
+ * Is the cookie that is currently set on the browser valid.
+ * a "valid" cookie is one which has the latest COOKIE_VERSION number.
+ * Returns true/false if a cookie is found on the browser.
+ * Returns null if no cookie is found.
+ */
 function isValidVersion() {
-  return getUserCookieVersion() >= COOKIE_VERSION;
+  const currentVersion = getUserCookieVersion();
+  return currentVersion === null ? null : currentVersion >= COOKIE_VERSION;
 }
 
 // If consent is given, change the value of the cookie
@@ -190,8 +201,13 @@ export function onload() {
     }
   }
 
+  // if a cookie is set but it's invalid, clear all cookies.
+  if (isValidVersion(COOKIE_VERSION) === false) {
+    deleteCookies();
+  }
+
   // If there isn't a valid user cookie, create one with default consent
-  if (getCookie() === null || !isValidVersion(COOKIE_VERSION)) {
+  if (isValidVersion() !== true) {
     setConsent(defaultConsent, COOKIE_TYPE.SESSION);
   }
 
