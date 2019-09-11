@@ -7,7 +7,7 @@ export function createCookie(name, value, days, path, domain, secure) {
   if (days) {
     const date = new Date();
     date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-    expires = date.toGMTString();
+    expires = date.toUTCString();
   } else {
     expires = '';
   }
@@ -84,10 +84,11 @@ export function deleteCookies() {
   });
 
   // generate a list of paths that the cookie could possibly belong to
-  const pathParts = window.location.pathname.split('/');
+  const pathname = window.location.pathname.replace(/\/$/, ''); // strip trailing slash
+  const pathParts = pathname.split('/');
   const paths = pathParts.map((pathPart, i) => { // eslint-disable-line arrow-body-style
-    return pathParts.slice(0, i).join('/');
-  }).filter(path => !!path);
+    return pathParts.slice(0, i + 1).join('/') || '/';
+  });
 
   // Loop over every combination of path and domain for each cookie we want to delete
   cookieNamesToDelete.forEach((cookieName) => {
