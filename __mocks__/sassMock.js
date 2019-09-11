@@ -4,4 +4,4 @@
 
 module.exports = {
   toString: () => '.body { color: blue; }',
-}
+};
