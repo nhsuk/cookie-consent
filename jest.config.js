@@ -3,8 +3,8 @@ const jsdom = require('jsdom');
 module.exports = {
   displayName: 'Unit tests',
   moduleNameMapper: {
-    '\\.(scss)$': '<rootDir>/__mocks__/sassMock.js',
     '\\.(html)$': '<rootDir>/__mocks__/htmlMock.js',
+    '\\.(scss)$': '<rootDir>/__mocks__/sassMock.js',
   },
   rootDir: '.',
   testEnvironment: './cookie-test-environment.js',
