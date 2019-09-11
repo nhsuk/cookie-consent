@@ -1,4 +1,4 @@
-/* global page, expect, beforeAll */
+/* global page, expect, beforeEach */
 
 import { clearAllCookies } from './util';
 
@@ -12,29 +12,31 @@ const getCookieNames = async () => {
  * @param {int} version The version number to use.
  */
 const setFullConsentWithVersion = async (version) => {
+  /* eslint-disable sort-keys */
   const cookieValue = {
     necessary: true,
     preferences: true,
     statistics: true,
     marketing: true,
     consented: true,
-    version: version,
+    version,
   };
-  const cookieValueString = encodeURIComponent(JSON.stringify(cookieValue))
+  /* eslint-enable */
+  const cookieValueString = encodeURIComponent(JSON.stringify(cookieValue));
   await page.setCookie({
     name: 'nhsuk-cookie-consent',
-    value: cookieValueString,
     path: '/',
+    value: cookieValueString,
   });
-}
+};
 
 const setTestCookie = async () => {
   await page.setCookie({
     name: 'testcookie',
-    value: 'test',
     path: '/',
+    value: 'test',
   });
-}
+};
 
 describe('User has out-of-date consent', () => {
   beforeEach(async () => {
@@ -51,9 +53,7 @@ describe('User has out-of-date consent', () => {
   });
 
   it('doesn\'t respect previous cookie settings', async () => {
-    const statistics = await page.evaluate(async () => {
-      return NHSCookieConsent.getStatistics();
-    });
+    const statistics = await page.evaluate(async () => window.NHSCookieConsent.getStatistics());
     expect(statistics).toBe(false);
   });
 
@@ -62,7 +62,6 @@ describe('User has out-of-date consent', () => {
     expect(cookieNames).not.toContainEqual('testcookie');
   });
 });
-
 
 describe('User has in-date consent', () => {
   beforeEach(async () => {
@@ -78,9 +77,7 @@ describe('User has in-date consent', () => {
   });
 
   it('respects previous cookie settings', async () => {
-    const statistics = await page.evaluate(async () => {
-      return NHSCookieConsent.getStatistics();
-    });
+    const statistics = await page.evaluate(async () => window.NHSCookieConsent.getStatistics());
     expect(statistics).toBe(true);
   });
 

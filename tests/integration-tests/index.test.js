@@ -43,9 +43,9 @@ describe('Cookies are set after accepting statistics', () => {
       * then reload to make the preference change take effect.
       */
     await page.evaluate(() => {
-      NHSCookieConsent.setStatistics(true);
+      window.NHSCookieConsent.setStatistics(true);
     });
-    await page.reload({waitUntil: ['networkidle0']});
+    await page.reload({ waitUntil: ['networkidle0'] });
   };
 
   beforeAll(async () => {
