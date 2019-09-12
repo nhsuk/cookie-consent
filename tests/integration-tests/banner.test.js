@@ -18,7 +18,7 @@ describe('Banner is usable', () => {
   });
 
   it('should display on first page load', async () => {
-    await expect(page).toMatch("We've put small files called cookies on your device");
+    await expect(page).toMatch("We've put some small files called cookies on your device");
   });
 
   it('clicking the accept button should hide banner', async () => {
