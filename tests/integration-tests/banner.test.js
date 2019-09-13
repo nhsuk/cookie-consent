@@ -18,7 +18,7 @@ describe('Banner is usable', () => {
   });
 
   it('should display on first page load', async () => {
-    await expect(page).toMatch("We've put small files called cookies on your device");
+    await expect(page).toMatch("We've put some small files called cookies on your device");
   });
 
   it('clicking the accept button should hide banner', async () => {
@@ -93,6 +93,6 @@ describe('custom banner url link', () => {
     await waitForVisibleBanner();
     // give the banner a chance to show up
     await page.click('#nhsuk-cookie-banner__link');
-    expect(page.url()).toEqual('http://localhost:8080/mytest');
+    expect(page.url()).toEqual('http://localhost:8080/tests/example/cookie-settings.html');
   });
 });

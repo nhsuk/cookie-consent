@@ -7,7 +7,7 @@
 
     <link rel="shortcut icon" href="">
 
-    <title>Cookie Consent test page</title>
+    <title>Cookie Consent settings form</title>
 
     <link rel="stylesheet" href="./css/style.css">
 
@@ -26,7 +26,36 @@
   </head>
   <body>
     <main class="main">
-      <h1>Cookies:</h1>
+      <h1>Cookie Settings:</h1>
+      <div>
+        <p>Necessary: <input type="checkbox" id="necessary" checked disabled/></p>
+        <p>Preferences: <input type="checkbox" id="preferences" /></p>
+        <p>Statistics: <input type="checkbox" id="statistics" /></p>
+        <p>Marketing: <input type="checkbox" id="marketing" /></p>
+
+        <script>
+          var preferences = document.getElementById("preferences");
+          var statistics = document.getElementById("statistics");
+          var marketing = document.getElementById("marketing");
+
+          preferences.checked = NHSCookieConsent.getPreferences();
+          statistics.checked = NHSCookieConsent.getStatistics();
+          marketing.checked = NHSCookieConsent.getMarketing();
+
+          function updateSettings() {
+            NHSCookieConsent.setPreferences(preferences.checked);
+            NHSCookieConsent.setStatistics(statistics.checked);
+            NHSCookieConsent.setMarketing(marketing.checked);
+            // reload
+            location = location;
+          }
+        </script>
+
+        <input type="submit" onclick="updateSettings();">
+      </div>
+
+      <hr/>
+
       <button id="cookie-list-refresh">Refresh</button>
       <div id="cookie-list"></div>
 
