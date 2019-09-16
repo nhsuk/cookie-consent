@@ -37,7 +37,7 @@ describe('Banner is usable', () => {
     expect(page.url()).toEqual('http://localhost:8080/tests/example/');
   });
 
-  it('clicking "change cookie settings" should take the user to another page', async () => {
+  it('clicking "choose cookie settings" should take the user to another page', async () => {
     await page.click('#nhsuk-cookie-banner__link');
     expect(page.url()).toEqual('http://localhost:8080/our-policies/cookies-policy');
   });
@@ -64,11 +64,11 @@ describe('Remember cookie state', () => {
     expect(banner).not.toBe(null);
   });
 
-  it('going to "change cookie settings" should show the banner again, as consent not given', async () => {
+  it('going to "choose cookie settings" should not show the banner again', async () => {
     await page.click('#nhsuk-cookie-banner__link');
     await page.goto('http://localhost:8080/tests/example/');
     const banner = await page.evaluate(async () => document.querySelector('.nhsuk-cookie-banner'));
-    expect(banner).not.toBe(null);
+    expect(banner).toBe(null);
   });
 });
 

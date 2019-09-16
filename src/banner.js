@@ -43,6 +43,7 @@ export function insertCookieBanner(onAccept) {
     removeFocusCookieConfirmation();
   });
   document.getElementById('nhsuk-cookie-banner__link').addEventListener('click', () => {
+    onAccept();
     hideCookieBanner();
   });
 }
