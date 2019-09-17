@@ -50,6 +50,10 @@ If you need the link to use a different url, you can set the `data-policy-url` a
 <script src="./cookie-consent.js" data-policy-url="/custom/policy/url" type="text/javascript"></script>
 ```
 
+The cookie banner will not show on the policy page, even if you have embedded the cookie-consent.js script.
+This is because the user does not need to be presented with a cookie banner if they are on the page
+which can manage cookies.
+
 ## Javascript API
 
 The javascript API is exposed on a NHSCookieConsent global variable.
