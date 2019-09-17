@@ -86,7 +86,7 @@ describe('setConsent', () => {
       preferences: true,
       statistics: false,
       version: COOKIE_VERSION,
-    }, 365, '/');
+    }, 90, '/');
   });
 
   test('setConsent creates a session cookie containing consent settings', () => {
@@ -117,7 +117,7 @@ describe('setConsent', () => {
       preferences: false,
       statistics: false,
       version: COOKIE_VERSION,
-    }, 365, '/');
+    }, 90, '/');
     cookieconsent.__ResetDependency__('getConsent');
   });
 });
