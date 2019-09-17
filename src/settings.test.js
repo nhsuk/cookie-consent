@@ -63,7 +63,7 @@ describe('testing getPolicyUrl with environment variables and custom tags', () =
   test('getPolicyUrl returns default value when no env var or custom tag', () => {
     const scriptTag = document.createElement('script');
     settings.__Rewire__('scriptTag', scriptTag);
-    expect(getPolicyUrl()).toEqual('/our-policies/cookies-policy');
+    expect(getPolicyUrl()).toEqual('/our-policies/cookies-policy/');
     settings.__ResetDependency__('dataPolicyScript');
   });
 

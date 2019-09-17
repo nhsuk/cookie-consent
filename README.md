@@ -43,7 +43,7 @@ the javascript API to set user cookie consent.
 
 #### `data-policy-url`
 
-By default, the cookie policy link takes users to `/our-policies/cookies/`.
+By default, the cookie policy link takes users to `/our-policies/cookies-policy/`.
 If you need the link to use a different url, you can set the `data-policy-url` attribute.
 
 ```html
@@ -127,7 +127,7 @@ NO_BANNER=true npm run build:production
 
 #### `POLICY_URL`
 
-By default, the cookie policy link takes users to `/our-policies/cookies/`.
+By default, the cookie policy link takes users to `/our-policies/cookies-policy/`.
 If you need the link to use a different url, you can set this variable
 
 ```sh
