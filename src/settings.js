@@ -20,6 +20,17 @@ export function getPolicyUrl() {
   return dataPolicyUrl;
 }
 
+/**
+ * Ideally we would use the URL API here, but IE support is lacking.
+ */
+export function makeUrlAbsolute(url) {
+  // Setting and immediately getting the href attribute of an <a> tag might look a bit strange, but
+  // the <a> will convert our possibly-relative URL to a definitely-absolute one for us.
+  const link = document.createElement('a');
+  link.href = url;
+  return link.href;
+}
+
 // get properties from the scriptTag for noBanner
 export function getNoBanner() {
   const defaults = (process.env.NO_BANNER === 'true');
