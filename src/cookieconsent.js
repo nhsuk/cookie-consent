@@ -86,7 +86,8 @@ function setConsent(consent, mode = COOKIE_TYPE.LONG) {
   let days;
   // default cookie mode is COOKIE_TYPE.LONG
   if (mode === COOKIE_TYPE.LONG) {
-    days = 365;
+    // default based on ICO guidance
+    days = 90;
   } else if (mode === COOKIE_TYPE.SESSION || !mode) {
     days = null;
   } else {
