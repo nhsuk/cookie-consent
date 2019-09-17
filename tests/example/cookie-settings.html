@@ -46,6 +46,8 @@
             NHSCookieConsent.setPreferences(preferences.checked);
             NHSCookieConsent.setStatistics(statistics.checked);
             NHSCookieConsent.setMarketing(marketing.checked);
+            // If the user has hit save, then they have consented.
+            NHSCookieConsent.setConsented(true);
             // reload
             location = location;
           }
