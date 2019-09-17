@@ -1,7 +1,7 @@
 /* global expect, jest, afterEach */
 /* eslint-disable no-underscore-dangle */
 
-import settings, { getNoBanner, getPolicyUrl } from './settings';
+import settings, { getNoBanner, getPolicyUrl, makeUrlAbsolute } from './settings';
 
 describe('get script settings for no banner', () => {
   afterEach(() => {
@@ -63,7 +63,7 @@ describe('testing getPolicyUrl with environment variables and custom tags', () =
   test('getPolicyUrl returns default value when no env var or custom tag', () => {
     const scriptTag = document.createElement('script');
     settings.__Rewire__('scriptTag', scriptTag);
-    expect(getPolicyUrl()).toEqual('/our-policies/cookies-policy');
+    expect(getPolicyUrl()).toEqual('/our-policies/cookies-policy/');
     settings.__ResetDependency__('dataPolicyScript');
   });
 
@@ -77,6 +77,33 @@ describe('testing getPolicyUrl with environment variables and custom tags', () =
     settings.__Rewire__('scriptTag', scriptTag);
     expect(getPolicyUrl()).toEqual('data-test');
     process.env = OLD_ENV;
+  });
+});
+
+describe('get an absolute URL', () => {
+  test('when URL is already absolute', () => {
+    const url = 'http://example.com/path/to/page.html';
+    expect(makeUrlAbsolute(url)).toBe(url);
+  });
+
+  test('when URL is relative', () => {
+    const url = './path/to/page.html';
+    expect(makeUrlAbsolute(url)).toBe('http://localhost/path1/path2/path3/path/to/page.html');
+  });
+
+  test('when URL is relative to the domain', () => {
+    const url = '/path/to/page.html';
+    expect(makeUrlAbsolute(url)).toBe('http://localhost/path/to/page.html');
+  });
+
+  test('when the URL has params', () => {
+    const url = '/path/to/page.html?q=foo';
+    expect(makeUrlAbsolute(url)).toBe('http://localhost/path/to/page.html?q=foo');
+  });
+
+  test('when the URL has a hash fragment', () => {
+    const url = '/path/to/page.html#section-2';
+    expect(makeUrlAbsolute(url)).toBe('http://localhost/path/to/page.html#section-2');
   });
 });
 

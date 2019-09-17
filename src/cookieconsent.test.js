@@ -219,12 +219,12 @@ describe('setConsentSetting', () => {
 describe('shouldShowBanner', () => {
   const shouldShowBanner = cookieconsent.__get__('shouldShowBanner');
 
-  test('shouldShowBanner returns true if no cookie is found', () => {
+  test('returns true if no cookie is found', () => {
     // tests are run in new browser context, no cookie is set yet.
     expect(shouldShowBanner()).toBe(true);
   });
 
-  test('shouldShowBanner returns true if cookie version is out of date', () => {
+  test('returns true if cookie version is out of date', () => {
     cookieconsent.__Rewire__('getCookie', () => ({
       version: COOKIE_VERSION - 1,
     }));
@@ -232,7 +232,7 @@ describe('shouldShowBanner', () => {
     cookieconsent.__ResetDependency__('getCookie');
   });
 
-  test('shouldShowBanner returns true if cookie does not have "active" consent', () => {
+  test('returns true if cookie does not have "active" consent', () => {
     cookieconsent.__Rewire__('getCookie', () => ({
       consented: false,
       version: COOKIE_VERSION,
@@ -241,13 +241,25 @@ describe('shouldShowBanner', () => {
     cookieconsent.__ResetDependency__('getCookie');
   });
 
-  test('shouldShowBanner returns false if cookie is up-to-date', () => {
+  test('returns false if cookie is up-to-date', () => {
     cookieconsent.__Rewire__('getCookie', () => ({
       consented: true,
       version: COOKIE_VERSION,
     }));
     expect(shouldShowBanner()).toBe(false);
     cookieconsent.__ResetDependency__('getCookie');
+  });
+
+  test('returns false if we are on policy page', () => {
+    cookieconsent.__Rewire__('getPolicyUrl', () => '/path1/path2/path3/');
+    expect(shouldShowBanner()).toBe(false);
+    cookieconsent.__ResetDependency__('getPolicyUrl');
+  });
+
+  test('returns false if we are on policy page configured with absolute URL', () => {
+    cookieconsent.__Rewire__('getPolicyUrl', () => 'http://localhost/path1/path2/path3/');
+    expect(shouldShowBanner()).toBe(false);
+    cookieconsent.__ResetDependency__('getPolicyUrl');
   });
 });
 

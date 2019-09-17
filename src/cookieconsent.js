@@ -1,7 +1,7 @@
 import { getCookie as getRawCookie, createCookie as createRawCookie, deleteCookies } from './cookies';
 import { insertCookieBanner } from './banner';
 import { enableScriptsByCategories, enableIframesByCategories } from './enable';
-import { getNoBanner } from './settings';
+import { getNoBanner, getPolicyUrl, makeUrlAbsolute } from './settings';
 
 /**
  * If cookie rules/regulations change and the cookie itself needs to change,
@@ -156,6 +156,11 @@ export function setConsentSetting(key, value) {
 function shouldShowBanner() {
   // If the `nobanner` setting is used, never show the banner.
   if (getNoBanner()) {
+    return false;
+  }
+
+  // Do not show the banner if we are on the policy page.
+  if (document.location.href === makeUrlAbsolute(getPolicyUrl())) {
     return false;
   }
 

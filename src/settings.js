@@ -4,7 +4,7 @@ const scriptTag = document.currentScript;
 
 // get properties from the scriptTag for the policy URL
 export function getPolicyUrl() {
-  let dataPolicyUrl = '/our-policies/cookies-policy';
+  let dataPolicyUrl = '/our-policies/cookies-policy/';
   if (process.env.POLICY_URL) {
     dataPolicyUrl = process.env.POLICY_URL;
   }
@@ -18,6 +18,17 @@ export function getPolicyUrl() {
   }
 
   return dataPolicyUrl;
+}
+
+/**
+ * Ideally we would use the URL API here, but IE support is lacking.
+ */
+export function makeUrlAbsolute(url) {
+  // Setting and immediately getting the href attribute of an <a> tag might look a bit strange, but
+  // the <a> will convert our possibly-relative URL to a definitely-absolute one for us.
+  const link = document.createElement('a');
+  link.href = url;
+  return link.href;
 }
 
 // get properties from the scriptTag for noBanner
