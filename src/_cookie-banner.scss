@@ -2,24 +2,103 @@
   background: white;
   position: relative;
   box-shadow: 0 0 4px 0 $color_nhsuk-black;
-  padding: 24px 0 24px 0;
+  padding: 24px 0 19px;
   width: 100%;
   z-index: 1;
+}
 
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 8px 0 0 0;
+h4 {
+  @include nhsuk-typography-responsive(22);
+  display: block;
+  font-weight: $nhsuk-font-bold;
+  margin-top: 0;
+  @include nhsuk-responsive-margin(4, 'bottom');
+}
 
-    li {
-      display: block;
-    }
+p {
+  @include nhsuk-typography-responsive(19);
+  display: block;
+  margin-top: 0;
+  @include nhsuk-responsive-margin(4, 'bottom');
+  color: inherit;
+}
+
+$button-shadow-size: 4px;
+
+button {
+  @include nhsuk-font(19);
+  @include nhsuk-focusable;
+  @include nhsuk-responsive-margin(2, 'bottom', $adjustment: $button-shadow-size); // s1
+
+  -webkit-appearance: none;
+  background-color: $nhsuk-button-colour;
+  border: $nhsuk-border-width-form-element solid transparent;
+  border-radius: 4px;
+  box-shadow: 0 $button-shadow-size 0 $nhsuk-button-shadow-colour; // s0
+  box-sizing: border-box;
+  color: $nhsuk-button-text-colour;
+  cursor: pointer;
+  display: inline-block;
+  font-weight: 600;
+  margin-top: 0;
+  padding: 12px nhsuk-spacing(3); // s2
+  position: relative;
+  text-align: center;
+  vertical-align: top;
+  width: auto;
+  font-family: inherit;
+
+  @include mq($until: tablet) {
+    padding: nhsuk-spacing(2) nhsuk-spacing(3); // s2
   }
 
-  @include mq($from: desktop) {
-    ul li {
-      display: inline;
-      margin-right: 20px;
-    }
+  /* 2 */
+  &:link,
+  &:visited,
+  &:active,
+  &:hover {
+    color: $nhsuk-button-text-colour;
+    text-decoration: none;
+  }
+
+  /* 3 */
+  &::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+  }
+
+  &:hover,
+  &:focus {
+    background-color: $nhsuk-button-hover-colour;
+  }
+
+  &:active {
+    box-shadow: none;
+    top: $button-shadow-size;
+  }
+
+  /* 4 */
+  &::before {
+    background: transparent;
+    bottom: -($nhsuk-border-width-form-element + $button-shadow-size);
+    content: '';
+    display: block;
+    left: -$nhsuk-border-width-form-element;
+    position: absolute;
+    right: -$nhsuk-border-width-form-element;
+    top: -$nhsuk-border-width-form-element;
+  }
+}
+
+ul, li {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+@include mq($from: desktop) {
+  li {
+    display: inline;
+    margin-right: 20px;
   }
 }
