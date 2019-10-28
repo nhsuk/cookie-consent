@@ -1,5 +1,5 @@
 import { getCookie as getRawCookie, createCookie as createRawCookie, deleteCookies } from './cookies';
-import { insertCookieBanner } from './banner';
+import insertCookieBanner from './banner';
 import { enableScriptsByCategories, enableIframesByCategories } from './enable';
 import { getNoBanner, getPolicyUrl, makeUrlAbsolute } from './settings';
 
@@ -136,6 +136,17 @@ function acceptConsent() {
   });
 }
 
+// If analytics consent is given, change the value of the cookie
+function acceptAnalyticsConsent() {
+  setConsent({
+    necessary: true,
+    preferences: true,
+    statistics: true,
+    marketing: true,
+    consented: true,
+  });
+}
+
 export function getConsentSetting(key) {
   const cookie = getConsent();
   // double ! to convert truthy/falsy values into true/false
@@ -203,7 +214,7 @@ export function onload() {
       },
       COOKIE_TYPE.LONG);
     } else {
-      insertCookieBanner(acceptConsent);
+      insertCookieBanner(acceptConsent, acceptAnalyticsConsent);
     }
   }
 
