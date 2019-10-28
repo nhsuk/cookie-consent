@@ -21,23 +21,39 @@ describe('Banner is usable', () => {
     await expect(page).toMatch("We've put some small files called cookies on your device");
   });
 
-  it('clicking the accept button should hide banner', async () => {
+  it('clicking the "Do not use analytics cookies" button should hide banner', async () => {
     await page.click('#nhsuk-cookie-banner__link_accept');
     await waitForHiddenBanner();
   });
 
-  it('clicking the accept button should show confirmation banner', async () => {
+  it('clicking the "I\'m OK with analytics cookies" button should hide banner', async () => {
+    await page.click('#nhsuk-cookie-banner__link_accept_analytics');
+    await waitForHiddenBanner();
+  });
+
+  it('clicking the "Do not use analytics cookies" button should show confirmation banner', async () => {
     await page.click('#nhsuk-cookie-banner__link_accept');
     await waitForHiddenBanner();
     await page.waitForSelector('#nhsuk-cookie-confirmation-banner', { visible: true });
   });
 
-  it('clicking the accept buttons should keep user on the same page', async () => {
+  it('clicking the "I\'m OK with analytics cookies" button should show confirmation banner', async () => {
+    await page.click('#nhsuk-cookie-banner__link_accept_analytics');
+    await waitForHiddenBanner();
+    await page.waitForSelector('#nhsuk-cookie-confirmation-banner', { visible: true });
+  });
+
+  it('clicking "Do not use analytics cookies" should keep user on the same page', async () => {
     await page.click('#nhsuk-cookie-banner__link_accept');
     expect(page.url()).toEqual('http://localhost:8080/tests/example/');
   });
 
-  it('clicking "change cookie settings" should take the user to another page', async () => {
+  it('clicking "I\'m OK with analytics cookies" should keep user on the same page', async () => {
+    await page.click('#nhsuk-cookie-banner__link_accept_analytics');
+    expect(page.url()).toEqual('http://localhost:8080/tests/example/');
+  });
+
+  it('clicking "read more about our cookies" should take the user to another page', async () => {
     await page.click('#nhsuk-cookie-banner__link');
     expect(page.url()).toEqual('http://localhost:8080/our-policies/cookies-policy/');
   });
@@ -50,7 +66,7 @@ describe('Remember cookie state', () => {
     await waitForVisibleBanner();
   });
 
-  it('clicking accept button should prevent banner if revisited', async () => {
+  it('clicking "Do not use analytics cookies" should prevent banner if revisited', async () => {
     await page.click('#nhsuk-cookie-banner__link_accept');
     await waitForHiddenBanner();
     await page.goto('http://localhost:8080/tests/example/');
@@ -58,17 +74,12 @@ describe('Remember cookie state', () => {
     expect(banner).toBe(null);
   });
 
-  it('not accepting should show the banner again if revisited', async () => {
+  it('clicking "I\'m OK with analytics cookies" accept button should prevent banner if revisited', async () => {
+    await page.click('#nhsuk-cookie-banner__link_accept_analytics');
+    await waitForHiddenBanner();
     await page.goto('http://localhost:8080/tests/example/');
     const banner = await page.evaluate(async () => document.querySelector('.nhsuk-cookie-banner'));
-    expect(banner).not.toBe(null);
-  });
-
-  it('going to "change cookie settings" should show the banner again, as consent not given', async () => {
-    await page.click('#nhsuk-cookie-banner__link');
-    await page.goto('http://localhost:8080/tests/example/');
-    const banner = await page.evaluate(async () => document.querySelector('.nhsuk-cookie-banner'));
-    expect(banner).not.toBe(null);
+    expect(banner).toBe(null);
   });
 });
 
