@@ -28,20 +28,20 @@ $button-shadow-size: 4px;
 button {
   @include nhsuk-font(19);
   @include nhsuk-focusable;
-  @include nhsuk-responsive-margin(2, 'bottom', $adjustment: $button-shadow-size); // s1
+  @include nhsuk-responsive-margin(2, 'bottom', $adjustment: $button-shadow-size);
 
   -webkit-appearance: none;
   background-color: $nhsuk-button-colour;
   border: $nhsuk-border-width-form-element solid transparent;
   border-radius: 4px;
-  box-shadow: 0 $button-shadow-size 0 $nhsuk-button-shadow-colour; // s0
+  box-shadow: 0 $button-shadow-size 0 $nhsuk-button-shadow-colour;
   box-sizing: border-box;
   color: $nhsuk-button-text-colour;
   cursor: pointer;
   display: inline-block;
   font-weight: 600;
   margin-top: 0;
-  padding: 12px nhsuk-spacing(3); // s2
+  padding: 12px nhsuk-spacing(3);
   position: relative;
   text-align: center;
   vertical-align: top;
@@ -49,10 +49,9 @@ button {
   font-family: inherit;
 
   @include mq($until: tablet) {
-    padding: nhsuk-spacing(2) nhsuk-spacing(3); // s2
+    padding: nhsuk-spacing(2) nhsuk-spacing(3);
   }
 
-  /* 2 */
   &:link,
   &:visited,
   &:active,
@@ -60,8 +59,7 @@ button {
     color: $nhsuk-button-text-colour;
     text-decoration: none;
   }
-
-  /* 3 */
+  
   &::-moz-focus-inner {
     border: 0;
     padding: 0;
@@ -77,7 +75,6 @@ button {
     top: $button-shadow-size;
   }
 
-  /* 4 */
   &::before {
     background: transparent;
     bottom: -($nhsuk-border-width-form-element + $button-shadow-size);
