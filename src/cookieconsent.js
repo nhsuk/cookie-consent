@@ -128,6 +128,29 @@ function isValidVersion() {
   return currentVersion === null ? null : currentVersion >= COOKIE_VERSION;
 }
 
+export function getConsentSetting(key) {
+  const cookie = getConsent();
+  // double ! to convert truthy/falsy values into true/false
+  return !!cookie[key];
+}
+
+export function setConsentSetting(key, value) {
+  if (!value) {
+    deleteCookies();
+  }
+  // double ! to convert truthy/falsy values into true/false
+  setConsent({ [key]: !!value });
+}
+
+function enableScriptsAndIframes() {
+  const allCategories = ['preferences', 'statistics', 'marketing'];
+  // Filter out categories that do not have user consent
+  const allowedCategories = allCategories.filter(category => getConsentSetting(category) === true);
+
+  enableScriptsByCategories(allowedCategories);
+  enableIframesByCategories(allowedCategories);
+}
+
 // If consent is given, change the value of the cookie
 function acceptConsent() {
   setConsent({
@@ -142,23 +165,9 @@ function acceptAnalyticsConsent() {
     necessary: true,
     preferences: true,
     statistics: true,
-    marketing: true,
     consented: true,
   });
-}
-
-export function getConsentSetting(key) {
-  const cookie = getConsent();
-  // double ! to convert truthy/falsy values into true/false
-  return !!cookie[key];
-}
-
-export function setConsentSetting(key, value) {
-  if (!value) {
-    deleteCookies();
-  }
-  // double ! to convert truthy/falsy values into true/false
-  setConsent({ [key]: !!value });
+  enableScriptsAndIframes();
 }
 
 /**
@@ -228,10 +237,5 @@ export function onload() {
     setConsent(defaultConsent, COOKIE_TYPE.SESSION);
   }
 
-  const allCategories = ['preferences', 'statistics', 'marketing'];
-  // Filter out categories that do not have user consent
-  const allowedCategories = allCategories.filter(category => getConsentSetting(category) === true);
-
-  enableScriptsByCategories(allowedCategories);
-  enableIframesByCategories(allowedCategories);
+  enableScriptsAndIframes();
 }
