@@ -1,21 +1,21 @@
 import bannerHtml from './banner.html';
 import bannerCss from './style.scss';
 
-export function hideCookieBanner() {
+function hideCookieBanner() {
   document.getElementById('cookiebanner').style.display = 'none';
 }
 
-export function showCookieConfirmation() {
+function showCookieConfirmation() {
   document.getElementById('nhsuk-cookie-confirmation-banner').style.display = 'block';
 }
 
-export function addFocusCookieConfirmation() {
+function addFocusCookieConfirmation() {
   const cookieConfirmationMessage = document.getElementById('nhsuk-success-banner__message');
   cookieConfirmationMessage.setAttribute('tabIndex', '-1');
   cookieConfirmationMessage.focus();
 }
 
-export function removeFocusCookieConfirmation() {
+function removeFocusCookieConfirmation() {
   const cookieConfirmationMessage = document.getElementById('nhsuk-success-banner__message');
   cookieConfirmationMessage.addEventListener('blur', () => {
     cookieConfirmationMessage.removeAttribute('tabIndex');
@@ -23,11 +23,23 @@ export function removeFocusCookieConfirmation() {
 }
 
 /**
- * Insert the cookie banner at the top of a page.
- * args:
- *   onAccept - callback that is called when consent is accepted.
+ * Call common methods on link click as well as consent type callback
+ * @param {function} consentCallback callback to be called based on which link has been clicked.
  */
-export function insertCookieBanner(onAccept) {
+function handleLinkClick(consentCallback) {
+  hideCookieBanner();
+  consentCallback();
+  showCookieConfirmation();
+  addFocusCookieConfirmation();
+  removeFocusCookieConfirmation();
+}
+
+/**
+ * Insert the cookie banner at the top of a page.
+ * @param {function} onAccept callback that is called when necessary consent is accepted.
+ * @param {function} onAnalyticsAccept callback that is called analytics consent is accepted.
+ */
+export default function insertCookieBanner(onAccept, onAnalyticsAccept) {
   // add a css block to the inserted html
   const div = document.createElement('div');
   div.innerHTML = bannerHtml;
@@ -36,13 +48,11 @@ export function insertCookieBanner(onAccept) {
 
   document.getElementById('nhsuk-cookie-banner__link_accept').addEventListener('click', (e) => {
     e.preventDefault();
-    onAccept();
-    hideCookieBanner();
-    showCookieConfirmation();
-    addFocusCookieConfirmation();
-    removeFocusCookieConfirmation();
+    handleLinkClick(onAccept);
   });
-  document.getElementById('nhsuk-cookie-banner__link').addEventListener('click', () => {
-    hideCookieBanner();
+
+  document.getElementById('nhsuk-cookie-banner__link_accept_analytics').addEventListener('click', (e) => {
+    e.preventDefault();
+    handleLinkClick(onAnalyticsAccept);
   });
 }

@@ -265,6 +265,7 @@ describe('shouldShowBanner', () => {
 
 describe('onload', () => {
   const acceptConsent = cookieconsent.__get__('acceptConsent');
+  const acceptAnalyticsConsent = cookieconsent.__get__('acceptAnalyticsConsent');
   const defaultConsent = cookieconsent.__get__('defaultConsent');
 
   beforeEach(() => {
@@ -274,11 +275,11 @@ describe('onload', () => {
     cookieconsent.__ResetDependency__('insertCookieBanner');
   });
 
-  test('shows the banner with an acceptConsent callback', () => {
+  test('shows the banner with an acceptConsent and acceptAnalyticsConsent callbacks', () => {
     const spy = jest.fn();
     cookieconsent.__Rewire__('insertCookieBanner', spy);
     onload();
-    expect(spy).toHaveBeenCalledWith(acceptConsent);
+    expect(spy).toHaveBeenCalledWith(acceptConsent, acceptAnalyticsConsent);
     cookieconsent.__ResetDependency__('insertCookieBanner');
   });
 

@@ -1,5 +1,5 @@
 import { getCookie as getRawCookie, createCookie as createRawCookie, deleteCookies } from './cookies';
-import { insertCookieBanner } from './banner';
+import insertCookieBanner from './banner';
 import { enableScriptsByCategories, enableIframesByCategories } from './enable';
 import { getNoBanner, getPolicyUrl, makeUrlAbsolute } from './settings';
 
@@ -128,14 +128,6 @@ function isValidVersion() {
   return currentVersion === null ? null : currentVersion >= COOKIE_VERSION;
 }
 
-// If consent is given, change the value of the cookie
-function acceptConsent() {
-  setConsent({
-    ...defaultConsent,
-    consented: true,
-  });
-}
-
 export function getConsentSetting(key) {
   const cookie = getConsent();
   // double ! to convert truthy/falsy values into true/false
@@ -148,6 +140,34 @@ export function setConsentSetting(key, value) {
   }
   // double ! to convert truthy/falsy values into true/false
   setConsent({ [key]: !!value });
+}
+
+function enableScriptsAndIframes() {
+  const allCategories = ['preferences', 'statistics', 'marketing'];
+  // Filter out categories that do not have user consent
+  const allowedCategories = allCategories.filter(category => getConsentSetting(category) === true);
+
+  enableScriptsByCategories(allowedCategories);
+  enableIframesByCategories(allowedCategories);
+}
+
+// If consent is given, change the value of the cookie
+function acceptConsent() {
+  setConsent({
+    ...defaultConsent,
+    consented: true,
+  });
+}
+
+// If analytics consent is given, change the value of the cookie
+function acceptAnalyticsConsent() {
+  setConsent({
+    necessary: true,
+    preferences: true,
+    statistics: true,
+    consented: true,
+  });
+  enableScriptsAndIframes();
 }
 
 /**
@@ -203,7 +223,7 @@ export function onload() {
       },
       COOKIE_TYPE.LONG);
     } else {
-      insertCookieBanner(acceptConsent);
+      insertCookieBanner(acceptConsent, acceptAnalyticsConsent);
     }
   }
 
@@ -217,10 +237,5 @@ export function onload() {
     setConsent(defaultConsent, COOKIE_TYPE.SESSION);
   }
 
-  const allCategories = ['preferences', 'statistics', 'marketing'];
-  // Filter out categories that do not have user consent
-  const allowedCategories = allCategories.filter(category => getConsentSetting(category) === true);
-
-  enableScriptsByCategories(allowedCategories);
-  enableIframesByCategories(allowedCategories);
+  enableScriptsAndIframes();
 }
