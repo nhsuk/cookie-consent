@@ -23,6 +23,19 @@ function removeFocusCookieConfirmation() {
 }
 
 /**
+ * Hit a URL set up to monitor logs in Splunk
+ * @param {string} route route to hit for logging
+ */
+function hitLoggingUrl(route) {
+  const oReq = new XMLHttpRequest();
+  oReq.open(
+    'GET',
+    `https://nhsukcookieanalytics.blob.core.windows.net/%24web/${route}`
+  );
+  oReq.send();
+}
+
+/**
  * Call common methods on link click as well as consent type callback
  * @param {function} consentCallback callback to be called based on which link has been clicked.
  */
@@ -45,14 +58,17 @@ export default function insertCookieBanner(onAccept, onAnalyticsAccept) {
   div.innerHTML = bannerHtml;
   div.innerHTML += `<style>${bannerCss.toString()}</style>`;
   document.body.insertBefore(div, document.body.firstChild);
+  hitLoggingUrl('display.html');
 
   document.getElementById('nhsuk-cookie-banner__link_accept').addEventListener('click', (e) => {
     e.preventDefault();
+    hitLoggingUrl('no-consent.html');
     handleLinkClick(onAccept);
   });
 
   document.getElementById('nhsuk-cookie-banner__link_accept_analytics').addEventListener('click', (e) => {
     e.preventDefault();
+    hitLoggingUrl('consent.html');
     handleLinkClick(onAnalyticsAccept);
   });
 }
