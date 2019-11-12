@@ -7,83 +7,51 @@
   z-index: 1;
 }
 
-h4 {
-  @include nhsuk-typography-responsive(22);
+h2 {
+  @include nhsuk-responsive-margin(4, 'bottom');
   display: block;
   font-weight: $nhsuk-font-bold;
+  color: $nhsuk-text-color;
   margin-top: 0;
-  @include nhsuk-responsive-margin(4, 'bottom');
+  font-size: 18px;
+  line-height: 1.125;
+  
+  @media (min-width: 40.0625em){
+    font-size: 22px;
+    line-height: 1.375;
+  }
 }
 
 p {
-  @include nhsuk-typography-responsive(19);
+  @include nhsuk-responsive-margin(4, 'bottom');
   display: block;
   margin-top: 0;
-  @include nhsuk-responsive-margin(4, 'bottom');
-  color: inherit;
+  font-size: 16px;
+  line-height: 1.5;
+  
+  @media (min-width: 40.0625em){
+    font-size: 19px;
+    line-height: 1.47368;
+  }
+}
+
+a {
+  font-weight: normal;
 }
 
 $button-shadow-size: 4px;
 
-button {
-  @include nhsuk-font(19);
-  @include nhsuk-focusable;
+.nhsuk-button {
   @include nhsuk-responsive-margin(2, 'bottom', $adjustment: $button-shadow-size);
-
-  -webkit-appearance: none;
-  background-color: $nhsuk-button-colour;
-  border: $nhsuk-border-width-form-element solid transparent;
-  border-radius: 4px;
-  box-shadow: 0 $button-shadow-size 0 $nhsuk-button-shadow-colour;
-  box-sizing: border-box;
-  color: $nhsuk-button-text-colour;
-  cursor: pointer;
   display: inline-block;
-  font-weight: 600;
-  margin-top: 0;
-  padding: 12px nhsuk-spacing(3);
-  position: relative;
-  text-align: center;
   vertical-align: top;
-  width: auto;
   font-family: inherit;
-
-  @include mq($until: tablet) {
-    padding: nhsuk-spacing(2) nhsuk-spacing(3);
-  }
-
-  &:link,
-  &:visited,
-  &:active,
-  &:hover {
-    color: $nhsuk-button-text-colour;
-    text-decoration: none;
-  }
+  font-size: 16px;
+  line-height: 1.5;
   
-  &::-moz-focus-inner {
-    border: 0;
-    padding: 0;
-  }
-
-  &:hover,
-  &:focus {
-    background-color: $nhsuk-button-hover-colour;
-  }
-
-  &:active {
-    box-shadow: none;
-    top: $button-shadow-size;
-  }
-
-  &::before {
-    background: transparent;
-    bottom: -($nhsuk-border-width-form-element + $button-shadow-size);
-    content: '';
-    display: block;
-    left: -$nhsuk-border-width-form-element;
-    position: absolute;
-    right: -$nhsuk-border-width-form-element;
-    top: -$nhsuk-border-width-form-element;
+  @media (min-width: 40.0625em){
+    font-size: 19px;
+    line-height: 1.47368;
   }
 }
 
