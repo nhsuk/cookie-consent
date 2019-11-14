@@ -171,6 +171,21 @@ function acceptAnalyticsConsent() {
 }
 
 /**
+ * Hit a URL set up to monitor logs in Splunk
+ * @param {string} route route to hit for logging
+ */
+export function hitLoggingUrl(route) {
+  if (process.env.LOG_TO_SPLUNK === 'true') {
+    const oReq = new XMLHttpRequest();
+    oReq.open(
+      'GET',
+      `https://nhsukcookieanalytics.blob.core.windows.net/%24web/${route}`
+    );
+    oReq.send();
+  }
+}
+
+/**
  * Should the banner be shown to a user?
  * Returns true or false
  */
@@ -223,7 +238,7 @@ export function onload() {
       },
       COOKIE_TYPE.LONG);
     } else {
-      insertCookieBanner(acceptConsent, acceptAnalyticsConsent);
+      insertCookieBanner(acceptConsent, acceptAnalyticsConsent, hitLoggingUrl);
     }
   }
 

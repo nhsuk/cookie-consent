@@ -134,6 +134,13 @@ If you need the link to use a different url, you can set this variable
 POLICY_URL=/custom/policy/url/ npm run build:production
 ```
 
+#### `LOG TO SPLUNK`
+
+Set to `true` a logging URL will be hit when the banner shown, analytics are accepted or analytics are not accepted.
+```sh
+LOG_TO_SPLUNK=true npm run build:production
+```
+
 ## Tests
 
 To run the [Jest](https://jestjs.io/en/) tests

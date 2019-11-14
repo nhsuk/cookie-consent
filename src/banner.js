@@ -23,19 +23,6 @@ function removeFocusCookieConfirmation() {
 }
 
 /**
- * Hit a URL set up to monitor logs in Splunk
- * @param {string} route route to hit for logging
- */
-function hitLoggingUrl(route) {
-  const oReq = new XMLHttpRequest();
-  oReq.open(
-    'GET',
-    `https://nhsukcookieanalytics.blob.core.windows.net/%24web/${route}`
-  );
-  oReq.send();
-}
-
-/**
  * Call common methods on link click as well as consent type callback
  * @param {function} consentCallback callback to be called based on which link has been clicked.
  */
@@ -51,8 +38,9 @@ function handleLinkClick(consentCallback) {
  * Insert the cookie banner at the top of a page.
  * @param {function} onAccept callback that is called when necessary consent is accepted.
  * @param {function} onAnalyticsAccept callback that is called analytics consent is accepted.
+ * @param {function} hitLoggingUrl function that is makes request to logging URL.
  */
-export default function insertCookieBanner(onAccept, onAnalyticsAccept) {
+export default function insertCookieBanner(onAccept, onAnalyticsAccept, hitLoggingUrl) {
   // add a css block to the inserted html
   const div = document.createElement('div');
   div.innerHTML = bannerHtml;

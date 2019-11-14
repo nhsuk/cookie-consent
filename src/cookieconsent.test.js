@@ -1,7 +1,7 @@
 /* global expect, jest, beforeEach, afterEach */
 /* eslint-disable no-underscore-dangle */
 
-import cookieconsent, { getConsentSetting, setConsentSetting, onload } from './cookieconsent';
+import cookieconsent, { getConsentSetting, setConsentSetting, hitLoggingUrl, onload } from './cookieconsent';
 
 const COOKIE_NAME = cookieconsent.__get__('COOKIE_NAME');
 const COOKIE_VERSION = cookieconsent.__get__('COOKIE_VERSION');
@@ -266,6 +266,7 @@ describe('shouldShowBanner', () => {
 describe('onload', () => {
   const acceptConsent = cookieconsent.__get__('acceptConsent');
   const acceptAnalyticsConsent = cookieconsent.__get__('acceptAnalyticsConsent');
+  const hitLoggingUrl = cookieconsent.__get__('hitLoggingUrl');
   const defaultConsent = cookieconsent.__get__('defaultConsent');
 
   beforeEach(() => {
@@ -275,11 +276,11 @@ describe('onload', () => {
     cookieconsent.__ResetDependency__('insertCookieBanner');
   });
 
-  test('shows the banner with an acceptConsent and acceptAnalyticsConsent callbacks', () => {
+  test('shows the banner with an acceptConsent, acceptAnalyticsConsent and hitLoggingUrl callbacks', () => {
     const spy = jest.fn();
     cookieconsent.__Rewire__('insertCookieBanner', spy);
     onload();
-    expect(spy).toHaveBeenCalledWith(acceptConsent, acceptAnalyticsConsent);
+    expect(spy).toHaveBeenCalledWith(acceptConsent, acceptAnalyticsConsent, hitLoggingUrl);
     cookieconsent.__ResetDependency__('insertCookieBanner');
   });
 
