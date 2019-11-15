@@ -42,6 +42,7 @@ module.exports = {
   },
   plugins: [
     new webpack.DefinePlugin({
+      'process.env.LOG_TO_SPLUNK': JSON.stringify(process.env.LOG_TO_SPLUNK),
       'process.env.NO_BANNER': JSON.stringify(process.env.NO_BANNER),
       'process.env.POLICY_URL': JSON.stringify(process.env.POLICY_URL),
     }),

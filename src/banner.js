@@ -38,21 +38,25 @@ function handleLinkClick(consentCallback) {
  * Insert the cookie banner at the top of a page.
  * @param {function} onAccept callback that is called when necessary consent is accepted.
  * @param {function} onAnalyticsAccept callback that is called analytics consent is accepted.
+ * @param {function} hitLoggingUrl function that is makes request to logging URL.
  */
-export default function insertCookieBanner(onAccept, onAnalyticsAccept) {
+export default function insertCookieBanner(onAccept, onAnalyticsAccept, hitLoggingUrl) {
   // add a css block to the inserted html
   const div = document.createElement('div');
   div.innerHTML = bannerHtml;
   div.innerHTML += `<style>${bannerCss.toString()}</style>`;
   document.body.insertBefore(div, document.body.firstChild);
+  hitLoggingUrl('display.html');
 
   document.getElementById('nhsuk-cookie-banner__link_accept').addEventListener('click', (e) => {
     e.preventDefault();
+    hitLoggingUrl('no-consent.html');
     handleLinkClick(onAccept);
   });
 
   document.getElementById('nhsuk-cookie-banner__link_accept_analytics').addEventListener('click', (e) => {
     e.preventDefault();
+    hitLoggingUrl('consent.html');
     handleLinkClick(onAnalyticsAccept);
   });
 }

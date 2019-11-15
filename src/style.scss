@@ -1,7 +1,6 @@
 // font-face declarations must go outside of any selectors
 @import 'node_modules/nhsuk-frontend/packages/core/generic/font-face';
 
-
 /**
  * Wrap all of our CSS inside an id selector. This will prevent our styles from
  * conflicting with the host site.
@@ -17,6 +16,7 @@
   @import 'node_modules/nhsuk-frontend/packages/core/elements/links';
   @import 'node_modules/nhsuk-frontend/packages/core/objects/width-container';
 
+  @import 'node_modules/nhsuk-frontend/packages/components/button/button';
   /**
    * The following statements are font styles which are applied to the body
    * and html selectors in the frontend library.
@@ -27,8 +27,6 @@
   -webkit-font-smoothing: antialiased;
   font-family: $nhsuk-font, $nhsuk-font-fallback;
   color: $nhsuk-text-color;
-  font-size: $nhsuk-base-font-size;
-  line-height: _nhsuk-line-height($nhsuk-base-line-height, $nhsuk-base-font-size);
 
   /**
    * Import the custom banner CSS
