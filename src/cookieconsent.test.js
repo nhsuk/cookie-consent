@@ -1,7 +1,7 @@
 /* global expect, jest, beforeEach, afterEach */
 /* eslint-disable no-underscore-dangle */
 
-import cookieconsent, { getConsentSetting, setConsentSetting, hitLoggingUrl, onload } from './cookieconsent';
+import cookieconsent, { getConsentSetting, setConsentSetting, onload } from './cookieconsent';
 
 const COOKIE_NAME = cookieconsent.__get__('COOKIE_NAME');
 const COOKIE_VERSION = cookieconsent.__get__('COOKIE_VERSION');
