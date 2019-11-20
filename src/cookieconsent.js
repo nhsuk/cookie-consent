@@ -179,7 +179,7 @@ export function hitLoggingUrl(route) {
     const oReq = new XMLHttpRequest();
     oReq.open(
       'GET',
-      `https://nhsukcookieanalytics.blob.core.windows.net/%24web/${route}`
+      `https://www.nhs.uk/our-policies/cookies-policy/?policy-action=${route}`
     );
     oReq.send();
   }
