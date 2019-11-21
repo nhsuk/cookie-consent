@@ -46,17 +46,17 @@ export default function insertCookieBanner(onAccept, onAnalyticsAccept, hitLoggi
   div.innerHTML = bannerHtml;
   div.innerHTML += `<style>${bannerCss.toString()}</style>`;
   document.body.insertBefore(div, document.body.firstChild);
-  hitLoggingUrl('display.html');
+  hitLoggingUrl('seen');
 
   document.getElementById('nhsuk-cookie-banner__link_accept').addEventListener('click', (e) => {
     e.preventDefault();
-    hitLoggingUrl('no-consent.html');
+    hitLoggingUrl('declined');
     handleLinkClick(onAccept);
   });
 
   document.getElementById('nhsuk-cookie-banner__link_accept_analytics').addEventListener('click', (e) => {
     e.preventDefault();
-    hitLoggingUrl('consent.html');
+    hitLoggingUrl('accepted');
     handleLinkClick(onAnalyticsAccept);
   });
 }
