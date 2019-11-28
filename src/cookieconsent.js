@@ -163,7 +163,7 @@ function acceptConsent() {
 function acceptAnalyticsConsent() {
   setConsent({
     necessary: true,
-    preferences: true,
+    preferences: false,
     statistics: true,
     consented: true,
   });
