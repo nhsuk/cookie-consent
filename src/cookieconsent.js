@@ -162,6 +162,8 @@ function acceptConsent() {
 // If analytics consent is given, change the value of the cookie
 function acceptAnalyticsConsent() {
   setConsent({
+    necessary: true,
+    preferences: true,
     statistics: true,
     consented: true,
   });
