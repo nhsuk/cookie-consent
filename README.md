@@ -166,7 +166,12 @@ N.B. The integration tests rely on there being a test server available on localh
 Before a new release of the cookie banner can be made, several checks must be made.
 
 A new Tag must be made for the release following the versioning format.
-**insert versioning format**
+We use Semantic Versioning.
+IE. x.y.z where:
+x = Major version that causes incompatibilities,
+y = Minor change that adds a backwards comptible feature,
+z = Patch version for backwards compatible fixes.
+more information can be found at https://semver.org/
 
 The release also must contain changes to the package version number to match the new tag.
 
