@@ -1,6 +1,6 @@
 {
   "name": "cookie-consent",
-  "version": "0.5.2",
+  "version": "0.5.1",
   "description": "In-house solution for managing cookies on nhs.uk",
   "main": "src/cookieconsent.js",
   "directories": {
