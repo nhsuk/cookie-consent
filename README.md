@@ -160,3 +160,22 @@ npm run test:integration
 ```
 
 N.B. The integration tests rely on there being a test server available on localhost:8080.
+
+## Contributing to a release.
+
+Before a new release of the cookie banner can be made, several checks must be made.
+
+A new Tag must be made for the release following the versioning format.
+**insert versioning format**
+
+The release also must contain changes to the package version number to match the new tag.
+
+If the release contains a change that will require the banner to be redisplayed to users, then the `COOKIE_VERSION` variable in cookieconsent.js must be increased by 1.
+
+The change must then be tested in Integration and Staging environments, which can be launched by a member of the NHS.UK organisation.
+
+To be released to production on the NHS website; from this point a member of the NHS.UK organisation must then test the release in Integration and Staging environments and then must go through a Request for change for it to be released on the appropriate website.
+
+## Notes
+Currently, in-house development for this solution is primarily done on UNIX systems, such as Mac or Linux.
+There may be some difficulties when developing this solution on a windows machine.
