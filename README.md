@@ -160,3 +160,21 @@ npm run test:integration
 ```
 
 N.B. The integration tests rely on there being a test server available on localhost:8080.
+
+## Contributing to a release.
+
+A new Tag must be made for the release following the versioning format.
+We use Semantic Versioning.
+IE. x.y.z where:
+x = Major version that causes incompatibilities,
+y = Minor change that adds a backwards comptible feature,
+z = Patch version for backwards compatible fixes.
+more information can be found at https://semver.org/
+
+The release also must contain changes to the package version number to match the new tag.
+
+If the release contains a change that will require the banner to be redisplayed to users, then the `COOKIE_VERSION` variable in cookieconsent.js must be increased by 1.
+
+## Notes
+Currently, in-house development for this solution is primarily done on UNIX systems.
+There may be some difficulties when developing this solution on a windows machine.
