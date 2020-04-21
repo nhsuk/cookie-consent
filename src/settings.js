@@ -47,3 +47,19 @@ export function getNoBanner() {
 
   return defaults;
 }
+
+// get properties from the scriptTag for the bannner title
+export function getBannerTitle() {
+  let dataBannnerTitle = 'Cookies on the NHS Website';
+
+  if (process.env.BANNER_TITLE) {
+    dataBannnerTitle = process.env.BANNER_TITLE;
+  }
+
+  if (scriptTag.getAttribute('data-banner-title')) {
+    dataBannnerTitle = scriptTag.getAttribute('data-banner-title');
+  }
+
+  return dataBannnerTitle;
+}
+

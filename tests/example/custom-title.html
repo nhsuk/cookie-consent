@@ -1,0 +1,38 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+
+    <link rel="shortcut icon" href="">
+
+    <title>Cookie Consent test page</title>
+
+    <link rel="stylesheet" href="./css/style.css">
+
+    <!-- Necessary cookies should always be set regardless of user preferences  -->
+    <script src="./js/necessary.js"></script>
+
+    <!-- Statistics cookies have to be accepted before they are set -->
+    <script src="./js/statistics.js" data-cookieconsent="statistics" type="text/plain"></script>
+
+    <!-- Cookie Consent plugin -->
+    <script src="../../dist/main.js" data-banner-title="Cookies on the example.com site" type="text/javascript"></script>
+
+    <script type="text/plain" data-cookieconsent="statistics">
+      document.cookie = 'inline-js=this cookie is from inline javascript';
+    </script>
+  </head>
+  <body>
+    <main class="main">
+      <h1>Cookies:</h1>
+      <button id="cookie-list-refresh">Refresh</button>
+      <div id="cookie-list"></div>
+
+      <iframe data-src="https://example.com" data-cookieconsent="statistics"></iframe>
+
+      <script src="./js/show-cookie-data.js"></script>
+    </main>
+  </body>
+</html>
