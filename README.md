@@ -54,6 +54,22 @@ The cookie banner will not show on the policy page, even if you have embedded th
 This is because the user does not need to be presented with a cookie banner if they are on the page
 which can manage cookies.
 
+### `data-banner-title`
+
+By default the banner title reads "Cookies on the NHS website". If you want this to be different (for example, this is being deployed to a subsite), you can set this variable.
+
+```html
+<script src="./cookie-consent.js" data-banner-title="Cookies on the NHSX Website" type="text/javascript"></script>
+```
+
+### `data-services-used`
+
+By default, the banner tells users the site collects cookies for "services called Adobe Analytics, Hotjar and Google Analytics". If this differs for your site, you can set this variable:
+
+```html
+<script src="./cookie-consent.js" data-services-used="Google Analytics" type="text/javascript"></script>
+```
+
 ## Javascript API
 
 The javascript API is exposed on a NHSCookieConsent global variable.
@@ -67,9 +83,9 @@ console.log(NHSCookieConsent.VERSION)
 
 - `getPreferences()`
 - `getStatistics()`
-- `getMarketing()` 
+- `getMarketing()`
 
-These methods get the status of the cookie consent for that type of cookie.  
+These methods get the status of the cookie consent for that type of cookie.
 Returns a boolean.
 
 - `getConsented()`
@@ -81,8 +97,8 @@ It is primarily used to hide the banner once consent has been given.
 - `setStatistics(value)`
 - `setMarketing(value)`
 
-These methods set the status of the cookie consent for that type of cookie.  
-set methods should only be used in response to a user interaction accepting that type of cookie.  
+These methods set the status of the cookie consent for that type of cookie.
+set methods should only be used in response to a user interaction accepting that type of cookie.
 Expects a boolean `value` argument.
 
 - `setConsented(value)`
@@ -139,6 +155,22 @@ POLICY_URL=/custom/policy/url/ npm run build:production
 Set to `true` a logging URL will be hit when the banner shown, analytics are accepted or analytics are not accepted.
 ```sh
 LOG_TO_SPLUNK=true npm run build:production
+```
+
+#### `BANNER_TITLE`
+
+By default the banner title reads "Cookies on the NHS website". If you want this to be different (for example, this is being deployed to a subsite), you can set this variable.
+
+```sh
+BANNER_TITLE="Cookies on the NHSX website" npm build:production
+```
+
+#### `SERVICES_USED`
+
+By default, the banner tells users the site collects cookies for "services called Adobe Analytics, Hotjar and Google Analytics". If this differs for your site, you can set this variable:
+
+```sh
+SERVICES_USED="Google Analytics" npm build:production
 ```
 
 ## Tests
