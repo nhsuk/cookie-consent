@@ -137,3 +137,12 @@ describe('custom banner title', () => {
   });
 });
 
+describe('custom services used', () => {
+  it('shows custom title', async () => {
+    await clearAllCookies();
+    await page.goto('http://localhost:8080/tests/example/custom-services.html');
+    await waitForVisibleBanner();
+    await expect(page).toMatch('some custom service');
+  });
+});
+

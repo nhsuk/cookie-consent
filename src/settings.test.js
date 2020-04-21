@@ -2,7 +2,7 @@
 /* eslint-disable no-underscore-dangle */
 
 import settings, {
-  getNoBanner, getPolicyUrl, makeUrlAbsolute, getBannerTitle,
+  getNoBanner, getPolicyUrl, makeUrlAbsolute, getBannerTitle, getServicesUsed,
 } from './settings';
 
 describe('get script settings for no banner', () => {
@@ -156,3 +156,49 @@ describe('testing getBannerTitle with environment variables and custom tags', ()
   });
 });
 
+describe('testing getServicesUsed with environment variables and custom tags', () => {
+  // need to set up a temporary environment variable
+  const OLD_ENV = process.env;
+
+  afterEach(() => {
+    settings.__ResetDependency__('scriptTag');
+  });
+
+  test('getServicesUsed returns environment variable when one is set', () => {
+    // Resets the module registry - the cache of all required modules.
+    // This is useful to isolate modules where local state might conflict between tests.
+    const scriptTag = document.createElement('script');
+    settings.__Rewire__('scriptTag', scriptTag);
+    jest.resetModules();
+    process.env = { ...OLD_ENV };
+    process.env.SERVICES_USED = 'Google Analytics';
+    expect(getServicesUsed()).toEqual('Google Analytics');
+    process.env = OLD_ENV;
+  });
+
+  test('getServicesUsed returns custom tag when one is set', () => {
+    const scriptTag = document.createElement('script');
+    settings.__Rewire__('scriptTag', scriptTag);
+    scriptTag.setAttribute('data-services-used', 'Google Analytics');
+    expect(getServicesUsed()).toEqual('Google Analytics');
+  });
+
+  test('getServicesUsed returns default value when no env var or custom tag', () => {
+    const scriptTag = document.createElement('script');
+    settings.__Rewire__('scriptTag', scriptTag);
+    expect(getServicesUsed()).toEqual('services called Adobe Analytics, Hotjar and Google Analytics');
+    settings.__ResetDependency__('dataPolicyScript');
+  });
+
+  test('getServicesUsed returns custom tag when both tag and env var are set', () => {
+    const scriptTag = document.createElement('script');
+    settings.__Rewire__('scriptTag', scriptTag);
+    jest.resetModules();
+    process.env = { ...OLD_ENV };
+    process.env.SERVICES_USED = 'Google Analytics';
+    scriptTag.setAttribute('data-services-used', 'data-test');
+    settings.__Rewire__('scriptTag', scriptTag);
+    expect(getServicesUsed()).toEqual('data-test');
+    process.env = OLD_ENV;
+  });
+});
