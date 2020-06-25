@@ -29,7 +29,7 @@ Possible data-cookieconsent values are `preferences`, `statistics` and `marketin
 
 ### Script Options
 
-#### `data-no-banner`
+#### `data-nobanner`
 
 If you want to prevent the cookie banner from showing automatically, add a
 `data-nobanner` attribute to the script tag.
