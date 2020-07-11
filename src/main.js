@@ -58,4 +58,4 @@ window.NHSCookieConsent = {
 };
 /* eslint-enable sort-keys */
 
-window.addEventListener('load', onload);
+window.addEventListener('DOMContentLoaded', onload);
