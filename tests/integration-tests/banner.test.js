@@ -126,3 +126,23 @@ describe('custom banner url link', () => {
     expect(banner).not.toBe(null);
   });
 });
+
+describe('custom banner title', () => {
+  it('shows custom title', async () => {
+    await clearAllCookies();
+    await page.goto('http://localhost:8080/tests/example/custom-title.html');
+    await waitForVisibleBanner();
+    const title = await page.evaluate(async () => document.querySelector('.nhsuk-cookie-banner h2').innerHTML);
+    expect(title).toEqual('Cookies on the example.com site');
+  });
+});
+
+describe('custom services used', () => {
+  it('shows custom title', async () => {
+    await clearAllCookies();
+    await page.goto('http://localhost:8080/tests/example/custom-services.html');
+    await waitForVisibleBanner();
+    await expect(page).toMatch('some custom service');
+  });
+});
+
