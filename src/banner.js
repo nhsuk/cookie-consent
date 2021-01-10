@@ -2,11 +2,13 @@ import bannerHtml from './banner.html';
 import bannerCss from './style.scss';
 
 function hideCookieBanner() {
-  document.getElementById('cookiebanner').style.display = 'none';
+  var cookieBanner = document.getElementById('cookiebanner');
+  cookieBanner.className = 'nhsuk-cookie-banner display_none';
 }
 
 function showCookieConfirmation() {
-  document.getElementById('nhsuk-cookie-confirmation-banner').style.display = 'block';
+  var confirmationBanner = document.getElementById('nhsuk-cookie-confirmation-banner')
+  confirmationBanner.className = 'nhsuk-success-banner display_block'
 }
 
 function addFocusCookieConfirmation() {
@@ -44,7 +46,6 @@ export default function insertCookieBanner(onAccept, onAnalyticsAccept, hitLoggi
   // add a css block to the inserted html
   const div = document.createElement('div');
   div.innerHTML = bannerHtml;
-  div.innerHTML += `<style>${bannerCss.toString()}</style>`;
   document.body.insertBefore(div, document.body.firstChild);
   hitLoggingUrl('seen');
 
