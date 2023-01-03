@@ -161,6 +161,12 @@ npm run test:integration
 
 N.B. The integration tests rely on there being a test server available on localhost:8080.
 
+## Deployment
+
+When code is merged into the master branch an Azure pipline will be started. If the pipeline passes it will produce an artifact.
+
+To deploy the artifact simply run the release pipeline in Azure DevOps, selecting the required environments.
+
 ## Contributing to a release.
 
 A new Tag must be made for the release following the versioning format.
