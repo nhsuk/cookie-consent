@@ -110,7 +110,7 @@ For production mode, run
 npm run build:production
 ```
 
-Compiled javascript will be saved to dist/main.js
+Compiled javascript will be saved to `dist/main.js`.
 
 ### Environment variables
 
@@ -163,9 +163,16 @@ N.B. The integration tests rely on there being a test server available on localh
 
 ## Deployment
 
-When code is merged into the master branch an Azure pipline will be started. If the pipeline passes it will produce an artifact.
+When code is merged into the master branch an Azure pipeline will be started. If the pipeline passes it will produce an artifact.
 
-To deploy the artifact simply run the release pipeline in Azure DevOps, selecting the required environments.
+To deploy the artifact simply run the release pipeline in Azure DevOps, selecting the required environments. The compiled javascript
+will be uploaded to the following Azure Storage Account:
+
+| Environment | Storage Account | Container | Blob path |
+| --- | --- | --- | --- |
+| Integration | nhsukassetsstaging | dev     | nhsuk / js / cookie-consent.js |
+| Staging     | nhsukassetsstaging | staging | scripts / cookie-consent.js    |
+| Production  | nhsukassets        | scripts | cookie-consent.js              |
 
 ## Contributing to a release.
 
@@ -173,7 +180,7 @@ A new Tag must be made for the release following the versioning format.
 We use Semantic Versioning.
 IE. x.y.z where:
 x = Major version that causes incompatibilities,
-y = Minor change that adds a backwards comptible feature,
+y = Minor change that adds a backwards compatible feature,
 z = Patch version for backwards compatible fixes.
 more information can be found at https://semver.org/
 
@@ -182,5 +189,6 @@ The release also must contain changes to the package version number to match the
 If the release contains a change that will require the banner to be redisplayed to users, then the `COOKIE_VERSION` variable in cookieconsent.js must be increased by 1.
 
 ## Notes
+
 Currently, in-house development for this solution is primarily done on UNIX systems.
 There may be some difficulties when developing this solution on a windows machine.
