@@ -36,6 +36,22 @@ steps:
 - script: CI=true npm run test
   displayName: testing
 
+- task: dependency-check-build-task@6
+  displayName: 'Run OWASP Dependency Check'
+  inputs:
+    projectName: 'cookie-consent'
+    scanPath: '$(Build.SourcesDirectory)'
+    format: 'HTML, JUNIT'
+    reportsDirectory: '$(System.DefaultWorkingDirectory)/dependency-scan-results'
+
+- task: PublishTestResults@2
+  displayName: 'Publish OWASP Dependency Check Results'
+  inputs:
+    testResultsFormat: 'JUnit'
+    testResultsFiles: '$(System.DefaultWorkingDirectory)/dependency-scan-results/*junit.xml'
+    testRunTitle: 'Dependency check'
+    searchFolder: '$(Common.TestResultsDirectory)'
+
 - task: SonarQubeAnalyze@5
 
 - task: SonarQubePublish@5
