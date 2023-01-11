@@ -8,7 +8,7 @@ import { getNoBanner, getPolicyUrl, makeUrlAbsolute } from './settings';
  * bump this version up afterwards. It will then give the user the banner again
  * to consent to the new rules
  */
-export const COOKIE_VERSION = 3;
+export const COOKIE_VERSION = 4;
 const COOKIE_NAME = 'nhsuk-cookie-consent';
 
 /**
