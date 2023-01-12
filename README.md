@@ -96,6 +96,7 @@ expiry date of the cookie.
 
 - `VERSION` the current version as defined in package.json
 
+<a name="compiling"></a>
 ## Compiling
 
 This project uses [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/)
@@ -142,6 +143,8 @@ LOG_TO_SPLUNK=true npm run build:production
 ```
 
 ## Tests
+
+The tests require the javascript to be compiled. See the [Compiling](#compiling) section above.
 
 To run the [Jest](https://jestjs.io/en/) tests
 
