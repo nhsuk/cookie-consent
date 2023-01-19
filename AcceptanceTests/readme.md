@@ -28,19 +28,9 @@ allows for the following default configuration:
 | maximize_browser_flag | bool    | true                                          | Flag to maximise the browser when it is opened to run the test                |
 | browser               | string  | chrome                                        | Browser to use. See [BrowserStackConfig.json](./config/BrowserStackConfig.json) |
 | implicit_wait         | integer | 10                                            | Initial wait time for the browser to open a page before tests are run         |
-| base_url              | string  |                                               | The URL of the webpage to run tests on.                                       |
-| api_url               | string  | https://nhsuk-apim-dev-uks.azure-api.net/menu | The URL of the Menus API which is the truth for running the tests. See [Menus API URL](#menus-api-url). |
+| base_url              | string  | https://example-url.com                       | The URL of the webpage to run tests on.                                       |
 
 Use `https://localhost:<port>` with the appropriate port if running against a test-app running locally.
-
-### Menus API URL
-
-The default Menus API URL is set to _https://nhsuk-apim-dev-uks.azure-api.net/menu_ which is accessible outside of the 
-Azure environment. This is the hosted development environment for the 
-[nhsuk.menus.function](https://dev.azure.com/nhsuk/nhsuk.utilities/_git/nhsuk.menus.function).
-
-Use `https://localhost:<port>/api/GetMenus` with the appropriate port if running against the nhsuk.menus.function running 
-locally.
 
 ## Python IDE Test Environment
 
