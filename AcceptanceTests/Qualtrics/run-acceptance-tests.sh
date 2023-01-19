@@ -38,6 +38,8 @@ echo "### Copying logs folder from container to host"
 docker cp ${CONTAINER_ID}:/automation-ui/logs ./logs
 echo "### Copying screenshots folder from container to host"
 docker cp ${CONTAINER_ID}:/automation-ui/screenshots ./screenshots
+echo '### Removing container instance'
+docker container rm ${CONTAINER_ID}
 
 
 echo "### Finished running acceptance tests"
