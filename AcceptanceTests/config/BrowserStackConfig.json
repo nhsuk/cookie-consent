@@ -1,0 +1,48 @@
+{
+  "server": "hub.browserstack.com",
+  "user": "",
+  "key": "",
+
+  "capabilities": {
+    "browserstack.debug": "true",
+    "browserstack.networkLogs": "true",
+    "build": "selenium_tests",
+    "name": "sample_test",
+
+
+    "--force-local": "true"
+
+  },
+
+  "environments": [{
+    "os": "Windows",
+    "os_version": "10",
+    "browser": "Chrome",
+    "browser_version": "62.0",
+    "resolution": "1024x768"
+
+  },{
+    "os": "Windows",
+    "os_version": "10",
+    "browser": "Firefox",
+    "browser_version": "61.0 beta",
+    "resolution": "1024x768"
+
+  },{
+     "os": "Windows",
+    "os_version": "10",
+    "browser": "Edge",
+    "browser_version": "17.0",
+    "resolution": "1024x768"
+
+  },{
+   "os": "Windows",
+    "os_version": "10",
+    "browser": "IE",
+    "browser_version": "11.0",
+    "resolution": "1024x768"
+
+  }]
+
+}
+
