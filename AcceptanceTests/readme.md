@@ -54,7 +54,7 @@ The following guidance assumes the PyCharm Python IDE.
    |-----------------------------------------------------------------------------------------------------------------------------| --- |
    | Name              | qualtrics-appacceptance-tests                                                                                               |
    | Script path       | .\AcceptanceTests\venv\Lib\site-packages\behave\__main__.py                                                                 |
-   | Parameters        | Qualtrics/features --tags=-wip --tags=-review -Dlogging_flag=true --junit --junit-directory=./report/junit/ --format=pretty |
+   | Parameters        | Qualtrics/features -Dbase_url=www.example_url.com -Dlogging_flag=true --junit --junit-directory=./report/junit/ --format=pretty |
    | Working directory | .\AcceptanceTests                                                                                                           |
 
 5. Run the tests using the _Run -> Run qualtrics-acceptance-tests_ toolbar item.
