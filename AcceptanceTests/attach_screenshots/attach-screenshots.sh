@@ -17,7 +17,7 @@ echo "### Building docker image"
 docker build -t screenshots -f attach_screenshots/AttachScreenshots.dockerfile .
 
 echo "### Running docker image"
-docker run $@ screenshots
+docker run --rm $@ screenshots
 PASSED=$?
 
 echo "### Finished attaching screenshots"
