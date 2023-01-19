@@ -1,0 +1,7 @@
+{
+  "logging_flag": true,
+  "maximize_browser_flag": true,
+  "browser": "chrome",
+  "implicit_wait": 10,
+  "base_url": ""
+}
