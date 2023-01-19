@@ -15,6 +15,5 @@ COPY . ./
 
 ARG PATH_TO_TESTS=./features
 ARG BASE_URL=""
-ARG TAGS=""
 
-ENTRYPOINT [ "/bin/sh", "-c", "behave $PATH_TO_TESTS --tags=-wip --tags=-review $TAGS $BASE_URL -Dlogging_flag=true --junit --junit-directory=./report/junit/ --format=pretty " ]
+ENTRYPOINT [ "/bin/sh", "-c", "behave $PATH_TO_TESTS $BASE_URL -Dlogging_flag=true --junit --junit-directory=./report/junit/ --format=pretty " ]
