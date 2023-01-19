@@ -164,6 +164,10 @@ npm run test:integration
 
 N.B. The integration tests rely on there being a test server available on localhost:8080.
 
+### Acceptance Tests
+
+Acceptance tests for the Qualtrics survey button can be found in the 'AcceptanceTests/' folder. Check the [readme](AcceptanceTests/readme.md) for more details and how to run.
+
 ## Deployment
 
 When code is merged into the master branch an Azure pipeline will be started. If the pipeline passes it will produce an artifact.
