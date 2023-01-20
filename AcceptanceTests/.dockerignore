@@ -1,6 +1,0 @@
-#Add files and folders you wish to exclude from the Dockerfile
-venv
-browser_executables
-debug.log
-local.log
-.idea
