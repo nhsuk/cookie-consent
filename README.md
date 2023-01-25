@@ -166,16 +166,20 @@ N.B. The integration tests rely on there being a test server available on localh
 
 ## Deployment
 
-When code is merged into the master branch an Azure pipeline will be started. If the pipeline passes it will produce an artifact.
+When code is merged into the master branch an Azure build pipeline will be triggered. If the pipeline runs successfully 
+it will produce a build artifact containing the compiled javascript.
 
-To deploy the artifact simply run the release pipeline in Azure DevOps, selecting the required environments. The compiled javascript
-will be uploaded to the following Azure Storage Account:
+To deploy the artifact simply create a release referencing the appropriate build artifact and run the release pipeline in 
+Azure DevOps, selecting the required environments. The compiled javascript will be uploaded to the following Azure Storage Account:
 
 | Environment | Storage Account | Container | Blob path |
 | --- | --- | --- | --- |
 | Integration | nhsukassetsstaging | dev     | nhsuk / js / cookie-consent.js |
 | Staging     | nhsukassetsstaging | staging | scripts / cookie-consent.js    |
 | Production  | nhsukassets        | scripts | cookie-consent.js              |
+
+NOTE: When deploying to the Staging and Production environments, the Akamai cache should be flushed using the full URL of the 
+javascript resource. The resource content can then be verified by accessing the URL in a browser.
 
 ## Contributing to a release.
 
