@@ -17,7 +17,8 @@
     "test:integration": "jest -c tests/integration-tests/jest.config.js --coverage=true",
     "testserver": "./node_modules/.bin/http-server",
     "clear_jest": "jest --clearCache",
-    "watch": "webpack --watch"
+    "watch": "webpack --watch",
+    "prepare": "husky install"
   },
   "repository": {
     "type": "git",
@@ -43,7 +44,7 @@
     "eslint-config-nhsuk": "^0.16.0",
     "html-loader": "^0.5.5",
     "http-server": "^0.12.3",
-    "husky": "^3.1.0",
+    "husky": "^8.0.3",
     "jest": "^26.1.0",
     "jest-environment-jsdom": "^26.1.0",
     "jest-puppeteer": "^4.4.0",

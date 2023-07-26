@@ -5,3 +5,5 @@ RUN bash -c 'VERSION="14.21.3" \
     && nvm use $VERSION && nvm alias default $VERSION'
 
 RUN echo "nvm use default &>/dev/null" >> ~/.bashrc.d/51-nvm-fix
+
+RUN brew install gitleaks
