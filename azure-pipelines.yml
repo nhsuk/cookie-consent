@@ -17,16 +17,18 @@ steps:
 - script: npm install
   displayName: npm install
 
-- task: SonarQubePrepare@5
+- task: SonarCloudPrepare@1
   inputs:
-    SonarQube: 'cookie-consent'
+    SonarCloud: 'SonarCloud'
+    organization: 'nhsdigital'
     scannerMode: 'CLI'
-    configMode: 'manual'
-    cliProjectKey: 'cookie-consent'
+    configMode: 'file'
     extraProperties: |
-        sonar.javascript.lcov.reportPaths=coverage/lcov.info
-        sonar.exclusions=**/*.config.js,/coverage/**,**/integration-tests/,**/tests/example/,**/*.test.*,__mocks__/**,*test-environment.*
-        sonar.exclusions=**/dependency-check-report.html,node_modules/**
+      sonar.javascript.lcov.reportPaths=coverage/lcov.info
+      sonar.language=js
+      sonar.projectKey=nhsuk-cookie-consent
+      sonar.dependencyCheck.htmlReportPath=$(System.DefaultWorkingDirectory)/dependency-scan-results/dependency-check-report.html
+      sonar.exclusions=**/*.config.js,/coverage/**,**/integration-tests/,**/tests/example/,**/*.test.*,__mocks__/**,*test-environment.*,**/dependency-scan-results/dependency-check-report.html,node_modules/**
 
 - script: npm run build:production
   displayName: 'build'
@@ -44,6 +46,7 @@ steps:
     scanPath: '$(Build.SourcesDirectory)'
     format: 'HTML, JUNIT'
     reportsDirectory: '$(System.DefaultWorkingDirectory)/dependency-scan-results'
+    dependencyCheckVersion: '8.4.3'
 
 - task: PublishTestResults@2
   displayName: 'Publish OWASP Dependency Check Results'
@@ -53,11 +56,17 @@ steps:
     testRunTitle: 'Dependency check'
     searchFolder: '$(Common.TestResultsDirectory)'
 
-- task: SonarQubeAnalyze@5
+- task: SonarCloudAnalyze@1
+  displayName: 'Run SonarCloud Code Analysis'
 
-- task: SonarQubePublish@5
+- task: SonarCloudPublish@1
+  displayName: 'Publish Quality Gate Result'
+
+- task: sonarcloud-buildbreaker@2
+  displayName: "Break the build if the quality gate fails"
   inputs:
-    pollingTimeoutSec: '300'
+    SonarCloud: 'SonarCloud'
+    organization: 'nhsdigital'
 
 - task: CopyFiles@2
   inputs:

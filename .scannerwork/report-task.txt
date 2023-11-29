@@ -1,0 +1,7 @@
+organization=nhsdigital
+projectKey=nhsuk-cookie-consent
+serverUrl=https://sonarcloud.io
+serverVersion=8.0.0.51096
+dashboardUrl=https://sonarcloud.io/dashboard?id=nhsuk-cookie-consent
+ceTaskId=AYwbaRvA0YdpKMt6NS7o
+ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AYwbaRvA0YdpKMt6NS7o
