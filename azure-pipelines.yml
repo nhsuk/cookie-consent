@@ -46,6 +46,7 @@ steps:
     scanPath: '$(Build.SourcesDirectory)'
     format: 'HTML, JUNIT'
     reportsDirectory: '$(System.DefaultWorkingDirectory)/dependency-scan-results'
+    dependencyCheckVersion: '8.4.3'
 
 - task: PublishTestResults@2
   displayName: 'Publish OWASP Dependency Check Results'
