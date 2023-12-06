@@ -24,11 +24,11 @@ steps:
     scannerMode: 'CLI'
     configMode: 'file'
     extraProperties: |
-      sonar.javascript.lcov.reportPaths=coverage/lcov.info
       sonar.language=js
       sonar.projectKey=nhsuk-cookie-consent
+      sonar.javascript.lcov.reportPaths=coverage/lcov.info,tests/integration-tests/coverage/lcov.info
       sonar.dependencyCheck.htmlReportPath=$(System.DefaultWorkingDirectory)/dependency-scan-results/dependency-check-report.html
-      sonar.exclusions=**/*.config.js,/coverage/**,**/integration-tests/,**/tests/example/,**/*.test.*,__mocks__/**,*test-environment.*,**/dependency-scan-results/dependency-check-report.html,node_modules/**
+      sonar.exclusions=**/*.config.js,/coverage/**,tests/**/coverage/**,**/integration-tests/,**/tests/example/,**/*.test.*,__mocks__/**,*test-environment.*,**/dependency-scan-results/dependency-check-report.html,node_modules/**
 
 - script: npm run build:production
   displayName: 'build'
