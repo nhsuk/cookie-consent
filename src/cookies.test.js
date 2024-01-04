@@ -1,6 +1,8 @@
 /* global expect, cookieJar */
 
-import { createCookie, getCookie, deleteCookies } from './cookies';
+import {
+  createCookie, getCookie, deleteCookies, nonWhiteListedCookies,
+} from './cookies';
 
 /* https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript */
 function deleteAllCookies() {
@@ -71,6 +73,10 @@ describe('deleteCookies', () => {
     deleteAllCookies();
   });
 
+  afterEach(() => {
+    process.env.COOKIE_WHITE_LIST = undefined;
+  });
+
   test('function exists', () => {
     expect(deleteCookies).toBeInstanceOf(Function);
   });
@@ -87,5 +93,38 @@ describe('deleteCookies', () => {
     document.cookie = 'testcookie=testvalue; Path=/path1/path2';
     deleteCookies();
     expect(document.cookie).toBe('');
+  });
+
+  test('deletes all cookies except nhsuk-cookie-consent and whitelisted cookies', () => {
+    process.env.COOKIE_WHITE_LIST = 'whitelistcookie1, whitelistcookie2';
+    document.cookie = 'nhsuk-cookie-consent=consentvalue';
+    document.cookie = 'whitelistcookie1=testvalue';
+    document.cookie = 'whitelistcookie2=anothertestvalue';
+    document.cookie = 'notawhitelistedcookie=testvalue';
+    deleteCookies();
+    expect(document.cookie).toBe('nhsuk-cookie-consent=consentvalue; whitelistcookie1=testvalue; whitelistcookie2=anothertestvalue');
+  });
+});
+
+describe('keepCookies', () => {
+  afterEach(() => {
+    process.env.COOKIE_WHITE_LIST = undefined;
+  });
+  test('returns false for whitelisted cookies', () => {
+    document.cookie = 'nhsuk-cookie-consent=consentvalue';
+    document.cookie = 'testcookie=testvalue';
+    document.cookie = 'anothertestcookie=anothertestvalue';
+    document.cookie = 'notawhitelistedcookie=testvalue';
+    process.env.COOKIE_WHITE_LIST = 'atestcookie, anothertestcookie';
+    expect(nonWhiteListedCookies('atestcookie')).toBe(false);
+    expect(nonWhiteListedCookies('anothertestcookie')).toBe(false);
+  });
+  test('returns true for non whitelisted cookies', () => {
+    document.cookie = 'nhsuk-cookie-consent=consentvalue';
+    document.cookie = 'testcookie=testvalue';
+    document.cookie = 'anothertestcookie=anothertestvalue';
+    document.cookie = 'notawhitelistedcookie=testvalue';
+    process.env.COOKIE_WHITE_LIST = 'atestcookie, anothertestcookie';
+    expect(nonWhiteListedCookies('notawhitelistedcookie')).toBe(true);
   });
 });
