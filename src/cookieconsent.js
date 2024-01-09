@@ -204,7 +204,7 @@ function shouldShowBanner() {
   }
 
   // Show the banner if the user has consented before, but on an old version
-  if (!isValidVersion(COOKIE_VERSION)) {
+  if (!isValidVersion()) {
     return true;
   }
 
@@ -241,7 +241,7 @@ export function onload() {
   }
 
   // if a cookie is set but it's invalid, clear all cookies.
-  if (isValidVersion(COOKIE_VERSION) === false) {
+  if (isValidVersion() === false) {
     deleteCookies();
   }
 
