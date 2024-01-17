@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<suppressions xmlns="https://jeremylong.github.io/DependencyCheck/dependency-suppression.1.3.xsd">
+    <suppress>
+        <notes><![CDATA[file name: axios.js]]></notes>
+        <packageUrl regex="true">^pkg:javascript/axios@.*$</packageUrl>
+        <cve>CVE-2021-3749</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: axios.min.js]]></notes>
+        <packageUrl regex="true">^pkg:javascript/axios@.*$</packageUrl>
+        <cve>CVE-2021-3749</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: helper.js]]></notes>
+        <packageUrl regex="true">^pkg:javascript/lodash@.*$</packageUrl>
+        <cve>CVE-2019-10744</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: helper.js]]></notes>
+        <packageUrl regex="true">^pkg:javascript/lodash@.*$</packageUrl>
+        <cve>CVE-2021-23337</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: moment.js]]></notes>
+        <packageUrl regex="true">^pkg:javascript/moment\.js@.*$</packageUrl>
+        <cve>CVE-2022-24785</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: moment.js]]></notes>
+        <packageUrl regex="true">^pkg:javascript/moment\.js@.*$</packageUrl>
+        <cve>CVE-2022-31129</cve>
+    </suppress>
+    <suppress>
+        <notes><![CDATA[file name: moment.js]]></notes>
+        <packageUrl regex="true">^pkg:javascript/moment\.js@.*$</packageUrl>
+        <cve>CVE-2023-22467</cve>
+    </suppress>
+</suppressions>
