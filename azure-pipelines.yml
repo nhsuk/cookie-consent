@@ -69,7 +69,7 @@ steps:
 - task: Bash@3
   inputs:
     filePath: '$(Pipeline.Workspace)/owasp/run_owasp_scanner.sh'
-    arguments: '--scan "$(System.DefaultWorkingDirectory)" --failOnCVSS "7" --project "cookie-consent" --out "$(System.DefaultWorkingDirectory)/dependency-scan-results" --suppression $(System.DefaultWorkingDirectory)/src/owasp-dependency-check-suppressions.xml --format HTML --format JUNIT --format JSON'
+    arguments: '--scan "$(System.DefaultWorkingDirectory)" --failOnCVSS "7" --project "cookie-consent" --out "$(System.DefaultWorkingDirectory)/dependency-scan-results" --suppression $(System.DefaultWorkingDirectory)/src/owasp-dependency-check-suppressions.xml --nodePackageSkipDevDependencies --nodeAuditSkipDevDependencies --format HTML --format JUNIT --format JSON'
   displayName: Run OWASP Dependency Check
 
 - task: PublishTestResults@2
