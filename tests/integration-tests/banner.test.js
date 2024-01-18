@@ -1,6 +1,5 @@
 /* global page expect */
-
-import { clearAllCookies } from './util';
+const { clearAllCookies } = require ('./util');
 
 const waitForVisibleBanner = async () => {
   await page.waitForSelector('.nhsuk-cookie-banner', { visible: true });
@@ -18,7 +17,8 @@ describe('Banner is usable', () => {
   });
 
   it('should display on first page load', async () => {
-    await expect(page).toMatch("We've put some small files called cookies on your device");
+    const text = await page.evaluate(() => document.querySelector('p').textContent);
+    await expect(text).toMatch("We've put some small files called cookies on your device");
   });
 
   it('clicking the "Do not use analytics cookies" button should hide banner', async () => {
@@ -91,7 +91,7 @@ describe('nobanner mode', () => {
 
   it('prevents banner from showing', async () => {
     // give the banner a chance to show up
-    page.waitFor(250);
+    page.waitForTimeout(250);
     const banner = await page.evaluate(async () => document.querySelector('.nhsuk-cookie-banner'));
     expect(banner).toBe(null);
   });

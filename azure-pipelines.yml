@@ -39,15 +39,6 @@ steps:
 - script: CI=true npm run test
   displayName: testing
 
-- task: dependency-check-build-task@6
-  displayName: 'Run OWASP Dependency Check'
-  inputs:
-    projectName: 'cookie-consent'
-    scanPath: '$(Build.SourcesDirectory)'
-    format: 'HTML, JUNIT'
-    reportsDirectory: '$(System.DefaultWorkingDirectory)/dependency-scan-results'
-    dependencyCheckVersion: '8.4.3'
-
 - script: |
     pat=$(AZURE_DEVOPS_PERSONAL_PAT)
     azBuildId=$(curl -s -u :$pat \
@@ -69,7 +60,7 @@ steps:
 - task: Bash@3
   inputs:
     filePath: '$(Pipeline.Workspace)/owasp/run_owasp_scanner.sh'
-    arguments: '--scan "$(System.DefaultWorkingDirectory)" --failOnCVSS "7" --project "cookie-consent" --out "$(System.DefaultWorkingDirectory)/dependency-scan-results" --suppression $(System.DefaultWorkingDirectory)/src/owasp-dependency-check-suppressions.xml --nodePackageSkipDevDependencies --nodeAuditSkipDevDependencies --format HTML --format JUNIT --format JSON'
+    arguments: '--scan "$(System.DefaultWorkingDirectory)" --failOnCVSS "7" --project "cookie-consent" --out "$(System.DefaultWorkingDirectory)/dependency-scan-results" --suppression $(System.DefaultWorkingDirectory)/owasp-dependency-check-suppressions.xml --nodePackageSkipDevDependencies --nodeAuditSkipDevDependencies --format HTML --format JUNIT'
   displayName: Run OWASP Dependency Check
 
 - task: PublishTestResults@2
