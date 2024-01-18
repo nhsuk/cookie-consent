@@ -63,5 +63,8 @@
     "hooks": {
       "pre-push": "npm run lint && npm run test"
     }
-  }
+  },
+  "engines": {
+    "node": "20.x"
+  }  
 }
