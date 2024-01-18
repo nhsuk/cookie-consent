@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-redeclare
 /* global expect, jest, beforeEach, afterEach */
 /* eslint-disable no-underscore-dangle */
 
@@ -66,11 +67,13 @@ describe('setConsent', () => {
   const setConsent = cookieconsent.__get__('setConsent');
   let spy;
 
+  // eslint-disable-next-line no-redeclare
   beforeEach(() => {
     spy = jest.fn();
     cookieconsent.__Rewire__('createCookie', spy);
   });
 
+  // eslint-disable-next-line no-redeclare
   afterEach(() => {
     cookieconsent.__ResetDependency__('createCookie');
   });

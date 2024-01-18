@@ -11,4 +11,4 @@ async function clearAllCookies() {
   await client.send('Network.clearBrowserCache'); // eslint-disable-line no-underscore-dangle
 }
 
-module.exports = { clearAllCookies }
+module.exports = { clearAllCookies };

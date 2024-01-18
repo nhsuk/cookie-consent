@@ -1,5 +1,5 @@
 /* global page expect */
-const { clearAllCookies } = require ('./util');
+const { clearAllCookies } = require('./util');
 
 const waitForVisibleBanner = async () => {
   await page.waitForSelector('.nhsuk-cookie-banner', { visible: true });

@@ -1,3 +1,4 @@
+// eslint-disable-next-line no-redeclare
 /* global expect, jest, afterEach */
 /* eslint-disable no-underscore-dangle */
 
@@ -106,4 +107,3 @@ describe('get an absolute URL', () => {
     expect(makeUrlAbsolute(url)).toBe('http://localhost/path/to/page.html#section-2');
   });
 });
-

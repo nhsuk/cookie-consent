@@ -46,8 +46,8 @@ export function createCookie(name, value, days, path, domain, secure) {
 function getAllCookies() {
   const cookiesString = document.cookie || '';
   const cookiesArray = cookiesString.split(';')
-    .filter(cookie => cookie !== '')
-    .map(cookie => cookie.trim());
+    .filter((cookie) => cookie !== '')
+    .map((cookie) => cookie.trim());
 
   // Turn the cookie array into an object of key/value pairs
   const cookies = cookiesArray.reduce((acc, currentValue) => {
@@ -75,7 +75,7 @@ export function deleteCookies() {
   const cookies = getAllCookies();
   const cookieNames = Object.keys(cookies);
   // We want to delete all cookies except for our consent cookie
-  const cookieNamesToDelete = cookieNames.filter(name => name !== 'nhsuk-cookie-consent');
+  const cookieNamesToDelete = cookieNames.filter((name) => name !== 'nhsuk-cookie-consent');
 
   // generate a list of domains that the cookie could possibly belong to
   const domainParts = window.location.hostname.split('.');
