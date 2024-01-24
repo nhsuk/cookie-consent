@@ -166,7 +166,7 @@ N.B. The integration tests rely on there being a test server available on localh
 
 ## Deployment
 
-When code is merged into the master branch an Azure build pipeline will be triggered. If the pipeline runs successfully 
+When code is merged into the main branch an Azure build pipeline will be triggered. If the pipeline runs successfully 
 it will produce a build artifact containing the compiled javascript.
 
 To deploy the artifact simply create a release referencing the appropriate build artifact and run the release pipeline in 
