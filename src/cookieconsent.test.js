@@ -22,12 +22,36 @@ describe('getCookie', () => {
     cookieconsent.__ResetDependency__('getRawCookie');
   });
 
-  test('getCookie throws an error if getRawCookie returns invalid json', () => {
+  test('getCookie returns object of default settings if getRawCookie returns invalid json', () => {
     cookieconsent.__Rewire__('getRawCookie', () => '{abc}');
-    expect(() => {
-      getCookie();
-    }).toThrow(SyntaxError);
+    cookieconsent.__Rewire__('createCookie', () => null);
+    expect(getCookie()).toEqual({
+      consented: false,
+      marketing: false,
+      necessary: true,
+      preferences: false,
+      statistics: false,
+      version: 4,
+    });
     cookieconsent.__ResetDependency__('getRawCookie');
+    cookieconsent.__ResetDependency__('createCookie');
+  });
+
+  test('getCookie resets cookie if getRawCookie returns invalid json', () => {
+    const spy = jest.fn();
+    cookieconsent.__Rewire__('getRawCookie', () => '{abc}');
+    cookieconsent.__Rewire__('createCookie', spy);
+    getCookie();
+    expect(spy).toHaveBeenCalledWith({
+      consented: false,
+      marketing: false,
+      necessary: true,
+      preferences: false,
+      statistics: false,
+      version: 4,
+    }, null, '/');
+    cookieconsent.__ResetDependency__('getRawCookie');
+    cookieconsent.__ResetDependency__('createCookie');
   });
 });
 
