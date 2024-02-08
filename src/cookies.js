@@ -68,6 +68,18 @@ export function getCookie(name) {
   return cookies[name] || null;
 }
 
+/**
+ * find cookies that have been whitelisted
+ * returns the opposite boolean value for the filter to exclude the whitelisted cookies
+ */
+export function nonWhiteListedCookies(name) {
+  const cookieWhitelist = ['nhsuk-cookie-consent']; // should always have this as the default
+  if (process.env.COOKIE_WHITE_LIST) {
+    process.env.COOKIE_WHITE_LIST.split(',').forEach(cookieName => cookieWhitelist.push(cookieName.trim()));
+  }
+  return !cookieWhitelist.includes(name);
+}
+
 /*
  * Remove all cookies other than nhsuk-cookie-consent cookie
  */
@@ -75,7 +87,7 @@ export function deleteCookies() {
   const cookies = getAllCookies();
   const cookieNames = Object.keys(cookies);
   // We want to delete all cookies except for our consent cookie
-  const cookieNamesToDelete = cookieNames.filter(name => name !== 'nhsuk-cookie-consent');
+  const cookieNamesToDelete = cookieNames.filter(nonWhiteListedCookies);
 
   // generate a list of domains that the cookie could possibly belong to
   const domainParts = window.location.hostname.split('.');

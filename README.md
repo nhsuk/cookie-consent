@@ -142,6 +142,13 @@ Set to `true` a logging URL will be hit when the banner shown, analytics are acc
 LOG_TO_SPLUNK=true npm run build:production
 ```
 
+#### `COOKIE_WHITE_LIST`
+
+A string separated by commas containing the cookies you want to whitelist.
+```sh
+COOKIE_WHITE_LIST='cookie1, cookie2'
+```
+
 ## Tests
 
 The tests require the javascript to be compiled. See the [Compiling](#compiling) section above.
