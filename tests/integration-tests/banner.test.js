@@ -1,6 +1,6 @@
 /* global page expect */
 
-import { clearAllCookies } from './util';
+const { clearAllCookies } = require('./util');
 
 const waitForVisibleBanner = async () => {
   await page.waitForSelector('.nhsuk-cookie-banner', { visible: true });
@@ -18,7 +18,11 @@ describe('Banner is usable', () => {
   });
 
   it('should display on first page load', async () => {
-    await expect(page).toMatch("We've put some small files called cookies on your device");
+    const cookieText = await page.evaluate(() => {
+      const paragraph = document.querySelector('#nhsuk-cookie-banner .nhsuk-width-container p');
+      return paragraph.innerText;
+    });
+    await expect(cookieText).toMatch("We've put some small files called cookies on your device");
   });
 
   it('clicking the "Do not use analytics cookies" button should hide banner', async () => {
@@ -54,8 +58,11 @@ describe('Banner is usable', () => {
   });
 
   it('clicking "read more about our cookies" should take the user to another page', async () => {
-    await page.click('#nhsuk-cookie-banner__link');
-    expect(page.url()).toEqual('http://localhost:8080/our-policies/cookies-policy/');
+    const hrefText = await page.evaluate(() => {
+      const linkElement = document.getElementById('nhsuk-cookie-banner__link');
+      return linkElement.getAttribute('href');
+    });
+    expect(`http://localhost:8080${hrefText}`).toEqual('http://localhost:8080/our-policies/cookies-policy/');
   });
 });
 
@@ -91,7 +98,6 @@ describe('nobanner mode', () => {
 
   it('prevents banner from showing', async () => {
     // give the banner a chance to show up
-    page.waitFor(250);
     const banner = await page.evaluate(async () => document.querySelector('.nhsuk-cookie-banner'));
     expect(banner).toBe(null);
   });

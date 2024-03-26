@@ -1,6 +1,6 @@
 /* global page, expect, beforeEach */
 
-import { clearAllCookies } from './util';
+const { clearAllCookies } = require('./util');
 
 const getCookieNames = async () => {
   const cookies = await page.cookies();
@@ -44,7 +44,6 @@ describe('User has out-of-date consent', () => {
     await setTestCookie();
     await setFullConsentWithVersion(0);
     await page.goto('http://localhost:8080/tests/example/');
-    await page.waitFor(500);
   });
 
   it('shows the banner', async () => {

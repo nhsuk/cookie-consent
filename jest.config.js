@@ -10,10 +10,8 @@ module.exports = {
   testEnvironment: './cookie-test-environment.js',
   testEnvironmentOptions: {
     cookieJar: new jsdom.CookieJar(),
+    // Set a url with a path so we can write cookie tests that use paths.
+    url: 'http://localhost/path1/path2/path3/'
   },
-  testMatch: [
-    '<rootDir>/src/*.test.js',
-  ],
-  // Set a url with a path so we can write cookie tests that use paths.
-  testURL: 'http://localhost/path1/path2/path3/',
+  testMatch: ['<rootDir>/src/*.test.js'],
 };

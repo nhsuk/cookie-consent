@@ -1,6 +1,6 @@
 /* global page, expect, beforeAll */
 
-import { clearAllCookies } from './util';
+const { clearAllCookies } = require('./util');
 
 const getCookieNames = async () => {
   const cookies = await page.cookies();
