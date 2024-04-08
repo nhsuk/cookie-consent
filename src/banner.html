@@ -14,7 +14,7 @@
 
   <div class="nhsuk-success-banner" id="nhsuk-cookie-confirmation-banner" style="display:none;">
     <div class="nhsuk-width-container">
-      <p id="nhsuk-success-banner__message">You can change your cookie settings at any time using our <a href="${require('./settings.js').getPolicyUrl()}">cookies page</a>.</p>
+      <p id="nhsuk-success-banner__message">You can change your cookie settings at any time using our <a href="${require('./settings.js').getPolicyUrl()}">cookies page</a>.<a id="nhsuk-success-banner__close" style="float: right; cursor: pointer;" href="#" onclick="document.getElementById('nhsuk-cookie-confirmation-banner').style.display = 'none'; return false;">Close</a></p>
     </div>
   </div>
 </div>
