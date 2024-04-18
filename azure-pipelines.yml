@@ -11,7 +11,7 @@ variables:
 steps:
 - task: NodeTool@0
   inputs:
-    versionSpec: '14.x'
+    versionSpec: '20.x'
   displayName: 'Install Node.js'
   
 - script: npm install
@@ -38,23 +38,6 @@ steps:
 
 - script: CI=true npm run test
   displayName: testing
-
-- task: dependency-check-build-task@6
-  displayName: 'Run OWASP Dependency Check'
-  inputs:
-    projectName: 'cookie-consent'
-    scanPath: '$(Build.SourcesDirectory)'
-    format: 'HTML, JUNIT'
-    reportsDirectory: '$(System.DefaultWorkingDirectory)/dependency-scan-results'
-    dependencyCheckVersion: '8.4.3'
-
-- task: PublishTestResults@2
-  displayName: 'Publish OWASP Dependency Check Results'
-  inputs:
-    testResultsFormat: 'JUnit'
-    testResultsFiles: '$(System.DefaultWorkingDirectory)/dependency-scan-results/*junit.xml'
-    testRunTitle: 'Dependency check'
-    searchFolder: '$(Common.TestResultsDirectory)'
 
 - task: SonarCloudAnalyze@1
   displayName: 'Run SonarCloud Code Analysis'

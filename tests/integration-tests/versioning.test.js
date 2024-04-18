@@ -1,6 +1,6 @@
 /* global page, expect, beforeEach */
 
-import { clearAllCookies } from './util';
+const { clearAllCookies } = require('./util');
 
 const getCookieNames = async () => {
   const cookies = await page.cookies();
@@ -12,7 +12,7 @@ const getCookieNames = async () => {
  * @param {int} version The version number to use.
  */
 const setFullConsentWithVersion = async (version) => {
-  /* eslint-disable sort-keys */
+   
   const cookieValue = {
     necessary: true,
     preferences: true,
@@ -21,7 +21,7 @@ const setFullConsentWithVersion = async (version) => {
     consented: true,
     version,
   };
-  /* eslint-enable */
+   
   const cookieValueString = encodeURIComponent(JSON.stringify(cookieValue));
   await page.setCookie({
     name: 'nhsuk-cookie-consent',
@@ -44,7 +44,6 @@ describe('User has out-of-date consent', () => {
     await setTestCookie();
     await setFullConsentWithVersion(0);
     await page.goto('http://localhost:8080/tests/example/');
-    await page.waitFor(500);
   });
 
   it('shows the banner', async () => {

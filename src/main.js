@@ -39,7 +39,7 @@ export function setConsented(value) {
  * Set the global NHSCookieConsent object that implementors of this library
  * will interact with.
  */
-/* eslint-disable sort-keys */
+ 
 window.NHSCookieConsent = {
   /*
    * The version of this package as defined in the package.json
@@ -56,6 +56,6 @@ window.NHSCookieConsent = {
   setMarketing,
   setConsented,
 };
-/* eslint-enable sort-keys */
+ 
 
 window.addEventListener('DOMContentLoaded', onload);

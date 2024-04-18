@@ -1,8 +1,9 @@
-const JSDOMEnvironment = require('jest-environment-jsdom');
+import JSDOMEnvironment from 'jest-environment-jsdom';
 
-module.exports = class CookieTestEnvironment extends JSDOMEnvironment {
-  constructor(config) {
-    super(config);
+export default class CookieTestEnvironment extends JSDOMEnvironment {
+  constructor(config, options) {
+    super(config, options);
+    this.global.jsdom = this.dom;
     this.global.cookieJar = this.dom.cookieJar;
   }
 

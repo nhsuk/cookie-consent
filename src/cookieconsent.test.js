@@ -1,6 +1,4 @@
 /* global expect, jest, beforeEach, afterEach */
-/* eslint-disable no-underscore-dangle */
-
 import cookieconsent, { getConsentSetting, setConsentSetting, onload } from './cookieconsent';
 
 const COOKIE_NAME = cookieconsent.__get__('COOKIE_NAME');

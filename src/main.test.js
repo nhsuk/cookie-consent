@@ -1,5 +1,5 @@
 /* global expect */
-/* eslint-disable no-underscore-dangle */
+ 
 
 import * as api from './main';
 

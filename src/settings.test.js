@@ -1,5 +1,4 @@
 /* global expect, jest, afterEach */
-/* eslint-disable no-underscore-dangle */
 
 import settings, { getNoBanner, getPolicyUrl, makeUrlAbsolute } from './settings';
 

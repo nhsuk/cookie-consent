@@ -1,4 +1,3 @@
-/* eslint-disable prefer-template */
 
 // used to create a new cookie for the user which covers different cookie types
 export function createCookie(name, value, days, path, domain, secure) {
@@ -79,14 +78,14 @@ export function deleteCookies() {
 
   // generate a list of domains that the cookie could possibly belong to
   const domainParts = window.location.hostname.split('.');
-  const domains = domainParts.map((domainPart, i) => { // eslint-disable-line arrow-body-style
+  const domains = domainParts.map((domainPart, i) => {  
     return domainParts.slice(i).join('.');
   });
 
   // generate a list of paths that the cookie could possibly belong to
   const pathname = window.location.pathname.replace(/\/$/, ''); // strip trailing slash
   const pathParts = pathname.split('/');
-  const paths = pathParts.map((pathPart, i) => { // eslint-disable-line arrow-body-style
+  const paths = pathParts.map((pathPart, i) => {  
     return pathParts.slice(0, i + 1).join('/') || '/';
   });
 
