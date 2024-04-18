@@ -12,7 +12,7 @@ const getCookieNames = async () => {
  * @param {int} version The version number to use.
  */
 const setFullConsentWithVersion = async (version) => {
-  /* eslint-disable sort-keys */
+   
   const cookieValue = {
     necessary: true,
     preferences: true,
@@ -21,7 +21,7 @@ const setFullConsentWithVersion = async (version) => {
     consented: true,
     version,
   };
-  /* eslint-enable */
+   
   const cookieValueString = encodeURIComponent(JSON.stringify(cookieValue));
   await page.setCookie({
     name: 'nhsuk-cookie-consent',

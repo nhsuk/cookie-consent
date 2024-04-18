@@ -1,5 +1,4 @@
 /* global expect, jest */
-/* eslint-disable no-underscore-dangle */
 
 import enable, { enableScriptsByCategories, enableIframesByCategories } from './enable';
 

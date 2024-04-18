@@ -1,4 +1,3 @@
-/* eslint-disable no-var, prefer-arrow-callback, prefer-template */
 
 /**
  * function for displaying cookie information on the example pages.

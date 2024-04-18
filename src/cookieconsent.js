@@ -29,7 +29,7 @@ const COOKIE_TYPE = {
  */
 const NO_BANNER = (process.env.NO_BANNER === 'true');
 
-/* eslint-disable sort-keys */
+ 
 // Pre-defined cookie types in line with cookiebot categories
 const defaultConsent = {
   necessary: true,
@@ -37,8 +37,7 @@ const defaultConsent = {
   statistics: false,
   marketing: false,
   consented: false,
-};
-/* eslint-enable sort-key */
+}
 
 /**
  * Get the consent cookie and parse it into an object
