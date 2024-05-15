@@ -209,11 +209,7 @@ function shouldShowBanner() {
 
   // Show the banner if the user has a cookie, but didn't actively consent.
   // For example, they didn't interact with the banner on a previous visit.
-  if (getConsentSetting('consented') === false) {
-    return true;
-  }
-
-  return false;
+  return getConsentSetting('consented') === false;
 }
 
 /*

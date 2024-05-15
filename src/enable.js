@@ -30,8 +30,8 @@ function enableIframe(iframe) {
  */
 function shouldEnable(allowedCategories, cookieConsentAttribute) {
   const cookieConsentTypes = cookieConsentAttribute.split(',');
-  for (let i = 0; i < cookieConsentTypes.length; i++) {
-    if (allowedCategories.indexOf(cookieConsentTypes[i]) === -1) {
+  for (const type of cookieConsentTypes) {
+    if (allowedCategories.indexOf(type) === -1) {
       // If *any* of the cookieConsentTypes are not in the allowedCategories array, return false.
       return false;
     }
@@ -45,10 +45,10 @@ function shouldEnable(allowedCategories, cookieConsentAttribute) {
 export function enableScriptsByCategories(categories) {
   const scripts = document.querySelectorAll('script[data-cookieconsent]');
   // Do not use scripts.forEach due to poor browser support with NodeList.forEach
-  for (let i = 0; i < scripts.length; i++) {
-    const cookieconsent = scripts[i].getAttribute('data-cookieconsent');
+  for (const script of scripts) {
+    const cookieconsent = script.getAttribute('data-cookieconsent');
     if (shouldEnable(categories, cookieconsent)) {
-      enableScript(scripts[i]);
+      enableScript(script);
     }
   }
 }
@@ -59,10 +59,10 @@ export function enableScriptsByCategories(categories) {
 export function enableIframesByCategories(categories) {
   const iframes = document.querySelectorAll('iframe[data-cookieconsent]');
   // Do not use iframes.forEach due to poor browser support with NodeList.forEach
-  for (let i = 0; i < iframes.length; i++) {
-    const cookieconsent = iframes[i].getAttribute('data-cookieconsent');
+  for (const iframe of iframes) {
+    const cookieconsent = iframe.getAttribute('data-cookieconsent');
     if (shouldEnable(categories, cookieconsent)) {
-      enableIframe(iframes[i]);
+      enableIframe(iframe);
     }
   }
 }
