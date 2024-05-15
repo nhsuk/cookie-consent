@@ -12,20 +12,20 @@ export function createCookie(name, value, days, path, domain, secure) {
   }
 
   // appends name to cookie, making it searchable
-  let cookieString = `${name}=${encodeURIComponent(value)}`;
+  let cookieString = `${name}=${encodeURI(value)}`;
 
   if (expires) {
     cookieString += ';expires=' + expires;
   }
 
   if (path) {
-    cookieString += ';path=' + encodeURIComponent(path);
+    cookieString += ';path=' + encodeURI(path);
   }
 
   // In the cookie spec, domains must have a '.' so e.g `localhost` is not valid
   // and should never be set as the domain.
   if (domain && domain.indexOf('.') !== -1) {
-    cookieString += ';domain=' + encodeURIComponent(domain);
+    cookieString += ';domain=' + encodeURI(domain);
   }
 
   if (secure) {
