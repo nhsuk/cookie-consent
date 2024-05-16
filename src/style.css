@@ -41,10 +41,6 @@
     margin: 0;
   }
   
-  #nhsuk-cookie-confirmation-banner p {
-    margin-bottom: 0px;
-  }
-  
   @media (max-width: 768px) {
     thead {
       position: absolute;
