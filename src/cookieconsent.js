@@ -1,14 +1,14 @@
 import { getCookie as getRawCookie, createCookie as createRawCookie, deleteCookies } from './cookies';
 import insertCookieBanner from './banner';
 import { enableScriptsByCategories, enableIframesByCategories } from './enable';
-import { getNoBanner, getPolicyUrl, makeUrlAbsolute } from './settings';
+import { getNoBanner, getPolicyUrl, makeUrlAbsolute, shouldSkipLinkProcessing } from './settings';
 
 /**
  * If cookie rules/regulations change and the cookie itself needs to change,
  * bump this version up afterwards. It will then give the user the banner again
  * to consent to the new rules
  */
-export const COOKIE_VERSION = 6;
+export const COOKIE_VERSION = 7;
 const COOKIE_NAME = 'nhsuk-cookie-consent';
 
 /**
@@ -117,6 +117,18 @@ function getUserCookieVersion() {
 }
 
 /**
+ * Checks if the user has consented to cookies.
+ * 
+ * This function looks at the consent settings and verifies if the 'consented' field is set to true.
+ * It returns true if the user has given consent, and false otherwise.
+ *
+ * @returns {boolean} - Returns true if the user has consented, false otherwise.
+ */
+function isCookieConsentGiven() {
+  return getConsentSetting('consented') === true;
+}
+
+/**
  * Is the cookie that is currently set on the browser valid.
  * a "valid" cookie is one which has the latest COOKIE_VERSION number.
  * Returns true/false if a cookie is found on the browser.
@@ -156,6 +168,7 @@ function acceptConsent() {
     ...defaultConsent,
     consented: true,
   });
+  registerSharedConsentLinkHandler();
 }
 
 // If analytics consent is given, change the value of the cookie
@@ -165,6 +178,7 @@ function acceptAnalyticsConsent() {
     consented: true,
   });
   enableScriptsAndIframes();
+  registerSharedConsentLinkHandler();
 }
 
 /**
@@ -209,7 +223,45 @@ function shouldShowBanner() {
 
   // Show the banner if the user has a cookie, but didn't actively consent.
   // For example, they didn't interact with the banner on a previous visit.
-  return getConsentSetting('consented') === false;
+  return isCookieConsentGiven() === false;
+}
+
+/**
+ * Handles click events on links and modifies the link URL based on user consent settings, 
+ * 
+ * - Modifies the link URL to include a `nhsa.sc` query parameter based on the user's 
+ *   consent for 'statistics'.
+ * - Only processes links if the user has given consent.
+ *
+ * @param {Event} event - The click event object.
+ */
+function handleSharedConsentLinkClick(event) {
+  const link = event.target.closest("a");
+  if (shouldSkipLinkProcessing(link)) {
+    return;
+  }
+
+ const consented =  getConsentSetting('consented')
+  if (!consented) {
+    return;
+  }
+  
+  // If consented, evaluate 'statistics' consent
+  const statistics = getConsentSetting("statistics");
+
+  // Add nhsa.sc query param based on 'statistics' flag
+  const linkUrl = new URL(link.href);
+  linkUrl.searchParams.set("nhsa.sc", statistics ? "1" : "0");
+  link.href = linkUrl.href;
+}
+
+/**
+ * Registers a click event listener to handle internal link clicks.
+ * If a link is clicked and it's eligible, it appends a query parameter `nhsa.sc` 
+ * to indicate analytics consent status.
+ */
+function registerSharedConsentLinkHandler() {
+  document.addEventListener("click", handleSharedConsentLinkClick);
 }
 
 /*
@@ -233,6 +285,11 @@ export function onload() {
     } else {
       insertCookieBanner(acceptConsent, acceptAnalyticsConsent, hitLoggingUrl);
     }
+  }
+
+  // If the user has consented, register the handler for shared consent links
+  if (isCookieConsentGiven()) {
+    registerSharedConsentLinkHandler();
   }
 
   // if a cookie is set but it's invalid, clear all cookies.

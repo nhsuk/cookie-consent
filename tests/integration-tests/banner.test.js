@@ -132,3 +132,53 @@ describe('custom banner url link', () => {
     expect(banner).not.toBe(null);
   });
 });
+
+describe('broadcast share consent', () => {
+  beforeEach(async () => {
+    await clearAllCookies();
+    await page.goto('http://localhost:8080/tests/example/custom-link.html');
+    await waitForVisibleBanner();
+  });
+
+  it('internal link click without consent does not append tracking parameter', async () => {
+    await page.click('#internal-link');
+    expect(page.url()).toEqual('https://www.nhs.uk/');
+  });
+
+  it('internal link click when analytics consent is given appends tracking parameter', async () => {
+    await page.click('#nhsuk-cookie-banner__link_accept_analytics');
+    await waitForHiddenBanner()
+    
+    await page.click('#internal-link');
+    expect(page.url()).toEqual('https://www.nhs.uk/?nhsa.sc=1');
+  });
+
+  it('internal link click when consent is given appends tracking parameter', async () => {
+    await page.click('#nhsuk-cookie-banner__link_accept');
+    await waitForHiddenBanner()
+    
+    await page.click('#internal-link');
+    expect(page.url()).toEqual('https://www.nhs.uk/?nhsa.sc=0');
+  });
+
+  it('external link without consent does not append tracking parameter', async () => {
+    await page.click('#external-link');
+    expect(page.url()).toEqual('https://www.google.com/');
+  });
+
+    it('external link when analytics consent is given does not append tracking parameter', async () => {
+    await page.click('#nhsuk-cookie-banner__link_accept_analytics');
+    await waitForHiddenBanner()
+    
+    await page.click('#external-link');
+    expect(page.url()).toEqual('https://www.google.com/');
+  });
+
+   it('external link when consent is given does not append tracking parameter', async () => {
+    await page.click('#nhsuk-cookie-banner__link_accept');
+    await waitForHiddenBanner()
+    
+    await page.click('#external-link');
+    expect(page.url()).toEqual('https://www.google.com/');
+  });
+})

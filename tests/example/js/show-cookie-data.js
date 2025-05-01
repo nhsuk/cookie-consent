@@ -25,7 +25,6 @@
       container.innerHTML = '<p>No cookies to show</p>';
     }
   }
-
   refreshButton.addEventListener('click', listCookies);
   listCookies();
 }());

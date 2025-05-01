@@ -1,6 +1,7 @@
 // N.B document.currentScript needs to be executed outside of any callbacks
 // https://developer.mozilla.org/en-US/docs/Web/API/Document/currentScript#Notes
 const scriptTag = document.currentScript;
+const PUBLIC_NHS_SUFFIX = 'nhs.uk';
 
 // get properties from the scriptTag for the policy URL
 export function getPolicyUrl() {
@@ -46,4 +47,29 @@ export function getNoBanner() {
   }
 
   return defaults;
+}
+
+/**
+ * Determines if a link should be skipped from further processing
+ * @param {HTMLAnchorElement} link - The anchor element to check
+ * @returns {boolean} - Whether the link should be skipped
+ */
+export function shouldSkipLinkProcessing(link) {
+  if (!link) {
+    return true;
+  }
+
+  try {
+    const linkUrl = new URL(link.href);
+
+    // Check if the link is to an external hostname
+    const isExternalLink = linkUrl.hostname.endsWith(PUBLIC_NHS_SUFFIX) == false;
+    // Check if the link is to the policy page
+    const isPolicyPage = linkUrl.href.endsWith(getPolicyUrl());
+
+    return isExternalLink || isPolicyPage;
+  } catch (error) {
+    // not a valid URL, so we can't process it
+    return true;
+  }
 }
