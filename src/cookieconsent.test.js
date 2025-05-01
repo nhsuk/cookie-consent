@@ -101,6 +101,30 @@ describe('setConsent', () => {
     }, null, '/');
   });
 
+  test('setConsent creates a session cookie containing consent settings when no cookie type is provided', () => {
+    setConsent({
+      marketing: true,
+      preferences: true,
+      statistics: false,
+    }, null);
+    expect(spy).toHaveBeenCalledWith({
+      marketing: true,
+      preferences: true,
+      statistics: false,
+      version: COOKIE_VERSION,
+    }, null, '/');
+  });
+
+  test('setConsent throws an error when an invalid cookie type is provided', () => {
+    expect(() => {
+      setConsent({
+        marketing: true,
+        preferences: true,
+        statistics: false,  
+      }, 'INVALID');
+    }).toThrow(`Cookie mode INVALID not recognised`);
+  });
+
   test('setConsent mixes the pre-existing consent', () => {
     cookieconsent.__Rewire__('getConsent', () => ({
       marketing: false,
@@ -266,12 +290,22 @@ describe('onload', () => {
   const acceptAnalyticsConsent = cookieconsent.__get__('acceptAnalyticsConsent');
   const hitLoggingUrl = cookieconsent.__get__('hitLoggingUrl');
   const defaultConsent = cookieconsent.__get__('defaultConsent');
+  
 
   beforeEach(() => {
     cookieconsent.__Rewire__('insertCookieBanner', () => null);
   });
   afterEach(() => {
     cookieconsent.__ResetDependency__('insertCookieBanner');
+  });
+
+  test('does not show the banner if shouldShowBanner is false', () => {
+    cookieconsent.__Rewire__('shouldShowBanner', () => false);
+    const spy = jest.fn();
+    cookieconsent.__Rewire__('insertCookieBanner', spy);
+    onload();
+    expect(spy).not.toHaveBeenCalled();
+    cookieconsent.__ResetDependency__('shouldShowBanner');
   });
 
   test('shows the banner with an acceptConsent, acceptAnalyticsConsent and hitLoggingUrl callbacks', () => {
@@ -307,7 +341,6 @@ describe('onload', () => {
     expect(spy).toHaveBeenCalledWith([]);
     cookieconsent.__ResetDependency__('enableIframesByCategories');
   });
-
   test('removes cookies if consent version is out-of-date', () => {
     const spy = jest.fn();
     cookieconsent.__Rewire__('deleteCookies', spy);
@@ -325,6 +358,126 @@ describe('onload', () => {
   });
 });
 
+describe('acceptConsent', () => {
+  const acceptConsent = cookieconsent.__get__('acceptConsent');
+  const defaultConsent = cookieconsent.__get__('defaultConsent');
+
+  beforeEach(() => {
+    cookieconsent.__Rewire__('setConsent', () => null);
+    cookieconsent.__Rewire__('getCookie', () => ({
+      defaultConsent,
+      version: COOKIE_VERSION,
+    }));
+  });
+  afterEach(() => {
+    cookieconsent.__ResetDependency__('getCookie');
+    cookieconsent.__ResetDependency__('setConsent');
+  });
+  test('acceptConsent changes the value of the cookie when consent is given', () => {
+    const spy = jest.fn();
+    cookieconsent.__Rewire__('setConsent', spy);
+    acceptConsent();
+    expect(spy).toHaveBeenCalledWith({
+      consented: true,
+      marketing: defaultConsent.marketing,
+      necessary: defaultConsent.necessary,
+      preferences: defaultConsent.preferences,
+      statistics: defaultConsent.statistics,
+    });
+  });
+});
+describe('acceptAnalyticsConsent', () => {
+  const acceptAnalyticsConsent = cookieconsent.__get__('acceptAnalyticsConsent');
+
+  let setConsentSpy, enableScriptsAndIframesSpy, registerSharedConsentLinkHandlerSpy;
+
+  beforeEach(() => {
+    setConsentSpy = jest.fn();
+    enableScriptsAndIframesSpy = jest.fn();
+    registerSharedConsentLinkHandlerSpy = jest.fn();
+
+    cookieconsent.__Rewire__('setConsent', setConsentSpy);
+    cookieconsent.__Rewire__('enableScriptsAndIframes', enableScriptsAndIframesSpy);
+    cookieconsent.__Rewire__('registerSharedConsentLinkHandler', registerSharedConsentLinkHandlerSpy);
+  });
+
+  afterEach(() => {
+    cookieconsent.__ResetDependency__('setConsent');
+    cookieconsent.__ResetDependency__('enableScriptsAndIframes');
+    cookieconsent.__ResetDependency__('registerSharedConsentLinkHandler');
+  });
+
+  test('calls setConsent with correct arguments', () => {
+    acceptAnalyticsConsent();
+    expect(setConsentSpy).toHaveBeenCalledWith({
+      statistics: true,
+      consented: true,
+    });
+  });
+
+  test('calls enableScriptsAndIframes', () => {
+    acceptAnalyticsConsent();
+    expect(enableScriptsAndIframesSpy).toHaveBeenCalled();
+  });
+
+  test('calls registerSharedConsentLinkHandler', () => {
+    acceptAnalyticsConsent();
+    expect(registerSharedConsentLinkHandlerSpy).toHaveBeenCalled();
+  });
+});
+
+describe('hitLoggingUrl', () => {
+
+  const hitLoggingUrl = cookieconsent.__get__('hitLoggingUrl');
+  let originalEnv;
+  let mockOpen;
+  let mockSend;
+
+  beforeEach(() => {
+    originalEnv = {...process.env};
+    mockOpen = jest.fn();
+    mockSend = jest.fn();
+    global.XMLHttpRequest = jest.fn(() => ({
+      open: mockOpen,
+      send: mockSend,
+    }));
+  });
+
+  afterEach(() => {
+    process.env = originalEnv;
+    global.XMLHttpRequest = undefined;
+  });
+  test('should send a GET request to the correct URL when LOG_TO_SPLUNK is true', () => {
+    process.env.LOG_TO_SPLUNK = 'true';
+    const route = 'test-route';
+    hitLoggingUrl(route);
+    expect(mockOpen).toHaveBeenCalledWith('GET', `https://www.nhs.uk/our-policies/cookies-policy/?policy-action=${route}`);
+    expect(mockSend).toHaveBeenCalled();
+  });
+
+  test('should not send a request when LOG_TO_SPLUNK is false', () => {
+    process.env.LOG_TO_SPLUNK = 'false';
+    const route = 'test-route';
+    hitLoggingUrl(route);
+    expect(mockOpen).not.toHaveBeenCalled();
+    expect(mockSend).not.toHaveBeenCalled();
+  });
+});
+
+describe('shouldShowBanner', () => {
+  
+  beforeEach(() => {
+    cookieconsent.__Rewire__('getNoBanner', () => true);
+  });
+  afterEach(() => {
+    cookieconsent.__ResetDependency__('getNoBanner');
+  });
+
+  test('If nobanner setting is used, never show the banner', () => {
+    const shouldShowBanner = cookieconsent.__get__('shouldShowBanner');
+    expect(shouldShowBanner()).toBe(false);
+  });
+});
 describe('NO_BANNER mode', () => {
   beforeEach(() => {
     cookieconsent.__Rewire__('NO_BANNER', true);

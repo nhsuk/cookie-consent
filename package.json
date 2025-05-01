@@ -18,7 +18,7 @@
     "testserver": "./node_modules/.bin/http-server",
     "clear_jest": "jest --clearCache",
     "watch": "webpack --watch",
-    "prepare": "husky install"
+    "prepare": "husky"
   },
   "repository": {
     "type": "git",
