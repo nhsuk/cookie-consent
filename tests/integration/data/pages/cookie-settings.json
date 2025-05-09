@@ -1,0 +1,8 @@
+{
+  "path": "tests/example/cookie-settings",
+  "title": "Cookie Consent settings form",
+  "heading": "Cookie Settings:",
+  "layout": "transactional",
+  "alert_banner_allowed": "no",
+  "class": "tests.integration.pages.base_page.BasePage"
+}

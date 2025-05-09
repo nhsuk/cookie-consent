@@ -1,0 +1,8 @@
+{
+  "path": "tests/example/custom-link",
+  "title": "Cookie Consent test page",
+  "heading": "Cookies",
+  "layout": "transactional",
+  "alert_banner_allowed": "no",
+  "class": "tests.integration.pages.custom_link_page.CustomLinkPage"
+}

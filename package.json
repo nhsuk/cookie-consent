@@ -14,7 +14,7 @@
     "test": "start-server-and-test testserver http://localhost:8080 test-all",
     "test-all": "npm-run-all --continue-on-error test:*",
     "test:unit": "jest --runInBand --coverage=true",
-    "test:integration": "jest -c tests/integration-tests/jest.config.js --coverage=true",
+    "test:integration": "./tests/scripts/run-integration-tests.sh",
     "testserver": "./node_modules/.bin/http-server",
     "clear_jest": "jest --clearCache",
     "watch": "webpack --watch",
