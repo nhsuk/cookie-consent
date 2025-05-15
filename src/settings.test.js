@@ -1,6 +1,6 @@
 /* global expect, jest, afterEach */
 
-import settings, { getNoBanner, getPolicyUrl, makeUrlAbsolute } from './settings';
+import settings, { getNoBanner, getPolicyUrl, makeUrlAbsolute, shouldSkipLinkProcessing } from './settings';
 
 describe('get script settings for no banner', () => {
   afterEach(() => {
@@ -106,3 +106,26 @@ describe('get an absolute URL', () => {
   });
 });
 
+describe("shouldSkipLinkProcessing", () => {
+  it.each`
+    description                   | href                                                  | expected
+    ${"null link"}                | ${null}                                               | ${true}
+    ${"undefined link"}           | ${undefined}                                          | ${true}
+    ${"external link"}            | ${"https://external.com/page"}                        | ${true}
+    ${"internal non-policy link"} | ${"https://mock.nhs.uk/home"}                         | ${false}
+    ${"internal non-policy link"} | ${"https://nhs.uk"}                                   | ${false}
+    ${"internal non-policy link"} | ${"https://www.nhs.uk"}                               | ${false}
+    ${"internal non-policy link"} | ${"https://assets.nhs.uk"}                            | ${false}
+    ${"internal policy link"}     | ${"https://mock.nhs.uk/our-policies/cookies-policy/"} | ${true}
+
+  `("$description", ({ href, expected }) => {
+    let link = null;
+    if (href !== null && href !== undefined) {
+      link = document.createElement("a");
+      link.href = href;
+    }
+
+    const result = shouldSkipLinkProcessing(link);
+    expect(result).toBe(expected);
+  });
+});

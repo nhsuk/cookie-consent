@@ -356,3 +356,68 @@ describe('NO_BANNER mode', () => {
     cookieconsent.__ResetDependency__('setConsent');
   });
 });
+jest.mock('./banner', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
+
+describe('link href broadcast shared consent querystring parameter', () => {
+  const internalUrl = 'https://www.nhs.uk/page';
+  const externalUrl = 'https://www.mock-page.uk/';
+
+  afterEach(() => {
+    cookieconsent.__ResetDependency__('getConsent');
+    const handler = cookieconsent.__get__('handleSharedConsentLinkClick');
+    document.removeEventListener('click', handler);
+  });
+
+  describe('internal links', () => {
+    beforeEach(() => {
+      document.body.innerHTML = `<a id="mockLink" href="${internalUrl}">Link</a>`;
+    });
+
+    it.each`
+      description                                                     | consent                                    | expectedHref
+      ${"includes nhsa.sc=1 when analytics is true"}                  | ${{ consented: true, statistics: true }}   | ${`${internalUrl}?nhsa.sc=1`}
+      ${"includes nhsa.sc=0 when analytics is false"}                 | ${{ consented: true, statistics: false }}  | ${`${internalUrl}?nhsa.sc=0`}
+      ${"omits nhsa.sc when consent is false and analytics is true"}  | ${{ consented: false, statistics: true }}  | ${internalUrl}
+      ${"omits nhsa.sc when consent is false and analytics is false"} | ${{ consented: false, statistics: false }} | ${internalUrl}
+      ${"omits nhsa.sc when consent is false"}                        | ${{ consented: false }}                    | ${internalUrl}
+      ${"omits nhsa.sc when consent is empty"}                        | ${{}}                                      | ${internalUrl}
+    `("$description", ({ consent, expectedHref }) => {
+      cookieconsent.__Rewire__("getCookie", () => ({
+        ...consent,
+        version: COOKIE_VERSION,
+      }));
+      onload();
+      const link = document.getElementById("mockLink");
+      link.click();
+      expect(link.href).toBe(expectedHref);
+    });
+  });
+
+  describe('external links', () => {
+    beforeEach(() => {
+      document.body.innerHTML = `<a id="mockLink" href="${externalUrl}">Link</a>`;
+    });
+
+    it.each`
+      description                                                     | consent                                    | expectedHref
+      ${"does not include nhsa.sc=1 when analytics is true"}          | ${{ consented: true, statistics: true }}   | ${externalUrl}
+      ${"does not include nhsa.sc=0 when analytics is false"}         | ${{ consented: true, statistics: false }}  | ${externalUrl}
+      ${"omits nhsa.sc when consent is false and analytics is true"}  | ${{ consented: false, statistics: true }}  | ${externalUrl}
+      ${"omits nhsa.sc when consent is false and analytics is false"} | ${{ consented: false, statistics: false }} | ${externalUrl}
+      ${"omits nhsa.sc when consent is false"}                        | ${{ consented: false }}                    | ${externalUrl}
+      ${"omits nhsa.sc when consent is empty"}                        | ${{}}                                      | ${externalUrl}
+    `("$description", ({ consent, expectedHref }) => {
+      cookieconsent.__Rewire__("getCookie", () => ({
+        ...consent,
+        version: COOKIE_VERSION,
+      }));
+      onload();
+      const link = document.getElementById("mockLink");
+      link.click();
+      expect(link.href).toBe(expectedHref);
+    });
+  });
+});

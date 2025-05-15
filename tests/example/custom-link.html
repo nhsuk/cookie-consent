@@ -28,7 +28,12 @@
   <body>
     <main class="main">
       <h1>Cookies:</h1>
-      <button id="cookie-list-refresh">Refresh</button>
+      <div>
+        <button id="cookie-list-refresh">Refresh</button>
+         <!-- Link for broadcasting shared consent query string parameter when cookie is consented -->
+        <a id="internal-link" href="https://www.nhs.uk/">Internal Link</a>
+        <a id="external-link" href="https://www.google.com/">Externall Link</a>
+      </div>
       <div id="cookie-list"></div>
 
       <iframe data-src="https://example.com" data-cookieconsent="statistics" title="Example Content"></iframe>
