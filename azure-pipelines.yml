@@ -17,7 +17,7 @@ steps:
 - script: npm install
   displayName: npm install
 
-- task: SonarCloudPrepare@1
+- task: SonarCloudPrepare@2
   inputs:
     SonarCloud: 'SonarCloud'
     organization: 'nhsdigital'
@@ -28,7 +28,8 @@ steps:
       sonar.projectKey=nhsuk-cookie-consent
       sonar.javascript.lcov.reportPaths=coverage/lcov.info,tests/integration-tests/coverage/lcov.info
       sonar.dependencyCheck.htmlReportPath=$(System.DefaultWorkingDirectory)/dependency-scan-results/dependency-check-report.html
-      sonar.exclusions=**/*.config.js,/coverage/**,tests/**/coverage/**,**/integration-tests/,**/tests/example/,**/*.test.*,__mocks__/**,*test-environment.*,**/dependency-scan-results/dependency-check-report.html,node_modules/**
+      sonar.exclusions=**/*.config.js,/coverage/**,tests/**/coverage/**,**/integration/,**/integration-tests/,**/tests/example/,**/*.test.*,__mocks__/**,*test-environment.*,**/dependency-scan-results/dependency-check-report.html,venv/**,node_modules/**
+      sonar.coverage.exclusions=**/integration/**
 
 - script: npm run build:production
   displayName: 'build'
@@ -36,14 +37,29 @@ steps:
 - script: npm run lint
   displayName: linting
 
-- script: CI=true npm run test
-  displayName: testing
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.11'
+    addToPath: true
+  displayName: "Testing: Configure Python 3.11"
 
-- task: SonarCloudAnalyze@1
+- script: CI=true npm run test
+  displayName: "Testing: Run tests"
+
+- task: PublishPipelineArtifact@1
+  displayName: "Testing: Publish integration test report"
+  condition: succeededOrFailed()
+  inputs:
+    targetPath: "$(Build.SourcesDirectory)/tests/integration/reports"
+    artifactName: "Integration test report"
+
+- task: SonarCloudAnalyze@2
   displayName: 'Run SonarCloud Code Analysis'
 
-- task: SonarCloudPublish@1
+- task: SonarCloudPublish@2
   displayName: 'Publish Quality Gate Result'
+  inputs:
+     pollingTimeoutSec: "300"
 
 - task: sonarcloud-buildbreaker@2
   displayName: "Break the build if the quality gate fails"

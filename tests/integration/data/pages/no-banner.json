@@ -1,0 +1,8 @@
+{
+  "path": "tests/example/no-banner",
+  "title": "Cookie Consent test page",
+  "heading": "Cookies",
+  "layout": "transactional",
+  "alert_banner_allowed": "no",
+  "class": "tests.integration.pages.base_page.BasePage"
+}
