@@ -48,6 +48,20 @@ test('setMarketing sets the marketing consent', () => {
   expect(api.getMarketing()).toBe(false);
 });
 
+test('getConsented function exists', () => {
+  expect(api.getConsented).toBeInstanceOf(Function);
+}
+);  
+test('setConsented function exists', () => {
+  expect(api.setConsented).toBeInstanceOf(Function);
+});
+test('setConsented sets the correct consented value', () => {
+  api.setConsented(true);
+  expect(api.getConsented()).toBe(true);
+  api.setConsented(false);
+  expect(api.getConsented()).toBe(false);
+});
+
 test('Javascript API is exposed on window.NHSCookieConsent', () => {
   expect(window.NHSCookieConsent).toBeInstanceOf(Object);
 });
