@@ -1,9 +1,18 @@
 /* global expect, jest, beforeEach, afterEach */
-import cookieconsent, { getConsentSetting, setConsentSetting, onload } from './cookieconsent';
+import cookieconsent, {
+  getConsentSetting,
+  setConsentSetting,
+  onload,
+} from './cookieconsent';
 
 const COOKIE_NAME = cookieconsent.__get__('COOKIE_NAME');
 const COOKIE_VERSION = cookieconsent.__get__('COOKIE_VERSION');
 const COOKIE_TYPE = cookieconsent.__get__('COOKIE_TYPE');
+
+jest.mock('./banner', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
 
 describe('getCookie', () => {
   const getCookie = cookieconsent.__get__('getCookie');
@@ -36,7 +45,14 @@ describe('createCookie', () => {
     const spy = jest.fn();
     cookieconsent.__Rewire__('createRawCookie', spy);
     createCookie({ a: 123, b: 456 }, 10, '/', 'domain', false);
-    expect(spy).toHaveBeenCalledWith(COOKIE_NAME, '{"a":123,"b":456}', 10, '/', 'domain', false);
+    expect(spy).toHaveBeenCalledWith(
+      COOKIE_NAME,
+      '{"a":123,"b":456}',
+      10,
+      '/',
+      'domain',
+      false
+    );
     cookieconsent.__ResetDependency__('createRawCookie');
   });
 });
@@ -79,49 +95,70 @@ describe('setConsent', () => {
       preferences: true,
       statistics: false,
     });
-    expect(spy).toHaveBeenCalledWith({
-      marketing: true,
-      preferences: true,
-      statistics: false,
-      version: COOKIE_VERSION,
-    }, 90, '/');
+    expect(spy).toHaveBeenCalledWith(
+      {
+        marketing: true,
+        preferences: true,
+        statistics: false,
+        version: COOKIE_VERSION,
+      },
+      90,
+      '/'
+    );
   });
 
   test('setConsent creates a session cookie containing consent settings', () => {
-    setConsent({
-      marketing: true,
-      preferences: true,
-      statistics: false,
-    }, COOKIE_TYPE.SESSION);
-    expect(spy).toHaveBeenCalledWith({
-      marketing: true,
-      preferences: true,
-      statistics: false,
-      version: COOKIE_VERSION,
-    }, null, '/');
+    setConsent(
+      {
+        marketing: true,
+        preferences: true,
+        statistics: false,
+      },
+      COOKIE_TYPE.SESSION
+    );
+    expect(spy).toHaveBeenCalledWith(
+      {
+        marketing: true,
+        preferences: true,
+        statistics: false,
+        version: COOKIE_VERSION,
+      },
+      null,
+      '/'
+    );
   });
 
   test('setConsent creates a session cookie containing consent settings when no cookie type is provided', () => {
-    setConsent({
-      marketing: true,
-      preferences: true,
-      statistics: false,
-    }, null);
-    expect(spy).toHaveBeenCalledWith({
-      marketing: true,
-      preferences: true,
-      statistics: false,
-      version: COOKIE_VERSION,
-    }, null, '/');
+    setConsent(
+      {
+        marketing: true,
+        preferences: true,
+        statistics: false,
+      },
+      null
+    );
+    expect(spy).toHaveBeenCalledWith(
+      {
+        marketing: true,
+        preferences: true,
+        statistics: false,
+        version: COOKIE_VERSION,
+      },
+      null,
+      '/'
+    );
   });
 
   test('setConsent throws an error when an invalid cookie type is provided', () => {
     expect(() => {
-      setConsent({
-        marketing: true,
-        preferences: true,
-        statistics: false,  
-      }, 'INVALID');
+      setConsent(
+        {
+          marketing: true,
+          preferences: true,
+          statistics: false,
+        },
+        'INVALID'
+      );
     }).toThrow(`Cookie mode INVALID not recognised`);
   });
 
@@ -134,17 +171,21 @@ describe('setConsent', () => {
     setConsent({
       marketing: true,
     });
-    expect(spy).toHaveBeenCalledWith({
-      marketing: true,
-      preferences: false,
-      statistics: false,
-      version: COOKIE_VERSION,
-    }, 90, '/');
+    expect(spy).toHaveBeenCalledWith(
+      {
+        marketing: true,
+        preferences: false,
+        statistics: false,
+        version: COOKIE_VERSION,
+      },
+      90,
+      '/'
+    );
     cookieconsent.__ResetDependency__('getConsent');
   });
 });
 
-test('getUserCookieVersion gets the user\'s cookie version', () => {
+test("getUserCookieVersion gets the user's cookie version", () => {
   cookieconsent.__Rewire__('getCookie', () => ({
     marketing: true,
     preferences: false,
@@ -213,12 +254,12 @@ describe('setConsentSetting', () => {
 
   test('setConsentSetting sets consent value by key', () => {
     setConsentSetting('marketing', false);
-    expect(spy).toHaveBeenCalledWith({ marketing: false });
+    expect(spy).toHaveBeenCalledWith({ marketing: false }, COOKIE_TYPE.LONG);
   });
 
   test('setConsentSetting converts value to boolean', () => {
-    setConsentSetting('marketing', 1);
-    expect(spy).toHaveBeenCalledWith({ marketing: true });
+    setConsentSetting('marketing', 1, COOKIE_TYPE.LONG);
+    expect(spy).toHaveBeenCalledWith({ marketing: true }, COOKIE_TYPE.LONG);
   });
 
   test('setConsentSetting with false triggers cookie deletion', () => {
@@ -279,7 +320,10 @@ describe('shouldShowBanner', () => {
   });
 
   test('returns false if we are on policy page configured with absolute URL', () => {
-    cookieconsent.__Rewire__('getPolicyUrl', () => 'http://localhost/path1/path2/path3/');
+    cookieconsent.__Rewire__(
+      'getPolicyUrl',
+      () => 'http://localhost/path1/path2/path3/'
+    );
     expect(shouldShowBanner()).toBe(false);
     cookieconsent.__ResetDependency__('getPolicyUrl');
   });
@@ -287,10 +331,11 @@ describe('shouldShowBanner', () => {
 
 describe('onload', () => {
   const acceptConsent = cookieconsent.__get__('acceptConsent');
-  const acceptAnalyticsConsent = cookieconsent.__get__('acceptAnalyticsConsent');
+  const acceptAnalyticsConsent = cookieconsent.__get__(
+    'acceptAnalyticsConsent'
+  );
   const hitLoggingUrl = cookieconsent.__get__('hitLoggingUrl');
   const defaultConsent = cookieconsent.__get__('defaultConsent');
-  
 
   beforeEach(() => {
     cookieconsent.__Rewire__('insertCookieBanner', () => null);
@@ -312,7 +357,11 @@ describe('onload', () => {
     const spy = jest.fn();
     cookieconsent.__Rewire__('insertCookieBanner', spy);
     onload();
-    expect(spy).toHaveBeenCalledWith(acceptConsent, acceptAnalyticsConsent, hitLoggingUrl);
+    expect(spy).toHaveBeenCalledWith(
+      acceptConsent,
+      acceptAnalyticsConsent,
+      hitLoggingUrl
+    );
     cookieconsent.__ResetDependency__('insertCookieBanner');
   });
 
@@ -347,6 +396,8 @@ describe('onload', () => {
     cookieconsent.__Rewire__('isValidVersion', () => false);
     onload();
     expect(spy).toHaveBeenCalled();
+    cookieconsent.__ResetDependency__('isValidVersion');
+    cookieconsent.__ResetDependency__('deleteCookies');
   });
 
   test('does not remove cookies if no current cookie version is found', () => {
@@ -355,6 +406,8 @@ describe('onload', () => {
     cookieconsent.__Rewire__('isValidVersion', () => null);
     onload();
     expect(spy).not.toHaveBeenCalled();
+    cookieconsent.__ResetDependency__('isValidVersion');
+    cookieconsent.__ResetDependency__('deleteCookies');
   });
 });
 
@@ -387,9 +440,13 @@ describe('acceptConsent', () => {
   });
 });
 describe('acceptAnalyticsConsent', () => {
-  const acceptAnalyticsConsent = cookieconsent.__get__('acceptAnalyticsConsent');
+  const acceptAnalyticsConsent = cookieconsent.__get__(
+    'acceptAnalyticsConsent'
+  );
 
-  let setConsentSpy, enableScriptsAndIframesSpy, registerSharedConsentLinkHandlerSpy;
+  let setConsentSpy,
+    enableScriptsAndIframesSpy,
+    registerSharedConsentLinkHandlerSpy;
 
   beforeEach(() => {
     setConsentSpy = jest.fn();
@@ -397,8 +454,14 @@ describe('acceptAnalyticsConsent', () => {
     registerSharedConsentLinkHandlerSpy = jest.fn();
 
     cookieconsent.__Rewire__('setConsent', setConsentSpy);
-    cookieconsent.__Rewire__('enableScriptsAndIframes', enableScriptsAndIframesSpy);
-    cookieconsent.__Rewire__('registerSharedConsentLinkHandler', registerSharedConsentLinkHandlerSpy);
+    cookieconsent.__Rewire__(
+      'enableScriptsAndIframes',
+      enableScriptsAndIframesSpy
+    );
+    cookieconsent.__Rewire__(
+      'registerSharedConsentLinkHandler',
+      registerSharedConsentLinkHandlerSpy
+    );
   });
 
   afterEach(() => {
@@ -427,14 +490,13 @@ describe('acceptAnalyticsConsent', () => {
 });
 
 describe('hitLoggingUrl', () => {
-
   const hitLoggingUrl = cookieconsent.__get__('hitLoggingUrl');
   let originalEnv;
   let mockOpen;
   let mockSend;
 
   beforeEach(() => {
-    originalEnv = {...process.env};
+    originalEnv = { ...process.env };
     mockOpen = jest.fn();
     mockSend = jest.fn();
     global.XMLHttpRequest = jest.fn(() => ({
@@ -451,7 +513,10 @@ describe('hitLoggingUrl', () => {
     process.env.LOG_TO_SPLUNK = 'true';
     const route = 'test-route';
     hitLoggingUrl(route);
-    expect(mockOpen).toHaveBeenCalledWith('GET', `https://www.nhs.uk/our-policies/cookies-policy/?policy-action=${route}`);
+    expect(mockOpen).toHaveBeenCalledWith(
+      'GET',
+      `https://www.nhs.uk/our-policies/cookies-policy/?policy-action=${route}`
+    );
     expect(mockSend).toHaveBeenCalled();
   });
 
@@ -465,7 +530,6 @@ describe('hitLoggingUrl', () => {
 });
 
 describe('shouldShowBanner', () => {
-  
   beforeEach(() => {
     cookieconsent.__Rewire__('getNoBanner', () => true);
   });
@@ -478,6 +542,7 @@ describe('shouldShowBanner', () => {
     expect(shouldShowBanner()).toBe(false);
   });
 });
+
 describe('NO_BANNER mode', () => {
   beforeEach(() => {
     cookieconsent.__Rewire__('NO_BANNER', true);
@@ -499,20 +564,19 @@ describe('NO_BANNER mode', () => {
     const spy = jest.fn();
     cookieconsent.__Rewire__('setConsent', spy);
     onload();
-    expect(spy).toHaveBeenCalledWith({
-      consented: false,
-      marketing: true,
-      necessary: true,
-      preferences: true,
-      statistics: true,
-    }, 'long');
+    expect(spy).toHaveBeenCalledWith(
+      {
+        consented: false,
+        marketing: true,
+        necessary: true,
+        preferences: true,
+        statistics: true,
+      },
+      'long'
+    );
     cookieconsent.__ResetDependency__('setConsent');
   });
 });
-jest.mock('./banner', () => ({
-  __esModule: true,
-  default: jest.fn(),
-}));
 
 describe('link href broadcast shared consent querystring parameter', () => {
   const internalUrl = 'https://www.nhs.uk/page';
@@ -531,19 +595,19 @@ describe('link href broadcast shared consent querystring parameter', () => {
 
     it.each`
       description                                                     | consent                                    | expectedHref
-      ${"includes nhsa.sc=1 when analytics is true"}                  | ${{ consented: true, statistics: true }}   | ${`${internalUrl}?nhsa.sc=1`}
-      ${"includes nhsa.sc=0 when analytics is false"}                 | ${{ consented: true, statistics: false }}  | ${`${internalUrl}?nhsa.sc=0`}
-      ${"omits nhsa.sc when consent is false and analytics is true"}  | ${{ consented: false, statistics: true }}  | ${internalUrl}
-      ${"omits nhsa.sc when consent is false and analytics is false"} | ${{ consented: false, statistics: false }} | ${internalUrl}
-      ${"omits nhsa.sc when consent is false"}                        | ${{ consented: false }}                    | ${internalUrl}
-      ${"omits nhsa.sc when consent is empty"}                        | ${{}}                                      | ${internalUrl}
-    `("$description", ({ consent, expectedHref }) => {
-      cookieconsent.__Rewire__("getCookie", () => ({
+      ${'includes nhsa.sc=1 when analytics is true'}                  | ${{ consented: true, statistics: true }}   | ${`${internalUrl}?nhsa.sc=1`}
+      ${'includes nhsa.sc=0 when analytics is false'}                 | ${{ consented: true, statistics: false }}  | ${`${internalUrl}?nhsa.sc=0`}
+      ${'omits nhsa.sc when consent is false and analytics is true'}  | ${{ consented: false, statistics: true }}  | ${internalUrl}
+      ${'omits nhsa.sc when consent is false and analytics is false'} | ${{ consented: false, statistics: false }} | ${internalUrl}
+      ${'omits nhsa.sc when consent is false'}                        | ${{ consented: false }}                    | ${internalUrl}
+      ${'omits nhsa.sc when consent is empty'}                        | ${{}}                                      | ${internalUrl}
+    `('$description', ({ consent, expectedHref }) => {
+      cookieconsent.__Rewire__('getCookie', () => ({
         ...consent,
         version: COOKIE_VERSION,
       }));
       onload();
-      const link = document.getElementById("mockLink");
+      const link = document.getElementById('mockLink');
       link.click();
       expect(link.href).toBe(expectedHref);
     });
@@ -556,21 +620,87 @@ describe('link href broadcast shared consent querystring parameter', () => {
 
     it.each`
       description                                                     | consent                                    | expectedHref
-      ${"does not include nhsa.sc=1 when analytics is true"}          | ${{ consented: true, statistics: true }}   | ${externalUrl}
-      ${"does not include nhsa.sc=0 when analytics is false"}         | ${{ consented: true, statistics: false }}  | ${externalUrl}
-      ${"omits nhsa.sc when consent is false and analytics is true"}  | ${{ consented: false, statistics: true }}  | ${externalUrl}
-      ${"omits nhsa.sc when consent is false and analytics is false"} | ${{ consented: false, statistics: false }} | ${externalUrl}
-      ${"omits nhsa.sc when consent is false"}                        | ${{ consented: false }}                    | ${externalUrl}
-      ${"omits nhsa.sc when consent is empty"}                        | ${{}}                                      | ${externalUrl}
-    `("$description", ({ consent, expectedHref }) => {
-      cookieconsent.__Rewire__("getCookie", () => ({
+      ${'does not include nhsa.sc=1 when analytics is true'}          | ${{ consented: true, statistics: true }}   | ${externalUrl}
+      ${'does not include nhsa.sc=0 when analytics is false'}         | ${{ consented: true, statistics: false }}  | ${externalUrl}
+      ${'omits nhsa.sc when consent is false and analytics is true'}  | ${{ consented: false, statistics: true }}  | ${externalUrl}
+      ${'omits nhsa.sc when consent is false and analytics is false'} | ${{ consented: false, statistics: false }} | ${externalUrl}
+      ${'omits nhsa.sc when consent is false'}                        | ${{ consented: false }}                    | ${externalUrl}
+      ${'omits nhsa.sc when consent is empty'}                        | ${{}}                                      | ${externalUrl}
+    `('$description', ({ consent, expectedHref }) => {
+      cookieconsent.__Rewire__('getCookie', () => ({
         ...consent,
         version: COOKIE_VERSION,
       }));
       onload();
-      const link = document.getElementById("mockLink");
+      const link = document.getElementById('mockLink');
       link.click();
       expect(link.href).toBe(expectedHref);
     });
   });
+});
+
+describe('consume shared consent', () => {
+  const internalUrl = 'https://www.nhs.uk/page';
+  let spy;
+  let replaceSpy;
+  beforeEach(() => {
+    delete window.location;
+    window.location = { href: '' };
+    spy = jest.fn();
+    cookieconsent.__Rewire__('setConsent', spy);
+    replaceSpy = jest
+      .spyOn(window.history, 'replaceState')
+      .mockImplementation(() => {});
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+    jest.restoreAllMocks();
+
+    cookieconsent.__ResetDependency__('getCookie');
+    cookieconsent.__ResetDependency__('getConsent');
+    cookieconsent.__ResetDependency__('setConsent');
+  });
+
+  it.each`
+    consent                                   | sharedConsent | expectedSetCall
+    ${{}}                                     | ${'1'}        | ${[{ consented: true, statistics: true }, COOKIE_TYPE.SESSION]}
+    ${{}}                                     | ${'0'}        | ${[{ consented: true, statistics: false }, COOKIE_TYPE.SESSION]}
+    ${{ consented: true, statistics: true }}  | ${'0'}        | ${[{ statistics: false }, COOKIE_TYPE.SESSION]}
+    ${{ consented: true, statistics: false }} | ${'1'}        | ${[{ statistics: true }, COOKIE_TYPE.SESSION]}
+    ${{ consented: true, statistics: false }} | ${'0'}        | ${undefined}
+    ${{ consented: true, statistics: true }}  | ${'1'}        | ${undefined}
+    ${{}}                                     | ${'2'}        | ${undefined}
+    ${{ consented: true, statistics: true }}  | ${'2'}        | ${undefined}
+    ${{ consented: true, statistics: false }} | ${'2'}        | ${undefined}
+  `(
+    'sets expected consent when initial consent is $consent and nhsa.sc=$sharedConsent',
+    ({ consent, sharedConsent, expectedSetCall }) => {
+      const requestUrl = new URL(internalUrl);
+      requestUrl.searchParams.set('nhsa.sc', sharedConsent);
+      Object.defineProperty(window, 'location', {
+        value: new URL(requestUrl),
+      });
+
+      cookieconsent.__Rewire__('getCookie', () => ({
+        ...consent,
+        version: COOKIE_VERSION,
+      }));
+
+      onload();
+
+      if (expectedSetCall === undefined) {
+        expect(spy).toHaveBeenCalledTimes(0);
+      } else {
+        expect(spy).toHaveBeenCalledWith(...expectedSetCall);
+      }
+      // assert that the nhsa.sc query parameter is removed from the URL
+      expect(replaceSpy).toHaveBeenCalledTimes(1);
+
+      const [[, , replacedUrl]] = replaceSpy.mock.calls;
+      const parsedUrl = new URL(replacedUrl, internalUrl);
+
+      expect(parsedUrl.searchParams.has('nhsa.sc')).toBe(false);
+    }
+  );
 });

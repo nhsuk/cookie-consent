@@ -1,4 +1,4 @@
-Feature: Banner share consent
+Feature: Broadcast cookie consent share consent
 
   Scenario: Internal link click without consent does not append tracking parameter
     Given the user navigates to the "custom-link" page

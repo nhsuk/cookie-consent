@@ -39,7 +39,7 @@ export function setConsented(value) {
  * Set the global NHSCookieConsent object that implementors of this library
  * will interact with.
  */
- 
+
 window.NHSCookieConsent = {
   /*
    * The version of this package as defined in the package.json
@@ -56,6 +56,5 @@ window.NHSCookieConsent = {
   setMarketing,
   setConsented,
 };
- 
 
 window.addEventListener('DOMContentLoaded', onload);

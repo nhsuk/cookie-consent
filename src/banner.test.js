@@ -32,34 +32,46 @@ describe('Cookie Banner', () => {
   test('handles accept link click', () => {
     insertCookieBanner(mockOnAccept, mockOnAnalyticsAccept, mockHitLoggingUrl);
 
-    const acceptLink = document.getElementById('nhsuk-cookie-banner__link_accept');
+    const acceptLink = document.getElementById(
+      'nhsuk-cookie-banner__link_accept'
+    );
     acceptLink.click();
 
     expect(mockHitLoggingUrl).toHaveBeenCalledWith('declined');
     expect(mockOnAccept).toHaveBeenCalled();
     expect(document.getElementById('cookiebanner').style.display).toBe('none');
-    expect(document.getElementById('nhsuk-cookie-confirmation-banner').style.display).toBe('block');
+    expect(
+      document.getElementById('nhsuk-cookie-confirmation-banner').style.display
+    ).toBe('block');
   });
 
   test('handles accept analytics link click', () => {
     insertCookieBanner(mockOnAccept, mockOnAnalyticsAccept, mockHitLoggingUrl);
 
-    const acceptAnalyticsLink = document.getElementById('nhsuk-cookie-banner__link_accept_analytics');
+    const acceptAnalyticsLink = document.getElementById(
+      'nhsuk-cookie-banner__link_accept_analytics'
+    );
     acceptAnalyticsLink.click();
 
     expect(mockHitLoggingUrl).toHaveBeenCalledWith('accepted');
     expect(mockOnAnalyticsAccept).toHaveBeenCalled();
     expect(document.getElementById('cookiebanner').style.display).toBe('none');
-    expect(document.getElementById('nhsuk-cookie-confirmation-banner').style.display).toBe('block');
+    expect(
+      document.getElementById('nhsuk-cookie-confirmation-banner').style.display
+    ).toBe('block');
   });
 
   test('adds focus to the confirmation message', () => {
     insertCookieBanner(mockOnAccept, mockOnAnalyticsAccept, mockHitLoggingUrl);
 
-    const acceptLink = document.getElementById('nhsuk-cookie-banner__link_accept');
+    const acceptLink = document.getElementById(
+      'nhsuk-cookie-banner__link_accept'
+    );
     acceptLink.click();
 
-    const confirmationMessage = document.getElementById('nhsuk-success-banner__message');
+    const confirmationMessage = document.getElementById(
+      'nhsuk-success-banner__message'
+    );
     expect(confirmationMessage.getAttribute('tabIndex')).toBe('-1');
     expect(document.activeElement).toBe(confirmationMessage);
   });
@@ -67,10 +79,14 @@ describe('Cookie Banner', () => {
   test('removes focus from the confirmation message on blur', () => {
     insertCookieBanner(mockOnAccept, mockOnAnalyticsAccept, mockHitLoggingUrl);
 
-    const acceptLink = document.getElementById('nhsuk-cookie-banner__link_accept');
+    const acceptLink = document.getElementById(
+      'nhsuk-cookie-banner__link_accept'
+    );
     acceptLink.click();
 
-    const confirmationMessage = document.getElementById('nhsuk-success-banner__message');
+    const confirmationMessage = document.getElementById(
+      'nhsuk-success-banner__message'
+    );
     confirmationMessage.dispatchEvent(new Event('blur'));
 
     expect(confirmationMessage.getAttribute('tabIndex')).toBeNull();

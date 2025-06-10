@@ -1,6 +1,9 @@
 #!/usr/bin/env sh
 set -e
 
+source ./venv/bin/activate
+npx lint-staged
+
 if ! command -v gitleaks # &> /dev/null 
 then
     printf "\nGitleaks could not be found, please follow instructions in .husky/gitleaks/config/README-gitleaks.md\n

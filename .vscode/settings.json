@@ -1,0 +1,20 @@
+{
+  "jest.runMode": "watch",
+  "jest.jestCommandLine": "npx jest",
+  "cucumberautocomplete.syncfeatures": "tests/integration/features/**/*.feature",
+  "cucumberautocomplete.steps": ["tests/integration/steps/*.py"],
+  "cucumberautocomplete.strictGherkinCompletion": true,
+  "cucumberautocomplete.smartSnippets": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
+  },
+  "prettier.singleQuote": true,
+  "[feature]": {
+    "editor.defaultFormatter": "alexkrechik.cucumberautocomplete",
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true
+  },
+  "cucumberautocomplete.onTypeFormat": false
+}
