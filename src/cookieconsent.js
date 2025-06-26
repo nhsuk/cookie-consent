@@ -1,7 +1,16 @@
-import { getCookie as getRawCookie, createCookie as createRawCookie, deleteCookies } from './cookies';
+import {
+  getCookie as getRawCookie,
+  createCookie as createRawCookie,
+  deleteCookies,
+} from './cookies';
 import insertCookieBanner from './banner';
 import { enableScriptsByCategories, enableIframesByCategories } from './enable';
-import { getNoBanner, getPolicyUrl, makeUrlAbsolute, shouldSkipLinkProcessing } from './settings';
+import {
+  getNoBanner,
+  getPolicyUrl,
+  makeUrlAbsolute,
+  shouldSkipLinkProcessing,
+} from './settings';
 
 /**
  * If cookie rules/regulations change and the cookie itself needs to change,
@@ -27,9 +36,11 @@ const COOKIE_TYPE = {
  * We need this switch to be able to totally disable the functionality of this
  * cookie-consent library for a co-ordinated cross-platform release.
  */
-const NO_BANNER = (process.env.NO_BANNER === 'true');
+const NO_BANNER = process.env.NO_BANNER === 'true';
+const SHARED_CONSENT_QUERY = 'nhsa.sc';
+const CONSENT_GIVEN = '1';
+const CONSENT_NOT_GIVEN = '0';
 
- 
 // Pre-defined cookie types in line with cookiebot categories
 const defaultConsent = {
   necessary: true,
@@ -37,7 +48,7 @@ const defaultConsent = {
   statistics: false,
   marketing: false,
   consented: false,
-}
+};
 
 /**
  * Get the consent cookie and parse it into an object
@@ -118,7 +129,7 @@ function getUserCookieVersion() {
 
 /**
  * Checks if the user has consented to cookies.
- * 
+ *
  * This function looks at the consent settings and verifies if the 'consented' field is set to true.
  * It returns true if the user has given consent, and false otherwise.
  *
@@ -145,18 +156,20 @@ export function getConsentSetting(key) {
   return !!cookie[key];
 }
 
-export function setConsentSetting(key, value) {
+export function setConsentSetting(key, value, mode = COOKIE_TYPE.LONG) {
   if (!value) {
     deleteCookies();
   }
   // double ! to convert truthy/falsy values into true/false
-  setConsent({ [key]: !!value });
+  setConsent({ [key]: !!value }, mode);
 }
 
 function enableScriptsAndIframes() {
   const allCategories = ['preferences', 'statistics', 'marketing'];
   // Filter out categories that do not have user consent
-  const allowedCategories = allCategories.filter(category => getConsentSetting(category) === true);
+  const allowedCategories = allCategories.filter(
+    (category) => getConsentSetting(category) === true
+  );
 
   enableScriptsByCategories(allowedCategories);
   enableIframesByCategories(allowedCategories);
@@ -227,41 +240,105 @@ function shouldShowBanner() {
 }
 
 /**
- * Handles click events on links and modifies the link URL based on user consent settings, 
- * 
- * - Modifies the link URL to include a `nhsa.sc` query parameter based on the user's 
+ * Handles click events on links and modifies the link URL based on user consent settings,
+ *
+ * - Modifies the link URL to include a `nhsa.sc` query parameter based on the user's
  *   consent for 'statistics'.
  * - Only processes links if the user has given consent.
  *
  * @param {Event} event - The click event object.
  */
 function handleSharedConsentLinkClick(event) {
-  const link = event.target.closest("a");
+  const link = event.target.closest('a');
   if (shouldSkipLinkProcessing(link)) {
     return;
   }
 
- const consented =  getConsentSetting('consented')
+  const consented = getConsentSetting('consented');
   if (!consented) {
     return;
   }
-  
+
   // If consented, evaluate 'statistics' consent
-  const statistics = getConsentSetting("statistics");
+  const statistics = getConsentSetting('statistics');
 
   // Add nhsa.sc query param based on 'statistics' flag
   const linkUrl = new URL(link.href);
-  linkUrl.searchParams.set("nhsa.sc", statistics ? "1" : "0");
+  linkUrl.searchParams.set(
+    SHARED_CONSENT_QUERY,
+    statistics ? CONSENT_GIVEN : CONSENT_NOT_GIVEN
+  );
   link.href = linkUrl.href;
 }
 
 /**
  * Registers a click event listener to handle internal link clicks.
- * If a link is clicked and it's eligible, it appends a query parameter `nhsa.sc` 
+ * If a link is clicked and it's eligible, it appends a query parameter `nhsa.sc`
  * to indicate analytics consent status.
  */
 function registerSharedConsentLinkHandler() {
-  document.addEventListener("click", handleSharedConsentLinkClick);
+  document.addEventListener('click', handleSharedConsentLinkClick);
+}
+
+/**
+ * Processes the `shared_consent` query parameter in the current URL.
+ *
+ * If present and valid it will apply or override the user's "statistics" cookie consent accordingly.
+ * The query parameter is then removed from the URL.
+ */
+function deleteSharedConsentQuery(url) {
+  url.searchParams.delete(SHARED_CONSENT_QUERY);
+  const relativeUrl = url.pathname + url.search + url.hash;
+  window.history.replaceState({}, '', relativeUrl);
+}
+
+/**
+ * Consumes the `nhsa.sc` shared consent query parameter (from the URL.
+ *
+ * - If the parameter is absent, nothing is done.
+ * - If the parameter is invalid (not 1 or 0), it is removed without modifying cookies.
+ * - If valid:
+ *    - If the user has not previously consented, a new session cookie is created.
+ *    - If the user has previously consented, but the value has changed, their
+ *      `statistics` consent is updated and written as a session cookie.
+ *
+ * The query parameter is removed from the URL in all cases where it is present.
+ */
+function consumeSharedConsentQuery() {
+  const url = new URL(window.location.href);
+
+  // Extract the value of the 'shared consent' query parameter
+  const sharedConsent = url.searchParams.get(SHARED_CONSENT_QUERY);
+  if (sharedConsent === null) {
+    return;
+  }
+
+  // Check if the sharedConsent value is valid
+  const isValid =
+    sharedConsent === CONSENT_GIVEN || sharedConsent === CONSENT_NOT_GIVEN;
+
+  // If the value is invalid, remove the query param and exit
+  if (!isValid) {
+    deleteSharedConsentQuery(url);
+    return;
+  }
+
+  const currentStatsConsent = getConsentSetting('statistics');
+  const overrideStatsConsent = sharedConsent === CONSENT_GIVEN;
+
+  if (!isCookieConsentGiven()) {
+    // First-time consent: set statistics consent using a session cookie
+    setConsent(
+      { statistics: overrideStatsConsent, consented: true },
+      COOKIE_TYPE.SESSION
+    );
+  } else if (currentStatsConsent !== overrideStatsConsent) {
+    // Consent has changed: update statistics consent as a session cookie
+    setConsentSetting('statistics', overrideStatsConsent, COOKIE_TYPE.SESSION);
+  }
+
+  // Clean up the URL by removing the query parameter
+  deleteSharedConsentQuery(url);
 }
 
 /*
@@ -271,17 +348,21 @@ function registerSharedConsentLinkHandler() {
  * - enables scripts and iframes depending on the consent
  */
 export function onload() {
+  consumeSharedConsentQuery();
+
   if (shouldShowBanner()) {
     if (NO_BANNER) {
       // If NO_BANNER mode, we need to set "implied consent" to every cookie type
-      setConsent({
-        necessary: true,
-        preferences: true,
-        statistics: true,
-        marketing: true,
-        consented: false,
-      },
-      COOKIE_TYPE.LONG);
+      setConsent(
+        {
+          necessary: true,
+          preferences: true,
+          statistics: true,
+          marketing: true,
+          consented: false,
+        },
+        COOKIE_TYPE.LONG
+      );
     } else {
       insertCookieBanner(acceptConsent, acceptAnalyticsConsent, hitLoggingUrl);
     }

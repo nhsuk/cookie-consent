@@ -3,11 +3,10 @@
 import json
 import re
 import urllib.parse
-from urllib.parse import urlparse
-
 from behave import given, when, then
 from behave.api.async_step import async_run_until_complete
 from playwright.async_api import expect
+from tests.integration.helpers.cookie_helper import add_cookie, build_cookie_properties
 
 
 @then('the cookies should contain the "{cookie_name}" cookie')
@@ -102,43 +101,30 @@ async def step_impl(context):
 @async_run_until_complete
 async def step_impl(context, cookie_name, cookie_value):
     """Sets the given cookie to the given value"""
-    parsed_url = urlparse(context.test_config.get("URLs", "ui_url"))
-    await context.browser_context.add_cookies(
-        [
-            {
-                "name": cookie_name,
-                "domain": parsed_url.hostname,
-                "path": "/",
-                "value": cookie_value,
-            },
-        ]
-    )
+    await add_cookie(context, cookie_name, cookie_value) 
 
 
-@given('the nhsuk-cookie-consent cookie is set to full consent with version "{version}"')
+@given('the "{cookie_name}" cookie is set statistics consent to "{value}" with version "{version}"')
 @async_run_until_complete
-async def step_impl(context, version):
-    """Sets the nhsuk-cookie-consent cookie to full consent"""
-    cookie_value = {
-        "necessary": "true",
-        "preferences": "true",
-        "statistics": "true",
-        "marketing": "true",
-        "consented": "true",
-        "version": version,
-    }
-    encoded_cookie_value = urllib.parse.quote(json.dumps(cookie_value))
-    parsed_url = urlparse(context.test_config.get("URLs", "ui_url"))
-    await context.browser_context.add_cookies(
-        [
-            {
-                "name": "nhsuk-cookie-consent",
-                "domain": parsed_url.hostname,
-                "path": "/",
-                "value": encoded_cookie_value,
-            },
-        ]
+async def step_impl(context, cookie_name, value, version):
+    """Sets the statistics cookie to the given value with the specified version"""
+    payload = build_cookie_properties(statistics=value, consented=True, version=version)
+    await add_cookie(context, cookie_name, payload)
+
+
+@given('the "{cookie_name}" cookie is set to full consent with version "{version}"')
+@async_run_until_complete
+async def step_impl(context, cookie_name, version):
+    """Sets the cookie to full consent"""
+    payload = build_cookie_properties(
+        necessary=True,
+        preferences=True,
+        statistics=True,
+        marketing=False,
+        consented=True,
+        version=version
     )
+    await add_cookie(context, cookie_name, payload)
 
 
 @then('the statistics cookie is to "{value}"')
@@ -147,6 +133,43 @@ async def step_impl(context, value):
     """Verifies the statistics cookie has been set to the given value"""
     cookie_value = await context.current_page.page.evaluate("window.NHSCookieConsent.getStatistics()")
     assert str(cookie_value) == value
+
+
+@then('the "{cookie_name}" session statistics cookie is set to "{value}"')
+@async_run_until_complete
+async def step_impl(context, cookie_name, value):
+    """Verifies that the nhsuk-cookie-consent cookie is a session cookie and has the expected statistics value."""
+    expected_stats = value.lower() == "true"
+    cookies = await context.browser_context.cookies()
+
+    # Find the session cookie
+    for cookie in cookies:
+        if cookie['name'] == cookie_name:
+            consent_cookie = cookie
+            break
+
+    assert consent_cookie is not None, f"{cookie_name} cookie not found"
+    assert 'expires' in consent_cookie and consent_cookie['expires'] == -1, "Cookie should not be a session cookie"
+
+    decoded_value = urllib.parse.unquote(consent_cookie["value"])
+    parsed = json.loads(decoded_value)
+
+    assert parsed["statistics"] == expected_stats, f"Expected statistics={expected_stats}, but got {parsed['statistics']}"
+
+
+@then('the "{cookie_name}" cookie is not a session cookie')
+@async_run_until_complete
+async def step_impl(context, cookie_name):
+    """Verifies that the cookie is not a session cookie."""
+    cookies = await context.browser_context.cookies()
+    
+    for cookie in cookies:
+        if cookie['name'] == cookie_name:
+            stats_cookie = cookie
+            break
+
+    assert stats_cookie is not None, f"{cookie_name} cookie not found"
+    assert 'expires' in stats_cookie and stats_cookie['expires'] != -1, "Cookie should not be a session cookie"
 
 
 @then("the nhsuk-cookie-consent cookie is exposed as a global object")
@@ -204,9 +227,11 @@ async def step_impl(context):
     """Clicks the IExernal Link link"""
     await context.current_page.click_external_link()
 
+
 @then("the external page is displayed")
 @async_run_until_complete
 async def step_impl(context):
     """Verifies the www.nhs.uk page is displayed"""
     await context.page.wait_for_url("https://www.google.com/", wait_until="load")
     await expect(context.page).to_have_url("https://www.google.com/")
+    
