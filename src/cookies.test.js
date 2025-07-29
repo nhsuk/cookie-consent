@@ -1,6 +1,8 @@
 /* global expect, cookieJar */
 
 import { createCookie, getCookie, deleteCookies } from './cookies';
+import { deleteStaleSessionConsentCookies } from './cookies';
+import { analyticsCookieWhitelist } from './analyticsCookieMatcher';
 
 /* https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript */
 function deleteAllCookies() {
@@ -35,7 +37,8 @@ describe('getCookie', () => {
   });
 
   test('getCookie can handle cookies with extra data', () => {
-    document.cookie = 'testcookie=testvalue; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT';
+    document.cookie =
+      'testcookie=testvalue; path=/; expires=Fri, 31 Dec 9999 23:59:59 GMT';
     expect(getCookie('testcookie')).toBe('testvalue');
   });
 
@@ -87,5 +90,38 @@ describe('deleteCookies', () => {
     document.cookie = 'testcookie=testvalue; Path=/path1/path2';
     deleteCookies();
     expect(document.cookie).toBe('');
+  });
+
+  test.each(analyticsCookieWhitelist.exact)(
+    'removes exact analytics cookie: %s',
+    (cookieName) => {
+      document.cookie = `${cookieName}=somevalue`;
+      deleteStaleSessionConsentCookies();
+      expect(document.cookie).not.toContain(`${cookieName}=`);
+    }
+  );
+
+  test('removes cookies that match exact analytics cookie names', () => {
+    document.cookie = '_ga=test';
+    document.cookie = '_gid=test';
+    document.cookie = 'nhsuk-cookie-consent=consentvalue';
+
+    deleteStaleSessionConsentCookies();
+
+    expect(document.cookie).toContain('nhsuk-cookie-consent=consentvalue');
+    expect(document.cookie).not.toContain('_ga=');
+    expect(document.cookie).not.toContain('_gid=');
+  });
+
+  test('removes analytics cookies matching known patterns', () => {
+    document.cookie = 'AMCV_ABC123XYZ=value';
+    document.cookie = 'AMCVS_148B51E15AE825F50A495DCC%40AdobeOrg=value';
+    document.cookie = 'QSI_SI_(id)_intercept=value';
+
+    deleteStaleSessionConsentCookies();
+
+    expect(document.cookie).not.toMatch(/AMCV_/);
+    expect(document.cookie).not.toMatch(/AMCVS_/);
+    expect(document.cookie).not.toContain('QSI_SI_');
   });
 });

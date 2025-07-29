@@ -1,78 +1,78 @@
 trigger:
-- main
-- azure-pipelines
+  - main
+  - azure-pipelines
 
 pool:
- vmImage: 'ubuntu-latest'
- 
+  vmImage: 'ubuntu-latest'
+
 variables:
   log_to_splunk: true
 
 steps:
-- task: NodeTool@0
-  inputs:
-    versionSpec: '20.x'
-  displayName: 'Install Node.js'
-  
-- script: npm install
-  displayName: npm install
+  - task: NodeTool@0
+    inputs:
+      versionSpec: '20.x'
+    displayName: 'Install Node.js'
 
-- task: SonarCloudPrepare@2
-  inputs:
-    SonarCloud: 'SonarCloud'
-    organization: 'nhsdigital'
-    scannerMode: 'CLI'
-    configMode: 'file'
-    extraProperties: |
-      sonar.language=js
-      sonar.projectKey=nhsuk-cookie-consent
-      sonar.javascript.lcov.reportPaths=coverage/lcov.info,tests/integration-tests/coverage/lcov.info
-      sonar.dependencyCheck.htmlReportPath=$(System.DefaultWorkingDirectory)/dependency-scan-results/dependency-check-report.html
-      sonar.exclusions=**/*.config.js,/coverage/**,tests/**/coverage/**,**/integration/,**/integration-tests/,**/tests/example/,**/*.test.*,__mocks__/**,*test-environment.*,**/dependency-scan-results/dependency-check-report.html,venv/**,node_modules/**
-      sonar.coverage.exclusions=**/integration/**
+  - script: npm install
+    displayName: npm install
 
-- script: npm run build:production
-  displayName: 'build'
+  - task: SonarCloudPrepare@2
+    inputs:
+      SonarCloud: 'SonarCloud'
+      organization: 'nhsdigital'
+      scannerMode: 'CLI'
+      configMode: 'file'
+      extraProperties: |
+        sonar.language=js
+        sonar.projectKey=nhsuk-cookie-consent
+        sonar.javascript.lcov.reportPaths=coverage/lcov.info,tests/integration-tests/coverage/lcov.info
+        sonar.dependencyCheck.htmlReportPath=$(System.DefaultWorkingDirectory)/dependency-scan-results/dependency-check-report.html
+        sonar.exclusions=**/*.config.js,/coverage/**,tests/**/coverage/**,**/integration/,**/integration-tests/,**/tests/example/**,**/*.test.*,__mocks__/**,*test-environment.*,**/dependency-scan-results/dependency-check-report.html,venv/**,node_modules/**
+        sonar.coverage.exclusions=**/integration/**
 
-- script: npm run lint
-  displayName: linting
+  - script: npm run build:production
+    displayName: 'build'
 
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '3.11'
-    addToPath: true
-  displayName: "Testing: Configure Python 3.11"
+  - script: npm run lint
+    displayName: linting
 
-- script: CI=true npm run test
-  displayName: "Testing: Run tests"
+  - task: UsePythonVersion@0
+    inputs:
+      versionSpec: '3.11'
+      addToPath: true
+    displayName: 'Testing: Configure Python 3.11'
 
-- task: PublishPipelineArtifact@1
-  displayName: "Testing: Publish integration test report"
-  condition: succeededOrFailed()
-  inputs:
-    targetPath: "$(Build.SourcesDirectory)/tests/integration/reports"
-    artifactName: "Integration test report"
+  - script: CI=true npm run test
+    displayName: 'Testing: Run tests'
 
-- task: SonarCloudAnalyze@2
-  displayName: 'Run SonarCloud Code Analysis'
+  - task: PublishPipelineArtifact@1
+    displayName: 'Testing: Publish integration test report'
+    condition: succeededOrFailed()
+    inputs:
+      targetPath: '$(Build.SourcesDirectory)/tests/integration/reports'
+      artifactName: 'Integration test report'
 
-- task: SonarCloudPublish@2
-  displayName: 'Publish Quality Gate Result'
-  inputs:
-     pollingTimeoutSec: "300"
+  - task: SonarCloudAnalyze@2
+    displayName: 'Run SonarCloud Code Analysis'
 
-- task: sonarcloud-buildbreaker@2
-  displayName: "Break the build if the quality gate fails"
-  inputs:
-    SonarCloud: 'SonarCloud'
-    organization: 'nhsdigital'
+  - task: SonarCloudPublish@2
+    displayName: 'Publish Quality Gate Result'
+    inputs:
+      pollingTimeoutSec: '300'
 
-- task: CopyFiles@2
-  inputs:
-    sourceFolder: $(Build.SourcesDirectory)/dist
-    targetFolder: $(Build.ArtifactStagingDirectory)
+  - task: sonarcloud-buildbreaker@2
+    displayName: 'Break the build if the quality gate fails'
+    inputs:
+      SonarCloud: 'SonarCloud'
+      organization: 'nhsdigital'
 
-- task: PublishBuildArtifacts@1
-  inputs:
-    pathtoPublish: $(Build.ArtifactStagingDirectory)
-    artifactName: dist
+  - task: CopyFiles@2
+    inputs:
+      sourceFolder: $(Build.SourcesDirectory)/dist
+      targetFolder: $(Build.ArtifactStagingDirectory)
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      pathtoPublish: $(Build.ArtifactStagingDirectory)
+      artifactName: dist

@@ -5,10 +5,16 @@ from urllib.parse import parse_qs, urlencode, urlparse
 from behave import given, when, then
 from behave.api.async_step import async_run_until_complete
 
+from tests.integration.helpers.navigation_helper import goto_url
 from tests.integration.steps.shared_steps import update_current_page
 
-@given('the user navigates to the "{page_name}" page with the "{param}" query parameter set to "{value}"')
-@when('the user navigates to the "{page_name}" page with the "{param}" query parameter set to "{value}"')
+
+@given(
+    'the user navigates to the "{page_name}" page with the "{param}" query parameter set to "{value}"'
+)
+@when(
+    'the user navigates to the "{page_name}" page with the "{param}" query parameter set to "{value}"'
+)
 @async_run_until_complete
 async def step_impl(context, page_name, param, value):
     """Navigates to the given tool page with dynamic query parameter"""
@@ -21,7 +27,7 @@ async def step_impl(context, page_name, param, value):
 @async_run_until_complete
 async def step_impl(context, page_name):
     """Navigates to the given tool page"""
-    await navigate_to(context, page_name)   
+    await navigate_to(context, page_name)
 
 
 async def navigate_to(context, page):
@@ -36,13 +42,15 @@ async def navigate_to(context, page):
 
 async def navigate_to_example_page(context):
     """Navigates to the Example page"""
-    await context.page.goto(f'{context.test_config.get("URLs", "ui_url")}/tests/example')
+    url = f'{context.test_config.get("URLs", "ui_url")}/tests/example'
+    await goto_url(context, url)
     await update_current_page(context, "example")
 
 
 async def navigate_to_no_banner_page(context):
     """Navigates to the No Banner page"""
-    await context.page.goto(f'{context.test_config.get("URLs", "ui_url")}/tests/example/no-banner')
+    url = f'{context.test_config.get("URLs", "ui_url")}/tests/example/no-banner'
+    await goto_url(context, url)
     await update_current_page(context, "no-banner")
 
 
@@ -55,7 +63,7 @@ async def navigate_to_custom_link_page(context):
         query_string = urlencode(query_params)
         base_url = f"{base_url}?{query_string}"
 
-    await context.page.goto(base_url)
+    await goto_url(context, base_url)
     await update_current_page(context, "custom-link")
 
 
@@ -66,5 +74,6 @@ async def step_impl(context, param):
     parsed = urlparse(current_url)
     params = parse_qs(parsed.query)
 
-    assert param not in params, f"Expected query param '{param}' to be removed, but found in URL: {current_url}"
-    
+    assert (
+        param not in params
+    ), f"Expected query param '{param}' to be removed, but found in URL: {current_url}"

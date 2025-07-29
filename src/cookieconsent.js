@@ -2,6 +2,7 @@ import {
   getCookie as getRawCookie,
   createCookie as createRawCookie,
   deleteCookies,
+  deleteStaleSessionConsentCookies,
 } from './cookies';
 import insertCookieBanner from './banner';
 import { enableScriptsByCategories, enableIframesByCategories } from './enable';
@@ -323,18 +324,13 @@ function consumeSharedConsentQuery() {
     return;
   }
 
-  const currentStatsConsent = getConsentSetting('statistics');
   const overrideStatsConsent = sharedConsent === CONSENT_GIVEN;
-
   if (!isCookieConsentGiven()) {
-    // First-time consent: set statistics consent using a session cookie
+    // First-time consent: set statistics consent using session cookie
     setConsent(
-      { statistics: overrideStatsConsent, consented: true },
+      { ...defaultConsent, statistics: overrideStatsConsent, consented: true },
       COOKIE_TYPE.SESSION
     );
-  } else if (currentStatsConsent !== overrideStatsConsent) {
-    // Consent has changed: update statistics consent as a session cookie
-    setConsentSetting('statistics', overrideStatsConsent, COOKIE_TYPE.SESSION);
   }
 
   // Clean up the URL by removing the query parameter
@@ -351,6 +347,9 @@ export function onload() {
   consumeSharedConsentQuery();
 
   if (shouldShowBanner()) {
+    // clear any existinhg session-based stale cookies
+    deleteStaleSessionConsentCookies();
+
     if (NO_BANNER) {
       // If NO_BANNER mode, we need to set "implied consent" to every cookie type
       setConsent(

@@ -1,3 +1,4 @@
+import { getMatchingAnalyticsCookies } from './analyticsCookieMatcher';
 
 // used to create a new cookie for the user which covers different cookie types
 export function createCookie(name, value, days, path, domain, secure) {
@@ -5,7 +6,7 @@ export function createCookie(name, value, days, path, domain, secure) {
   let expires;
   if (days) {
     const date = new Date();
-    date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+    date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
     expires = date.toUTCString();
   } else {
     expires = '';
@@ -44,9 +45,10 @@ export function createCookie(name, value, days, path, domain, secure) {
  */
 function getAllCookies() {
   const cookiesString = document.cookie || '';
-  const cookiesArray = cookiesString.split(';')
-    .filter(cookie => cookie !== '')
-    .map(cookie => cookie.trim());
+  const cookiesArray = cookiesString
+    .split(';')
+    .filter((cookie) => cookie !== '')
+    .map((cookie) => cookie.trim());
 
   // Turn the cookie array into an object of key/value pairs
   const cookies = cookiesArray.reduce((acc, currentValue) => {
@@ -74,23 +76,50 @@ export function deleteCookies() {
   const cookies = getAllCookies();
   const cookieNames = Object.keys(cookies);
   // We want to delete all cookies except for our consent cookie
-  const cookieNamesToDelete = cookieNames.filter(name => name !== 'nhsuk-cookie-consent');
+  const cookieNamesToDelete = cookieNames.filter(
+    (name) => name !== 'nhsuk-cookie-consent'
+  );
 
-  // generate a list of domains that the cookie could possibly belong to
+  deleteCookieFromAllPathsAndDomains(cookieNamesToDelete);
+}
+
+/**
+ * Removes analytics and tracking cookies that were set based on session based
+ * user consent. This should be called on page
+ * load when no persistent consent is present, but a session based consent might
+ * have previously caused analytics cookies to be added.
+ *
+ * This ensures stale analytics cookies (e.g., from Adobe or GA) are cleaned up
+ * if the user's session has ended and consent has not been explicitly granted again.
+ *
+ * @function removeStaleSessionConsentCookies
+ * @returns {void}
+ */
+export function deleteStaleSessionConsentCookies() {
+  const cookies = getAllCookies();
+  const cookieNames = Object.keys(cookies);
+  const staleAnalyticsCookies = getMatchingAnalyticsCookies(cookieNames);
+
+  deleteCookieFromAllPathsAndDomains(staleAnalyticsCookies);
+}
+
+function deleteCookieFromAllPathsAndDomains(cookieNames = []) {
+  if (!Array.isArray(cookieNames) || cookieNames.length === 0) return;
+
   const domainParts = window.location.hostname.split('.');
-  const domains = domainParts.map((domainPart, i) => {  
+  const domains = domainParts.map((domainPart, i) => {
     return domainParts.slice(i).join('.');
   });
 
   // generate a list of paths that the cookie could possibly belong to
   const pathname = window.location.pathname.replace(/\/$/, ''); // strip trailing slash
   const pathParts = pathname.split('/');
-  const paths = pathParts.map((pathPart, i) => {  
+  const paths = pathParts.map((pathPart, i) => {
     return pathParts.slice(0, i + 1).join('/') || '/';
   });
 
   // Loop over every combination of path and domain for each cookie we want to delete
-  cookieNamesToDelete.forEach((cookieName) => {
+  cookieNames.forEach((cookieName) => {
     paths.forEach((path) => {
       domains.forEach((domain) => {
         createCookie(cookieName, '', -1, path, domain);
