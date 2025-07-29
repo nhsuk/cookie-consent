@@ -1,4 +1,3 @@
-
 /**
  * function for displaying cookie information on the example pages.
  * This isn't as nice as the chrome dev tools panel, but it's something.
@@ -26,5 +25,6 @@
     }
   }
   refreshButton.addEventListener('click', listCookies);
-  listCookies();
-}());
+
+  setTimeout(listCookies, 50);
+})();

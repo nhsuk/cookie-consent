@@ -3,11 +3,13 @@
 usage_print() {
   echo -e "Usage: ./run-integration-tests.sh"
 }
+    
 
 export env="local"
 export parallel_processes=5
 export parallel_scheme=scenario
 export logging_level="INFO"
+export PW_TEST_SCREENSHOT_NO_FONTS_READY="1" # Disable screenshot fonts
 
 status=0
 
@@ -25,6 +27,7 @@ pip install uv==0.1.45
 uv pip install -r tests/integration/requirements.txt
 
 playwright install --with-deps chromium
+rm -rf tests/integration/reports
 
 echo "### Started E2E tests"
 behavex ./tests/integration --tags=~@wip --logging-level=${logging_level} --parallel-processes=${parallel_processes} --parallel-scheme=${parallel_scheme} --show-progress-bar -o ./tests/integration/reports

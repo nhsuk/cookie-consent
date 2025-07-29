@@ -9,6 +9,14 @@ const COOKIE_NAME = cookieconsent.__get__('COOKIE_NAME');
 const COOKIE_VERSION = cookieconsent.__get__('COOKIE_VERSION');
 const COOKIE_TYPE = cookieconsent.__get__('COOKIE_TYPE');
 
+const defaultConsent = {
+  necessary: true,
+  preferences: false,
+  statistics: false,
+  marketing: false,
+  consented: false,
+};
+
 jest.mock('./banner', () => ({
   __esModule: true,
   default: jest.fn(),
@@ -664,12 +672,12 @@ describe('consume shared consent', () => {
 
   it.each`
     consent                                   | sharedConsent | expectedSetCall
-    ${{}}                                     | ${'1'}        | ${[{ consented: true, statistics: true }, COOKIE_TYPE.SESSION]}
-    ${{}}                                     | ${'0'}        | ${[{ consented: true, statistics: false }, COOKIE_TYPE.SESSION]}
-    ${{ consented: true, statistics: true }}  | ${'0'}        | ${[{ statistics: false }, COOKIE_TYPE.SESSION]}
-    ${{ consented: true, statistics: false }} | ${'1'}        | ${[{ statistics: true }, COOKIE_TYPE.SESSION]}
+    ${{}}                                     | ${'1'}        | ${[{ ...defaultConsent, consented: true, statistics: true }, COOKIE_TYPE.SESSION]}
+    ${{}}                                     | ${'0'}        | ${[{ ...defaultConsent, consented: true, statistics: false }, COOKIE_TYPE.SESSION]}
+    ${{ consented: true, statistics: true }}  | ${'0'}        | ${undefined}
     ${{ consented: true, statistics: false }} | ${'0'}        | ${undefined}
     ${{ consented: true, statistics: true }}  | ${'1'}        | ${undefined}
+    ${{ consented: true, statistics: false }} | ${'1'}        | ${undefined}
     ${{}}                                     | ${'2'}        | ${undefined}
     ${{ consented: true, statistics: true }}  | ${'2'}        | ${undefined}
     ${{ consented: true, statistics: false }} | ${'2'}        | ${undefined}

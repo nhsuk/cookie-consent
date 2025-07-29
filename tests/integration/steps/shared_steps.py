@@ -30,7 +30,7 @@ async def update_current_page(context, page_name, expected_path=None):
             expected_url = f"{expected_url}/{page_template['path']}"
 
     expected_url = re.compile(f"^{expected_url}")
-    await context.page.wait_for_url(expected_url, wait_until="load")
+    await context.page.wait_for_url(expected_url, wait_until="domcontentloaded")
     await expect(context.page).to_have_url(expected_url)
 
     try:

@@ -22,19 +22,7 @@ Feature:  Consume cookie consent share consent
       | abc                  |
 
 
-  Scenario Outline: Statistics consent is updated from shared consent parameter when cookie is present
-    Given the "testcookie" cookie is set to "test"
-    And the "nhsuk-cookie-consent" cookie is set statistics consent to "<initial_statistics>" with version "7"
-    And the user navigates to the "custom-link" page with the "nhsa.sc" query parameter set to "<shared_consent_value>"
-    Then the "nhsuk-cookie-consent" session statistics cookie is set to "<expected_statistics>"
-    And the "nhsa.sc" query parameter is removed from the URL
-    Examples:
-      | initial_statistics | shared_consent_value | expected_statistics |
-      | False              | 1                    | True                |
-      | True               | 0                    | False               |
-
-
-  Scenario Outline: Statistics consent is not updated from shared consent parameter when cookie is present and matching
+  Scenario Outline: Statistics consent is not updated from shared consent parameter when cookie is present
     Given the "testcookie" cookie is set to "test"
     And the "nhsuk-cookie-consent" cookie is set statistics consent to "<existing_statistics>" with version "7"
     And the user navigates to the "custom-link" page with the "nhsa.sc" query parameter set to "<shared_consent_value>"
@@ -52,4 +40,14 @@ Feature:  Consume cookie consent share consent
       | True                | -1                   | True                |
 
 
+  Scenario: Stale analytics cookies are cleared when no consent exists and banner is shown
+    Given stale analytics cookies are present without user consent
+    When the user navigates to the "custom-link" page
+    Then the cookie banner is displayed to the user
+    And the analytics cookies are cleared
 
+  Scenario: Analytics cookies are retained when user has consented
+    Given analytics cookies are present with full user consent
+    When the user navigates to the "custom-link" page
+    Then the cookie banner is not displayed to the user
+    And the analytics cookies are not cleared

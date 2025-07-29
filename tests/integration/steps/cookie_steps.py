@@ -6,7 +6,59 @@ import urllib.parse
 from behave import given, when, then
 from behave.api.async_step import async_run_until_complete
 from playwright.async_api import expect
-from tests.integration.helpers.cookie_helper import add_cookie, build_cookie_properties
+from tests.integration.helpers.cookie_helper import (
+    add_cookie,
+    build_cookie_properties,
+    load_analytics_cookies,
+)
+from pathlib import Path
+
+
+@given("stale analytics cookies are present without user consent")
+@when("stale analytics cookies are present without user consent")
+@async_run_until_complete
+async def step_impl(context):
+    await context.browser_context.clear_cookies()
+    """Adds stale analytics cookies"""
+    expected_cookies = load_analytics_cookies()
+    for cookie in expected_cookies:
+        await add_cookie(context, name=cookie["name"], value=cookie["value"])
+
+    cookies = await context.browser_context.cookies()
+    cookie_names = [c["name"] for c in cookies]
+
+    for expected_cookie in expected_cookies:
+        assert (
+            expected_cookie["name"] in cookie_names
+        ), f"Expected '{expected_cookie['name']}' to be in cookies, but it was not found."
+
+
+@given("analytics cookies are present with full user consent")
+@async_run_until_complete
+async def step_impl(context):
+    """Adds analytics cookies with full user consent"""
+    # Set full cookie consent cookie
+    payload = build_cookie_properties(
+        necessary=True,
+        preferences=True,
+        statistics=True,
+        marketing=False,
+        consented=True,
+    )
+    await add_cookie(context, "nhsuk-cookie-consent", payload)
+
+    # Add analytics cookies
+    expected_cookies = load_analytics_cookies()
+    for cookie in expected_cookies:
+        await add_cookie(context, name=cookie["name"], value=cookie["value"])
+
+    # Verify cookies are set
+    cookies = await context.browser_context.cookies()
+    cookie_names = [c["name"] for c in cookies]
+    for expected_cookie in expected_cookies:
+        assert (
+            expected_cookie["name"] in cookie_names
+        ), f"Expected '{expected_cookie['name']}' to be in cookies, but it was not found."
 
 
 @then('the cookies should contain the "{cookie_name}" cookie')
@@ -42,9 +94,10 @@ async def step_impl(context, preference):
 @async_run_until_complete
 async def step_impl(context):
     """The statistics cookie is set to true"""
-    await context.current_page.page.evaluate("window.NHSCookieConsent.setStatistics(true)")
-    await context.current_page.page.reload()
-    await context.current_page.page.wait_for_load_state("networkidle")
+    await context.current_page.page.evaluate(
+        "window.NHSCookieConsent.setStatistics(true)"
+    )
+    await context.page.reload(wait_until="domcontentloaded")
 
 
 @then("the cookie banner is displayed to the user")
@@ -53,7 +106,9 @@ async def step_impl(context):
     """Verifies the cookie banner is displayed"""
     cookie_banner = context.current_page.get_cookie_banner()
     await expect(cookie_banner).to_be_visible()
-    await expect(cookie_banner).to_contain_text("We've put some small files called cookies on your device")
+    await expect(cookie_banner).to_contain_text(
+        "We've put some small files called cookies on your device"
+    )
 
 
 @then("the cookie banner is not displayed to the user")
@@ -84,7 +139,9 @@ async def step_impl(context):
 @async_run_until_complete
 async def step_impl(context):
     """Verifies the cookie policy link"""
-    await expect(context.current_page.get_read_more_about_our_cookies_link()).to_have_attribute(
+    await expect(
+        context.current_page.get_read_more_about_our_cookies_link()
+    ).to_have_attribute(
         "href",
         "/our-policies/cookies-policy/",
     )
@@ -101,10 +158,12 @@ async def step_impl(context):
 @async_run_until_complete
 async def step_impl(context, cookie_name, cookie_value):
     """Sets the given cookie to the given value"""
-    await add_cookie(context, cookie_name, cookie_value) 
+    await add_cookie(context, cookie_name, cookie_value)
 
 
-@given('the "{cookie_name}" cookie is set statistics consent to "{value}" with version "{version}"')
+@given(
+    'the "{cookie_name}" cookie is set statistics consent to "{value}" with version "{version}"'
+)
 @async_run_until_complete
 async def step_impl(context, cookie_name, value, version):
     """Sets the statistics cookie to the given value with the specified version"""
@@ -122,7 +181,7 @@ async def step_impl(context, cookie_name, version):
         statistics=True,
         marketing=False,
         consented=True,
-        version=version
+        version=version,
     )
     await add_cookie(context, cookie_name, payload)
 
@@ -131,7 +190,9 @@ async def step_impl(context, cookie_name, version):
 @async_run_until_complete
 async def step_impl(context, value):
     """Verifies the statistics cookie has been set to the given value"""
-    cookie_value = await context.current_page.page.evaluate("window.NHSCookieConsent.getStatistics()")
+    cookie_value = await context.current_page.page.evaluate(
+        "window.NHSCookieConsent.getStatistics()"
+    )
     assert str(cookie_value) == value
 
 
@@ -144,17 +205,21 @@ async def step_impl(context, cookie_name, value):
 
     # Find the session cookie
     for cookie in cookies:
-        if cookie['name'] == cookie_name:
+        if cookie["name"] == cookie_name:
             consent_cookie = cookie
             break
 
     assert consent_cookie is not None, f"{cookie_name} cookie not found"
-    assert 'expires' in consent_cookie and consent_cookie['expires'] == -1, "Cookie should not be a session cookie"
+    assert (
+        "expires" in consent_cookie and consent_cookie["expires"] == -1
+    ), "Cookie should not be a session cookie"
 
     decoded_value = urllib.parse.unquote(consent_cookie["value"])
     parsed = json.loads(decoded_value)
 
-    assert parsed["statistics"] == expected_stats, f"Expected statistics={expected_stats}, but got {parsed['statistics']}"
+    assert (
+        parsed["statistics"] == expected_stats
+    ), f"Expected statistics={expected_stats}, but got {parsed['statistics']}"
 
 
 @then('the "{cookie_name}" cookie is not a session cookie')
@@ -162,14 +227,16 @@ async def step_impl(context, cookie_name, value):
 async def step_impl(context, cookie_name):
     """Verifies that the cookie is not a session cookie."""
     cookies = await context.browser_context.cookies()
-    
+
     for cookie in cookies:
-        if cookie['name'] == cookie_name:
+        if cookie["name"] == cookie_name:
             stats_cookie = cookie
             break
 
     assert stats_cookie is not None, f"{cookie_name} cookie not found"
-    assert 'expires' in stats_cookie and stats_cookie['expires'] != -1, "Cookie should not be a session cookie"
+    assert (
+        "expires" in stats_cookie and stats_cookie["expires"] != -1
+    ), "Cookie should not be a session cookie"
 
 
 @then("the nhsuk-cookie-consent cookie is exposed as a global object")
@@ -187,7 +254,7 @@ async def step_impl(context):
     cookie = await context.current_page.page.evaluate("window.NHSCookieConsent")
     assert "VERSION" in cookie
     version = cookie.get("VERSION")
-    assert re.match(r'^(\d+)\.(\d+)\.(\d+)$', version)
+    assert re.match(r"^(\d+)\.(\d+)\.(\d+)$", version)
 
 
 @when("the user clicks the Internal Link link")
@@ -234,4 +301,31 @@ async def step_impl(context):
     """Verifies the www.nhs.uk page is displayed"""
     await context.page.wait_for_url("https://www.google.com/", wait_until="load")
     await expect(context.page).to_have_url("https://www.google.com/")
-    
+
+
+@then("the analytics cookies are cleared")
+@async_run_until_complete
+async def step_impl(context):
+    """Verifies that known analytics cookies have been removed"""
+    cookies = await context.browser_context.cookies()
+    cookie_names = [c["name"] for c in cookies]
+
+    expected_cookies = load_analytics_cookies()
+    for expected_cookie in expected_cookies:
+        assert (
+            expected_cookie["name"] not in cookie_names
+        ), f"Expected '{ expected_cookie['name'] }' to be cleared, but it still exists"
+
+
+@then("the analytics cookies are not cleared")
+@async_run_until_complete
+async def step_impl(context):
+    """Verifies that known analytics cookies have not been removed"""
+    cookies = await context.browser_context.cookies()
+    cookie_names = [c["name"] for c in cookies]
+
+    expected_cookies = load_analytics_cookies()
+    for expected_cookie in expected_cookies:
+        assert (
+            expected_cookie["name"] in cookie_names
+        ), f"Expected '{ expected_cookie['name'] }' to still exist, but it was cleared"

@@ -11,6 +11,7 @@ from behavex_images.image_attachments import AttachmentsCondition
 from playwright.async_api import async_playwright
 
 from tests.integration.helpers import config_helper
+from tests.integration.helpers.navigation_helper import goto_url
 
 
 @async_run_until_complete
@@ -106,7 +107,11 @@ async def before_scenario(context, scenario):
             context.playwright_tracing = False
 
     context.page = await context.browser_context.new_page()
-    await context.page.goto(context.test_config.get("URLs", "ui_url"))
+
+    # Safe navigation
+    url = f'{context.test_config.get("URLs", "ui_url")}'
+    await goto_url(context, url)
+
     context.LOGGER.debug(
         f"Running before_scenario: {id(context.browser_context)} - {scenario.name}"
     )
