@@ -50,14 +50,40 @@
         <a id="internal-link" href="https://www.nhs.uk/">Internal Link</a>
         <a id="external-link" href="https://www.google.com/">External Link</a>
       </div>
+
       <div id="cookie-list"></div>
+
+      <!-- Error summary link -->
+      <p>
+        <a id="error-link" href="#error-input-email"
+          >There is a problem with the email address</a
+        >
+      </p>
+      <form>
+        <div class="form-group" style="margin-bottom: 20px">
+          <label for="email">Email address</label>
+          <input
+            type="email"
+            id="error-input-email"
+            name="email"
+            class="form-control error"
+            aria-describedby="email-error"
+            style="border: 2px solid red; display: block; padding: 10px"
+          />
+          <span
+            id="email-error"
+            style="color: red; display: block; margin-top: 5px"
+          >
+            Please enter a valid email address
+          </span>
+        </div>
+      </form>
 
       <iframe
         data-src="https://example.com"
         data-cookieconsent="statistics"
         title="Example Content"
       ></iframe>
-
       <script src="./js/show-cookie-data.js" type="text/javascript"></script>
     </main>
   </body>
