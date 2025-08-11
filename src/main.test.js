@@ -11,7 +11,7 @@ test('setPreferences function exists', () => {
   expect(api.setPreferences).toBeInstanceOf(Function);
 });
 
-test('setPreferences sets the prefrences consent', () => {
+test('setPreferences sets the preferences consent', () => {
   api.setPreferences(true);
   expect(api.getPreferences()).toBe(true);
   api.setPreferences(false);

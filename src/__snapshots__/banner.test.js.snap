@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Cookie Banner inserts the cookie banner into the DOM - snapshot 1`] = `
+"<div><div><p>Mock HTML</p></div><style>.body { color: blue; }</style></div>
+      <div id="cookiebanner"></div>
+      <div id="nhsuk-cookie-confirmation-banner" style="display: none;"></div>
+      <div id="nhsuk-success-banner__message"></div>
+      <a id="nhsuk-cookie-banner__link_accept" href="#">Accept</a>
+      <a id="nhsuk-cookie-banner__link_accept_analytics" href="#">Accept Analytics</a>
+    "
+`;
