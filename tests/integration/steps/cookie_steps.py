@@ -107,7 +107,7 @@ async def step_impl(context):
     cookie_banner = context.current_page.get_cookie_banner()
     await expect(cookie_banner).to_be_visible()
     await expect(cookie_banner).to_contain_text(
-        "We've put some small files called cookies on your device"
+        "We use some cookies to make this website work."
     )
 
 
@@ -135,12 +135,12 @@ async def step_impl(context):
     await expect(confirmation_banner).not_to_be_visible()
 
 
-@when("the user may choose to read more about our cookies")
+@when("the user may choose to read more information about our cookies")
 @async_run_until_complete
 async def step_impl(context):
     """Verifies the cookie policy link"""
     await expect(
-        context.current_page.get_read_more_about_our_cookies_link()
+        context.current_page.get_more_information_about_our_cookies_link()
     ).to_have_attribute(
         "href",
         "/our-policies/cookies-policy/",

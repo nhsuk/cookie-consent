@@ -1,8 +1,9 @@
 .nhsuk-success-banner {
-  background-color: $color_nhsuk-green;
-  color: $color_nhsuk-white;
-  padding: 8px 0 8px 0;
+  background-color: $color_nhsuk-white;
+  color: $color_nhsuk-black;
   position: relative;
+  @include nhsuk-responsive-padding(4, 'top');
+  @include nhsuk-responsive-padding(4, 'bottom');
 
   p {
     margin: 0;
@@ -10,7 +11,7 @@
 
   a,
   a:visited {
-    color: $color_nhsuk-white;
+    color: $color_nhsuk-blue;
   }
 
   a:hover,

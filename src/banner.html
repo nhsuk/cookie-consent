@@ -1,20 +1,58 @@
 <div id="nhsuk-cookie-banner" data-nosnippet>
   <div class="nhsuk-cookie-banner" id="cookiebanner">
-    <div class="nhsuk-width-container"> 
-        <h2>Cookies on the NHS website</h2> 
-        <p>We've put some small files called cookies on your device to make our site work.</p>
-        <p>We'd also like to use analytics cookies. These collect feedback and send information about how our site is used to services called Adobe Analytics, Adobe Target, Qualtrics Feedback and Google Analytics. We use this information to improve our site.</p>
-        <p>Let us know if this is OK. We'll use a cookie to save your choice. You can <a id="nhsuk-cookie-banner__link" href="${require('./settings.js').getPolicyUrl()}">read more about our cookies</a> before you choose.</p>
-        <ul> 
-            <li><button class='nhsuk-button' id="nhsuk-cookie-banner__link_accept_analytics" href="#">I'm OK with analytics cookies</button></li>
-            <li><button class='nhsuk-button' id="nhsuk-cookie-banner__link_accept" href="#">Do not use analytics cookies</button></li>
-        </ul>
+    <div class="nhsuk-width-container">
+      <h2>Cookies on the NHS website</h2>
+      <p>We use some cookies to make this website work.</p>
+      <p>
+        Help improve online NHS services by also accepting analytics cookies.
+      </p>
+      <p>
+        Your choice will be remembered for other online NHS services, such as
+        the NHS App.
+      </p>
+
+      <ul>
+        <li>
+          <button
+            class="nhsuk-button"
+            id="nhsuk-cookie-banner__link_accept_analytics"
+            href="#"
+          >
+            Accept analytics cookies
+          </button>
+        </li>
+        <li>
+          <button
+            class="nhsuk-button"
+            id="nhsuk-cookie-banner__link_accept"
+            href="#"
+          >
+            Reject analytics cookies
+          </button>
+        </li>
+        <li>
+          <a
+            id="nhsuk-cookie-banner__link"
+            href="${require('./settings.js').getPolicyUrl()}"
+            >More information about our cookies</a
+          >
+        </li>
+      </ul>
     </div>
   </div>
 
-  <div class="nhsuk-success-banner" id="nhsuk-cookie-confirmation-banner" style="display:none;">
+  <div
+    class="nhsuk-success-banner"
+    id="nhsuk-cookie-confirmation-banner"
+    style="display: none"
+  >
     <div class="nhsuk-width-container">
-      <p id="nhsuk-success-banner__message">You can change your cookie settings at any time using our <a href="${require('./settings.js').getPolicyUrl()}">cookies page</a>.</p>
+      <p id="nhsuk-success-banner__message">
+        Change your cookie settings at any time using our
+        <a href="${require('./settings.js').getPolicyUrl()}"
+          >cookie settings page</a
+        >.
+      </p>
     </div>
   </div>
 </div>

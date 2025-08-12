@@ -23,6 +23,11 @@ describe('Cookie Banner', () => {
     document.body.innerHTML = '';
   });
 
+  test('inserts the cookie banner into the DOM - snapshot', () => {
+    insertCookieBanner(mockOnAccept, mockOnAnalyticsAccept, mockHitLoggingUrl);
+
+    expect(document.body.innerHTML).toMatchSnapshot();
+  });
   test('inserts the cookie banner into the DOM', () => {
     insertCookieBanner(mockOnAccept, mockOnAnalyticsAccept, mockHitLoggingUrl);
 

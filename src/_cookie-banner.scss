@@ -15,8 +15,8 @@ h2 {
   margin-top: 0;
   font-size: 18px;
   line-height: 1.125;
-  
-  @media (min-width: 40.0625em){
+
+  @media (min-width: 40.0625em) {
     font-size: 22px;
     line-height: 1.375;
   }
@@ -28,8 +28,8 @@ p {
   margin-top: 0;
   font-size: 16px;
   line-height: 1.5;
-  
-  @media (min-width: 40.0625em){
+
+  @media (min-width: 40.0625em) {
     font-size: 19px;
     line-height: 1.47368;
   }
@@ -39,23 +39,36 @@ a {
   font-weight: normal;
 }
 
+#nhsuk-cookie-banner__link {
+  @include nhsuk-responsive-padding(3, 'top');
+  @include nhsuk-responsive-padding(3, 'bottom');
+  display: inline-block;
+  font-size: 16px;
+  line-height: 24px;
+  @media (min-width: 40.0625em) {
+    font-size: 19px;
+    line-height: 28px;
+  }
+}
+
 $button-shadow-size: 4px;
 
 .nhsuk-button {
-  @include nhsuk-responsive-margin(2, 'bottom', $adjustment: $button-shadow-size);
+  margin-bottom: nhsuk-spacing(3);
   display: inline-block;
   vertical-align: top;
   font-family: inherit;
   font-size: 16px;
   line-height: 1.5;
-  
-  @media (min-width: 40.0625em){
+
+  @media (min-width: 40.0625em) {
     font-size: 19px;
     line-height: 1.47368;
-  }
+  } 
 }
 
-ul, li {
+ul,
+li {
   list-style: none;
   padding: 0;
   margin: 0;
@@ -64,6 +77,6 @@ ul, li {
 @include mq($from: desktop) {
   li {
     display: inline;
-    margin-right: 20px;
+    margin-right: nhsuk-spacing(4);
   }
 }

@@ -6,7 +6,7 @@ main {
   margin: 1em;
 }
 
-button, a {
+button {
   display: block;
   margin-bottom: 10px;
 }
