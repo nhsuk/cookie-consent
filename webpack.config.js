@@ -5,33 +5,39 @@ module.exports = {
   entry: ['@babel/polyfill', './src/main.js'],
   mode: 'development',
   module: {
-    rules: [{
-      exclude: /node_modules/,
-      test: /\.js$/,
-      use: {
-        loader: 'babel-loader',
-        options: {
-          presets: ['@babel/preset-env'],
+    rules: [
+      {
+        exclude: /node_modules/,
+        test: /\.js$/,
+        use: {
+          loader: 'babel-loader',
+          options: {
+            presets: ['@babel/preset-env'],
+          },
         },
-      },
-    }, {
-      test: /\.(html)$/,
-      use: {
-        loader: 'html-loader',
-        options: {
-          attrs: false,
-          interpolate: true,
-        },
-      },
-    }, {
-      test: /\.scss$/,
-      use: [{
-        loader: 'css-loader',
       },
       {
-        loader: 'sass-loader',
-      }],
-    }],
+        test: /\.(html)$/,
+        use: {
+          loader: 'html-loader',
+          options: {
+            attrs: false,
+            interpolate: true,
+          },
+        },
+      },
+      {
+        test: /\.scss$/,
+        use: [
+          {
+            loader: 'css-loader',
+          },
+          {
+            loader: 'sass-loader',
+          },
+        ],
+      },
+    ],
   },
   output: {
     filename: 'main.js',
