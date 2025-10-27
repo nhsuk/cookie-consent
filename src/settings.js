@@ -1,7 +1,23 @@
 // N.B document.currentScript needs to be executed outside of any callbacks
 // https://developer.mozilla.org/en-US/docs/Web/API/Document/currentScript#Notes
 const scriptTag = document.currentScript;
-const NHS_DOMAIN_SUFFIX = 'nhs.uk';
+const DOMAIN_WHITELIST = [
+  'www.nhs.uk',
+  'organisation.nhswebsite.nhs.uk',
+  'www.nhsapp.service.nhs.uk',
+  'access.login.nhs.uk',
+];
+
+/**
+ * Checks if a domain is in the whitelist
+ * @param {string} domain - The domain to check
+ * @returns {boolean} - true if the domain is whitelisted, false otherwise
+ */
+function isWhitelistedDomain(domain) {
+  return DOMAIN_WHITELIST.some((whitelistedDomain) =>
+    domain.endsWith(whitelistedDomain)
+  );
+}
 
 // get properties from the scriptTag for the policy URL
 export function getPolicyUrl() {
@@ -50,34 +66,37 @@ export function getNoBanner() {
 }
 
 /**
- * Determines if a link should be skipped from further processing
+ * Determines if consent should be broadcasted when navigating to a link
  * @param {HTMLAnchorElement} link - The anchor element to check
- * @returns {boolean} - Whether the link should be skipped
+ * @returns {boolean} - true if consent should be broadcasted, false otherwise
  */
-export function shouldSkipLinkProcessing(link) {
+export function shouldBroadcastConsent(link) {
   if (!link) {
-    return true;
+    return false;
   }
 
   try {
     const targetUrl = new URL(link.href);
     const currentUrl = new URL(window.location.href);
 
-    // Check if the link is to an external hostname
-    const isExternalLink = !targetUrl.hostname.endsWith(NHS_DOMAIN_SUFFIX);
+    const isSameDomainNavigation = targetUrl.hostname === currentUrl.hostname;
+    const isPolicyPageNavigation = targetUrl.href.endsWith(getPolicyUrl());
+    const isAuthorizedDomain = isWhitelistedDomain(targetUrl.hostname);
 
-    // Check if the link is to the policy page
-    const isPolicyPage = targetUrl.href.endsWith(getPolicyUrl());
+    // Don't broadcast for same-domain navigation
+    if (isSameDomainNavigation) {
+      return false;
+    }
 
-    // Check if the link is to the same page
-    const isSamePageNavigation =
-      targetUrl.hostname === currentUrl.hostname &&
-      targetUrl.pathname === currentUrl.pathname &&
-      targetUrl.search === currentUrl.search;
+    // Don't broadcast for policy page navigation
+    if (isPolicyPageNavigation) {
+      return false;
+    }
 
-    return isExternalLink || isPolicyPage || isSamePageNavigation;
+    // Only broadcast to authorized external domains
+    return isAuthorizedDomain;
   } catch (error) {
-    // not a valid URL, so we can't process it
-    return true;
+    // Invalid URL, don't broadcast
+    return false;
   }
 }

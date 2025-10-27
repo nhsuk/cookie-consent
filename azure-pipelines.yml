@@ -28,7 +28,7 @@ steps:
         sonar.projectKey=nhsuk-cookie-consent
         sonar.javascript.lcov.reportPaths=coverage/lcov.info,tests/integration-tests/coverage/lcov.info
         sonar.dependencyCheck.htmlReportPath=$(System.DefaultWorkingDirectory)/dependency-scan-results/dependency-check-report.html
-        sonar.exclusions=**/*.config.js,/coverage/**,tests/**/coverage/**,**/integration/,**/tests/lighthouse/**,**/integration-tests/,**/tests/example/**,**/*.test.*,__mocks__/**,*test-environment.*,**/dependency-scan-results/dependency-check-report.html,venv/**,node_modules/**
+        sonar.exclusions=**/*.config.js,/coverage/**,tests/**/coverage/**,**/integration/,**/tests/lighthouse/**,**/integration-tests/,**/tests/example/**,**/*.test.*,__mocks__/**,*test-environment.*,**/dependency-scan-results/dependency-check-report.html,venv/**,node_modules/**,**/allure-2.*/**
         sonar.coverage.exclusions=**/integration/**
         sonar.scanner.metadataFilePath=$(Agent.TempDirectory)/sonar/$(Build.BuildNumber)/test/report-task.txt
 
@@ -55,11 +55,11 @@ steps:
       artifactName: 'Integration test report - $(Build.BuildNumber)-$(System.JobAttempt)'
 
   - task: qameta.allure-azure-pipelines.PublishAllureReport.PublishAllureReport@1
-    displayName: "Testing: Publish integration test Allure report"
+    displayName: 'Testing: Publish integration test Allure report'
     condition: succeededOrFailed()
     inputs:
-      testResultsDir: "$(Build.SourcesDirectory)/tests/integration/reports/allure-reports"
-      reportName: "Integration test Allure report - $(Build.BuildNumber)-$(System.JobAttempt)"
+      testResultsDir: '$(Build.SourcesDirectory)/tests/integration/reports/allure-reports'
+      reportName: 'Integration test Allure report - $(Build.BuildNumber)-$(System.JobAttempt)'
 
   - task: PublishPipelineArtifact@1
     displayName: 'Testing: Publish Lighthouse HTML report'

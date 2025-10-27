@@ -4,7 +4,7 @@ import settings, {
   getNoBanner,
   getPolicyUrl,
   makeUrlAbsolute,
-  shouldSkipLinkProcessing,
+  shouldBroadcastConsent,
 } from './settings';
 
 describe('get script settings for no banner', () => {
@@ -117,8 +117,8 @@ describe('get an absolute URL', () => {
   });
 });
 
-describe('shouldSkipLinkProcessing', () => {
-  describe('when current URL is differnt to target URL', () => {
+describe('shouldBroadcastConsent', () => {
+  describe('when current URL is different to target URL', () => {
     beforeEach(() => {
       const originalLocation = window.location;
       jest.spyOn(window, 'location', 'get').mockImplementation(() => ({
@@ -131,28 +131,34 @@ describe('shouldSkipLinkProcessing', () => {
     });
 
     it.each`
-      description                                              | href                                                 | shouldSkip
-      ${'null link should skip'}                               | ${null}                                              | ${true}
-      ${'undefined link should skip'}                          | ${undefined}                                         | ${true}
-      ${'empty link should skip'}                              | ${''}                                                | ${true}
-      ${'internal link should process'}                        | ${'https://nhs.uk/home'}                             | ${false}
-      ${'params link should process'}                          | ${'https://nhs.uk?referer=test?val=1'}               | ${false}
-      ${'fragment link should process'}                        | ${'https://nhs.uk#field1=error1'}                    | ${false}
-      ${'subdomain link should process'}                       | ${'https://assets.nhs.uk'}                           | ${false}
-      ${'external link should skip'}                           | ${'https://external.uk'}                             | ${true}
-      ${'external with params link should skip'}               | ${'https://external.uk?referer=test?val=1'}          | ${true}
-      ${'external fragmanet link should skip'}                 | ${'https://external.uk#field1'}                      | ${true}
-      ${'external with params and fragmanet link should skip'} | ${'https://external.uk#field1=error1&field2=error2'} | ${true}
-      ${'policy link should skip'}                             | ${'https://nhs.uk/our-policies/cookies-policy/'}     | ${true}
-    `('$description', ({ href, shouldSkip }) => {
+      description                                                     | href                                                 | shouldBroad
+      ${'null link should not broadcast'}                             | ${null}                                              | ${false}
+      ${'undefined link should not broadcast'}                        | ${undefined}                                         | ${false}
+      ${'empty link should not broadcast'}                            | ${''}                                                | ${false}
+      ${'same domain link should not broadcast'}                      | ${'https://nhs.uk/home'}                             | ${false}
+      ${'same domain with params should not broadcast'}               | ${'https://nhs.uk?referer=test?val=1'}               | ${false}
+      ${'same domain with fragment should not broadcast'}             | ${'https://nhs.uk#field1=error1'}                    | ${false}
+      ${'same domain subdomain should not broadcast'}                 | ${'https://assets.nhs.uk'}                           | ${false}
+      ${'policy link should not broadcast'}                           | ${'https://nhs.uk/our-policies/cookies-policy/'}     | ${false}
+      ${'non-authorized external link should not broadcast'}          | ${'https://external.uk'}                             | ${false}
+      ${'non-authorized external with params should not broadcast'}   | ${'https://external.uk?referer=test?val=1'}          | ${false}
+      ${'non-authorized external with fragment should not broadcast'} | ${'https://external.uk#field1'}                      | ${false}
+      ${'non-authorized external complex should not broadcast'}       | ${'https://external.uk#field1=error1&field2=error2'} | ${false}
+      ${'authorized domain www.nhs.uk should broadcast'}              | ${'https://www.nhs.uk/services'}                     | ${true}
+      ${'authorized domain organisation.nhswebsite should broadcast'} | ${'https://organisation.nhswebsite.nhs.uk'}          | ${true}
+      ${'authorized domain www.nhsapp.service should broadcast'}      | ${'https://www.nhsapp.service.nhs.uk/login'}         | ${true}
+      ${'authorized domain access.login should broadcast'}            | ${'https://access.login.nhs.uk'}                     | ${true}
+      ${'authorized domain with params should broadcast'}             | ${'https://www.nhs.uk/services?ref=test'}            | ${true}
+      ${'authorized domain with fragment should broadcast'}           | ${'https://www.nhsapp.service.nhs.uk/login#section'} | ${true}
+    `('$description', ({ href, shouldBroad }) => {
       let link = null;
       if (href !== null && href !== undefined) {
         link = document.createElement('a');
         link.href = href;
       }
 
-      const result = shouldSkipLinkProcessing(link);
-      expect(result).toBe(shouldSkip);
+      const result = shouldBroadcastConsent(link);
+      expect(result).toBe(shouldBroad);
     });
   });
 });
@@ -170,26 +176,65 @@ describe('when current URL is same as target URL', () => {
   });
 
   it.each`
-    description                                  | href                                                | shouldSkip
-    ${'null link should skip'}                   | ${null}                                             | ${true}
-    ${'undefined link should skip'}              | ${undefined}                                        | ${true}
-    ${'empty link should skip'}                  | ${''}                                               | ${true}
-    ${'link should skip'}                        | ${'https://nhs.uk/'}                                | ${true}
-    ${'fragment link should skip'}               | ${'https://nhs.uk#fragment'}                        | ${true}
-    ${'fragment and params link should skip'}    | ${'https://nhs.uk#field1=error1&field2=error2'}     | ${true}
-    ${'params link should process'}              | ${'https://nhs.uk/?referer=test'}                   | ${false}
-    ${'fragment link should process'}            | ${'https://nhs.uk/app#fragment'}                    | ${false}
-    ${'fragment and params link should process'} | ${'https://nhs.uk/app#field1=error1&field2=error2'} | ${false}
-    ${'subdomain link should process'}           | ${'https://assets.nhs.uk'}                          | ${false}
-    ${'policy link should skip'}                 | ${'https://nhs.uk/our-policies/cookies-policy/'}    | ${true}
-  `('$description', ({ href, shouldSkip }) => {
+    description                                          | href                                                | shouldBroad
+    ${'null link should not broadcast'}                  | ${null}                                             | ${false}
+    ${'undefined link should not broadcast'}             | ${undefined}                                        | ${false}
+    ${'empty link should not broadcast'}                 | ${''}                                               | ${false}
+    ${'same domain link should not broadcast'}           | ${'https://nhs.uk/'}                                | ${false}
+    ${'same domain with fragment should not broadcast'}  | ${'https://nhs.uk#fragment'}                        | ${false}
+    ${'same domain with params should not broadcast'}    | ${'https://nhs.uk#field1=error1&field2=error2'}     | ${false}
+    ${'same domain different path should not broadcast'} | ${'https://nhs.uk/?referer=test'}                   | ${false}
+    ${'same domain app path should not broadcast'}       | ${'https://nhs.uk/app#fragment'}                    | ${false}
+    ${'same domain complex path should not broadcast'}   | ${'https://nhs.uk/app#field1=error1&field2=error2'} | ${false}
+    ${'same domain subdomain should not broadcast'}      | ${'https://assets.nhs.uk'}                          | ${false}
+    ${'policy link should not broadcast'}                | ${'https://nhs.uk/our-policies/cookies-policy/'}    | ${false}
+    ${'authorized domain www.nhs.uk should broadcast'}   | ${'https://www.nhs.uk/home'}                        | ${true}
+    ${'authorized domain nhsapp should broadcast'}       | ${'https://www.nhsapp.service.nhs.uk/login'}        | ${true}
+    ${'authorized domain access.login should broadcast'} | ${'https://access.login.nhs.uk'}                    | ${true}
+  `('$description', ({ href, shouldBroad }) => {
     let link = null;
     if (href !== null && href !== undefined) {
       link = document.createElement('a');
       link.href = href;
     }
 
-    const result = shouldSkipLinkProcessing(link);
-    expect(result).toBe(shouldSkip);
+    const result = shouldBroadcastConsent(link);
+    expect(result).toBe(shouldBroad);
+  });
+});
+
+describe('when current URL is on an authorized domain', () => {
+  beforeEach(() => {
+    const originalLocation = window.location;
+    jest.spyOn(window, 'location', 'get').mockImplementation(() => ({
+      ...originalLocation,
+      href: 'https://www.nhsapp.service.nhs.uk/login',
+    }));
+  });
+  afterEach(() => {
+    jest.restoreAllMocks();
+  });
+
+  it.each`
+    description                                                    | href                                                  | shouldBroad
+    ${'same authorized domain link should not broadcast'}          | ${'https://www.nhsapp.service.nhs.uk/dashboard'}      | ${false}
+    ${'same authorized domain with params should not broadcast'}   | ${'https://www.nhsapp.service.nhs.uk/login?ref=test'} | ${false}
+    ${'same authorized domain with fragment should not broadcast'} | ${'https://www.nhsapp.service.nhs.uk/home#section'}   | ${false}
+    ${'different authorized domain www.nhs.uk should broadcast'}   | ${'https://www.nhs.uk/services'}                      | ${true}
+    ${'different authorized domain access.login should broadcast'} | ${'https://access.login.nhs.uk'}                      | ${true}
+    ${'different authorized domain organisation should broadcast'} | ${'https://organisation.nhswebsite.nhs.uk'}           | ${true}
+    ${'different authorized domain with params should broadcast'}  | ${'https://www.nhs.uk/services?ref=x'}                | ${true}
+    ${'non-authorized domain should not broadcast'}                | ${'https://google.com'}                               | ${false}
+    ${'non-authorized subdomain should not broadcast'}             | ${'https://subdomain.example.com'}                    | ${false}
+    ${'policy link should not broadcast'}                          | ${'ttps://nhs.uk/our-policies/cookies-policy/'}       | ${false}
+  `('$description', ({ href, shouldBroad }) => {
+    let link = null;
+    if (href !== null && href !== undefined) {
+      link = document.createElement('a');
+      link.href = href;
+    }
+
+    const result = shouldBroadcastConsent(link);
+    expect(result).toBe(shouldBroad);
   });
 });

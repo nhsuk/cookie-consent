@@ -8,3 +8,4 @@ coverage/
 reports
 traces
 **/venv/
+.lighthouseci/

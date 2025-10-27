@@ -33,7 +33,7 @@
         <li>
           <a
             id="nhsuk-cookie-banner__link"
-            href="${require('./settings.js').getPolicyUrl()}"
+            href="<%= require('./settings.js').getPolicyUrl() %>"
             >More information about our cookies</a
           >
         </li>
@@ -49,7 +49,7 @@
     <div class="nhsuk-width-container">
       <p id="nhsuk-success-banner__message">
         Change your cookie settings at any time using our
-        <a href="${require('./settings.js').getPolicyUrl()}"
+        <a href="<%= require('./settings.js').getPolicyUrl() %>"
           >cookie settings page</a
         >.
       </p>
