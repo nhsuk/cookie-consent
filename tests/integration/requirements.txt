@@ -1,8 +1,8 @@
 astroid==3.3.9
 axe-playwright-python==0.1.4
 behave==1.2.6
-behavex==4.1.2
-behavex-images==3.1.1
+behavex==4.6.0
+behavex-images==3.3.1
 black==25.1.0
 click==8.1.8
 configobj==5.0.9

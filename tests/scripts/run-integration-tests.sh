@@ -30,7 +30,7 @@ playwright install --with-deps chromium
 rm -rf tests/integration/reports
 
 echo "### Started E2E tests"
-behavex ./tests/integration --tags=~@wip --logging-level=${logging_level} --parallel-processes=${parallel_processes} --parallel-scheme=${parallel_scheme} --show-progress-bar -o ./tests/integration/reports
+behavex ./tests/integration --tags=~@wip --logging-level=${logging_level} --parallel-processes=${parallel_processes} --parallel-scheme=${parallel_scheme} --show-progress-bar -o ./tests/integration/reports --formatter=behavex.outputs.formatters.allure_behavex_formatter:AllureBehaveXFormatter --formatter-outdir=allure-reports
 PASSED=$?
 
 deactivate
