@@ -28,7 +28,7 @@ steps:
         sonar.projectKey=nhsuk-cookie-consent
         sonar.javascript.lcov.reportPaths=coverage/lcov.info,tests/integration-tests/coverage/lcov.info
         sonar.dependencyCheck.htmlReportPath=$(System.DefaultWorkingDirectory)/dependency-scan-results/dependency-check-report.html
-        sonar.exclusions=**/*.config.js,/coverage/**,tests/**/coverage/**,**/integration/,**/tests/lighthouse/**,**/integration-tests/,**/tests/example/**,**/*.test.*,__mocks__/**,*test-environment.*,**/dependency-scan-results/dependency-check-report.html,venv/**,node_modules/**,**/allure-2.*/**
+        sonar.exclusions=**/*.config.js,/coverage/**,tests/**/coverage/**,**/integration/,**/tests/lighthouse/**,**/integration-tests/,**/tests/example/**,**/*.test.*,__mocks__/**,*test-environment.*,**/dependency-scan-results/dependency-check-report.html,venv/**,node_modules/**
         sonar.coverage.exclusions=**/integration/**
         sonar.scanner.metadataFilePath=$(Agent.TempDirectory)/sonar/$(Build.BuildNumber)/test/report-task.txt
 
@@ -46,27 +46,6 @@ steps:
 
   - script: CI=true npm run test
     displayName: 'Testing: Run tests'
-
-  - task: PublishPipelineArtifact@1
-    displayName: 'Testing: Publish integration test report'
-    condition: succeededOrFailed()
-    inputs:
-      targetPath: '$(Build.SourcesDirectory)/tests/integration/reports'
-      artifactName: 'Integration test report - $(Build.BuildNumber)-$(System.JobAttempt)'
-
-  - task: qameta.allure-azure-pipelines.PublishAllureReport.PublishAllureReport@1
-    displayName: 'Testing: Publish integration test Allure report'
-    condition: succeededOrFailed()
-    inputs:
-      testResultsDir: '$(Build.SourcesDirectory)/tests/integration/reports/allure-reports'
-      reportName: 'Integration test Allure report - $(Build.BuildNumber)-$(System.JobAttempt)'
-
-  - task: PublishPipelineArtifact@1
-    displayName: 'Testing: Publish Lighthouse HTML report'
-    condition: succeededOrFailed()
-    inputs:
-      targetPath: '$(Build.SourcesDirectory)/tests/lighthouse/reports'
-      artifactName: 'Lighthouse CI reports - $(Build.BuildNumber)-$(System.JobAttempt)'
 
   - task: SonarCloudAnalyze@2
     displayName: 'Run SonarCloud Code Analysis'
@@ -91,3 +70,24 @@ steps:
     inputs:
       pathtoPublish: $(Build.ArtifactStagingDirectory)
       artifactName: dist
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Testing: Publish integration test report'
+    condition: succeededOrFailed()
+    inputs:
+      targetPath: '$(Build.SourcesDirectory)/tests/integration/reports'
+      artifactName: 'Integration test report - $(Build.BuildNumber)-$(System.JobAttempt)'
+
+  - task: qameta.allure-azure-pipelines.PublishAllureReport.PublishAllureReport@1
+    displayName: 'Testing: Publish integration test Allure report'
+    condition: succeededOrFailed()
+    inputs:
+      testResultsDir: '$(Build.SourcesDirectory)/tests/integration/reports/allure-reports'
+      reportName: 'Integration test Allure report - $(Build.BuildNumber)-$(System.JobAttempt)'
+
+  - task: PublishPipelineArtifact@1
+    displayName: 'Testing: Publish Lighthouse HTML report'
+    condition: succeededOrFailed()
+    inputs:
+      targetPath: '$(Build.SourcesDirectory)/tests/lighthouse/reports'
+      artifactName: 'Lighthouse CI reports - $(Build.BuildNumber)-$(System.JobAttempt)'
