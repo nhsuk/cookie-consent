@@ -52,20 +52,34 @@ const defaultConsent = {
 };
 
 /**
- * Get the consent cookie and parse it into an object
- */
-function getCookie() {
-  const rawCookie = getRawCookie(COOKIE_NAME);
-  return JSON.parse(rawCookie);
-}
-
-/**
  * Set the consent cookie, turning the value object into a string
  * Creates a new cookie or replaces a cookie if one exists with the same name
  */
 function createCookie(value, days, path, domain, secure) {
   const stringValue = JSON.stringify(value);
   return createRawCookie(COOKIE_NAME, stringValue, days, path, domain, secure);
+}
+
+/**
+ * Get the consent cookie and parse it into an object
+ *
+ * If the cookie cannot be parsed as valid JSON, this function will
+ * reset the cookie to the default settings, and return the new value
+ * of the cookie.
+ */
+function getCookie() {
+  const rawCookie = getRawCookie(COOKIE_NAME);
+  let jsonCookie;
+  try {
+    jsonCookie = JSON.parse(rawCookie);
+  } catch (_err) {
+    jsonCookie = {
+      ...defaultConsent,
+      version: COOKIE_VERSION,
+    };
+    createCookie(jsonCookie, null, '/');
+  }
+  return jsonCookie;
 }
 
 /**
