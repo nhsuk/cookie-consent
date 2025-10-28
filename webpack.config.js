@@ -21,8 +21,12 @@ module.exports = {
         use: {
           loader: 'html-loader',
           options: {
-            attrs: false,
-            interpolate: true,
+            postprocessor: (content, loaderContext) => {
+              const isTemplateLiteralSupported = content[0] === '`';
+              return content
+                .replaceAll('<%=', isTemplateLiteralSupported ? '${' : '" +')
+                .replaceAll('%>', isTemplateLiteralSupported ? '}' : '+ "');
+            },
           },
         },
       },

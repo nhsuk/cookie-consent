@@ -13,8 +13,10 @@ from tests.integration.helpers.cookie_helper import (
     build_cookie_properties,
     load_analytics_cookies,
 )
-
-BASE_NHS_UK_URL = "https://www.nhs.uk"
+from tests.integration.steps.shared_steps import (
+    capture_link_response_and_click,
+    verify_shared_consent_query_param,
+)
 
 
 @given("stale analytics cookies are present without user consent")
@@ -122,7 +124,7 @@ async def step_impl(context):
     await expect(cookie_banner).not_to_be_visible()
 
 
-@then("the cookie confirmation banner is displayed to tbe user")
+@then("the cookie confirmation banner is displayed to the user")
 @async_run_until_complete
 async def step_impl(context):
     """Verifies the cookie confirmation banner is displayed"""
@@ -130,7 +132,7 @@ async def step_impl(context):
     await expect(confirmation_banner).to_be_visible()
 
 
-@then("the cookie confirmation banner is not displayed to tbe user")
+@then("the cookie confirmation banner is not displayed to the user")
 @async_run_until_complete
 async def step_impl(context):
     """Verifies the cookie confirmation banner is not displayed"""
@@ -260,72 +262,33 @@ async def step_impl(context):
     assert re.match(r"^(\d+)\.(\d+)\.(\d+)$", version)
 
 
-@when("the user clicks the Internal Link link")
+@when('the user clicks the "{link_text}" link')
+@async_run_until_complete
+async def step_impl(context, link_text):
+    """Clicks a link by its text and captures the response"""
+    href = await context.current_page.get_link_href(link_text)
+    await capture_link_response_and_click(context, link_text, href)
+
+
+@then("the page is displayed and contains shared consent query string value of 1")
 @async_run_until_complete
 async def step_impl(context):
-    """Clicks the Internal Link link"""
-    async with context.page.expect_response(
-        lambda response: response.url.startswith(BASE_NHS_UK_URL)
-    ) as response_info:
-        await context.current_page.click_internal_link()
-    context.internal_link_response = await response_info.value
+    """Verifies the link href contains nhsa.sc=1"""
+    await verify_shared_consent_query_param(context, query_param="nhsa.sc=1")
 
 
-@then("the NHSUK homepage is displayed")
+@then("the page is displayed and contains shared consent query string value of 0")
 @async_run_until_complete
 async def step_impl(context):
-    """Verifies the www.nhs.uk page is displayed"""
-    await context.page.wait_for_url(f"{BASE_NHS_UK_URL}/", wait_until="load")
-    await expect(context.page).to_have_url(f"{BASE_NHS_UK_URL}/")
+    """Verifies the link href contains nhsa.sc=0"""
+    await verify_shared_consent_query_param(context, query_param="nhsa.sc=0")
 
 
-@then("the NHSUK homepage is displayed with shared consent query string value of 1")
+@then("the page is displayed and does not contain shared consent query string")
 @async_run_until_complete
 async def step_impl(context):
-    """Verifies the www.nhs.uk page is displayed with shared consent set to 1"""
-    await verify_shared_consent_query_param_consumed(context, query_param="nhsa.sc=1")
-
-
-@then("the NHSUK homepage is displayed with shared consent query string value of 0")
-@async_run_until_complete
-async def step_impl(context):
-    """Verifies the www.nhs.uk page is displayed with shared consent set to 0"""
-    await verify_shared_consent_query_param_consumed(context, query_param="nhsa.sc=0")
-
-
-async def verify_shared_consent_query_param_consumed(context, query_param):
-    """Verifies the shared consent query string is consumed"""
-    assert context.internal_link_response.url == f"{BASE_NHS_UK_URL}/?{query_param}"
-    assert context.internal_link_response.ok
-
-    await context.page.wait_for_url(
-        f"{BASE_NHS_UK_URL}/?*", wait_until="load"
-    )  # ensure load
-    await context.page.wait_for_url(
-        f"{BASE_NHS_UK_URL}/"
-    )  # History API change to clean URL
-
-    parsed = urllib.parse.urlsplit(context.page.url)
-    assert parsed.query == ""
-    assert f"{parsed.scheme}://{parsed.netloc}{parsed.path}" in (
-        f"{BASE_NHS_UK_URL}/",
-        f"{BASE_NHS_UK_URL}/".rstrip("/"),
-    )
-
-
-@when("the user clicks the External Link link")
-@async_run_until_complete
-async def step_impl(context):
-    """Clicks the IExernal Link link"""
-    await context.current_page.click_external_link()
-
-
-@then("the external page is displayed")
-@async_run_until_complete
-async def step_impl(context):
-    """Verifies the www.nhs.uk page is displayed"""
-    await context.page.wait_for_url("https://www.google.com/", wait_until="load")
-    await expect(context.page).to_have_url("https://www.google.com/")
+    """Verifies the specified link text page is displayed"""
+    await verify_shared_consent_query_param(context, query_param=None)
 
 
 @then("the analytics cookies are cleared")

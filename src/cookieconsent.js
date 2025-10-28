@@ -10,7 +10,7 @@ import {
   getNoBanner,
   getPolicyUrl,
   makeUrlAbsolute,
-  shouldSkipLinkProcessing,
+  shouldBroadcastConsent,
 } from './settings';
 
 /**
@@ -251,7 +251,7 @@ function shouldShowBanner() {
  */
 function handleSharedConsentLinkClick(event) {
   const link = event.target.closest('a');
-  if (shouldSkipLinkProcessing(link)) {
+  if (!shouldBroadcastConsent(link)) {
     return;
   }
 

@@ -91,10 +91,12 @@ describe('setConsent', () => {
   beforeEach(() => {
     spy = jest.fn();
     cookieconsent.__Rewire__('createCookie', spy);
+    cookieconsent.__Rewire__('getConsent', () => ({}));
   });
 
   afterEach(() => {
     cookieconsent.__ResetDependency__('createCookie');
+    cookieconsent.__ResetDependency__('getConsent');
   });
 
   test('setConsent creates a year-long cookie containing consent settings', () => {
@@ -587,8 +589,10 @@ describe('NO_BANNER mode', () => {
 });
 
 describe('link href broadcast shared consent querystring parameter', () => {
-  const internalUrl = 'https://www.nhs.uk/page';
-  const externalUrl = 'https://www.mock-page.uk/';
+  const sameDomainUrl = 'https://www.nhs.uk/page';
+  const authorizedDomainUrl = 'https://www.nhsapp.service.nhs.uk/login';
+  const nonAuthorizedDomainUrl =
+    'https://www.bhrhospitals.nhs.uk/sexual-health';
 
   afterEach(() => {
     cookieconsent.__ResetDependency__('getConsent');
@@ -596,19 +600,28 @@ describe('link href broadcast shared consent querystring parameter', () => {
     document.removeEventListener('click', handler);
   });
 
-  describe('internal links', () => {
+  describe('same domain links should not broadcast', () => {
     beforeEach(() => {
-      document.body.innerHTML = `<a id="mockLink" href="${internalUrl}">Link</a>`;
+      const originalLocation = window.location;
+      jest.spyOn(window, 'location', 'get').mockImplementation(() => ({
+        ...originalLocation,
+        href: 'https://www.nhs.uk/',
+      }));
+      document.body.innerHTML = `<a id="mockLink" href="${sameDomainUrl}">Link</a>`;
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
     });
 
     it.each`
-      description                                                     | consent                                    | expectedHref
-      ${'includes nhsa.sc=1 when analytics is true'}                  | ${{ consented: true, statistics: true }}   | ${`${internalUrl}?nhsa.sc=1`}
-      ${'includes nhsa.sc=0 when analytics is false'}                 | ${{ consented: true, statistics: false }}  | ${`${internalUrl}?nhsa.sc=0`}
-      ${'omits nhsa.sc when consent is false and analytics is true'}  | ${{ consented: false, statistics: true }}  | ${internalUrl}
-      ${'omits nhsa.sc when consent is false and analytics is false'} | ${{ consented: false, statistics: false }} | ${internalUrl}
-      ${'omits nhsa.sc when consent is false'}                        | ${{ consented: false }}                    | ${internalUrl}
-      ${'omits nhsa.sc when consent is empty'}                        | ${{}}                                      | ${internalUrl}
+      description                                                                | consent                                    | expectedHref
+      ${'does not include nhsa.sc when analytics is true'}                       | ${{ consented: true, statistics: true }}   | ${sameDomainUrl}
+      ${'does not include nhsa.sc when analytics is false'}                      | ${{ consented: true, statistics: false }}  | ${sameDomainUrl}
+      ${'does not include nhsa.sc when consent is false and analytics is true'}  | ${{ consented: false, statistics: true }}  | ${sameDomainUrl}
+      ${'does not include nhsa.sc when consent is false and analytics is false'} | ${{ consented: false, statistics: false }} | ${sameDomainUrl}
+      ${'does not include nhsa.sc when consent is false'}                        | ${{ consented: false }}                    | ${sameDomainUrl}
+      ${'does not include nhsa.sc when consent is empty'}                        | ${{}}                                      | ${sameDomainUrl}
     `('$description', ({ consent, expectedHref }) => {
       cookieconsent.__Rewire__('getCookie', () => ({
         ...consent,
@@ -621,19 +634,62 @@ describe('link href broadcast shared consent querystring parameter', () => {
     });
   });
 
-  describe('external links', () => {
+  describe('authorized domain links should broadcast', () => {
     beforeEach(() => {
-      document.body.innerHTML = `<a id="mockLink" href="${externalUrl}">Link</a>`;
+      const originalLocation = window.location;
+      jest.spyOn(window, 'location', 'get').mockImplementation(() => ({
+        ...originalLocation,
+        href: 'https://www.nhs.uk/',
+      }));
+      document.body.innerHTML = `<a id="mockLink" href="${authorizedDomainUrl}">Link</a>`;
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
     });
 
     it.each`
-      description                                                     | consent                                    | expectedHref
-      ${'does not include nhsa.sc=1 when analytics is true'}          | ${{ consented: true, statistics: true }}   | ${externalUrl}
-      ${'does not include nhsa.sc=0 when analytics is false'}         | ${{ consented: true, statistics: false }}  | ${externalUrl}
-      ${'omits nhsa.sc when consent is false and analytics is true'}  | ${{ consented: false, statistics: true }}  | ${externalUrl}
-      ${'omits nhsa.sc when consent is false and analytics is false'} | ${{ consented: false, statistics: false }} | ${externalUrl}
-      ${'omits nhsa.sc when consent is false'}                        | ${{ consented: false }}                    | ${externalUrl}
-      ${'omits nhsa.sc when consent is empty'}                        | ${{}}                                      | ${externalUrl}
+      description                                                                | consent                                    | expectedHref
+      ${'includes nhsa.sc=1 when analytics is true'}                             | ${{ consented: true, statistics: true }}   | ${`${authorizedDomainUrl}?nhsa.sc=1`}
+      ${'includes nhsa.sc=0 when analytics is false'}                            | ${{ consented: true, statistics: false }}  | ${`${authorizedDomainUrl}?nhsa.sc=0`}
+      ${'does not include nhsa.sc when consent is false and analytics is true'}  | ${{ consented: false, statistics: true }}  | ${authorizedDomainUrl}
+      ${'does not include nhsa.sc when consent is false and analytics is false'} | ${{ consented: false, statistics: false }} | ${authorizedDomainUrl}
+      ${'does not include nhsa.sc when consent is false'}                        | ${{ consented: false }}                    | ${authorizedDomainUrl}
+      ${'does not include nhsa.sc when consent is empty'}                        | ${{}}                                      | ${authorizedDomainUrl}
+    `('$description', ({ consent, expectedHref }) => {
+      cookieconsent.__Rewire__('getCookie', () => ({
+        ...consent,
+        version: COOKIE_VERSION,
+      }));
+      onload();
+      const link = document.getElementById('mockLink');
+      link.click();
+      expect(link.href).toBe(expectedHref);
+    });
+  });
+
+  describe('non-authorized domain links should not broadcast', () => {
+    beforeEach(() => {
+      const originalLocation = window.location;
+      jest.spyOn(window, 'location', 'get').mockImplementation(() => ({
+        ...originalLocation,
+        href: 'https://www.nhs.uk/',
+      }));
+      document.body.innerHTML = `<a id="mockLink" href="${nonAuthorizedDomainUrl}">Link</a>`;
+    });
+
+    afterEach(() => {
+      jest.restoreAllMocks();
+    });
+
+    it.each`
+      description                                                                | consent                                    | expectedHref
+      ${'does not include nhsa.sc when analytics is true'}                       | ${{ consented: true, statistics: true }}   | ${nonAuthorizedDomainUrl}
+      ${'does not include nhsa.sc when analytics is false'}                      | ${{ consented: true, statistics: false }}  | ${nonAuthorizedDomainUrl}
+      ${'does not include nhsa.sc when consent is false and analytics is true'}  | ${{ consented: false, statistics: true }}  | ${nonAuthorizedDomainUrl}
+      ${'does not include nhsa.sc when consent is false and analytics is false'} | ${{ consented: false, statistics: false }} | ${nonAuthorizedDomainUrl}
+      ${'does not include nhsa.sc when consent is false'}                        | ${{ consented: false }}                    | ${nonAuthorizedDomainUrl}
+      ${'does not include nhsa.sc when consent is empty'}                        | ${{}}                                      | ${nonAuthorizedDomainUrl}
     `('$description', ({ consent, expectedHref }) => {
       cookieconsent.__Rewire__('getCookie', () => ({
         ...consent,
