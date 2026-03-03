@@ -10,7 +10,7 @@ class BasePage(Page):
 
     cookie_banner = ".nhsuk-cookie-banner"
     cookie_confirmation_banner = "#nhsuk-cookie-confirmation-banner"
-    more_information_about_our_cookies_link = "More information about our cookies"
+    choose_your_cookie_settings_link = "Choose your cookie settings"
     im_ok_with_analytics_cookies_button = "Accept analytics cookies"
     do_not_use_analytics_cookies_button = "Reject analytics cookies"
 
@@ -39,9 +39,9 @@ class BasePage(Page):
         """Returns the cookie banner"""
         return self.get_locator(self.cookie_banner)
 
-    def get_more_information_about_our_cookies_link(self):
-        """Return the More information about our cookies link"""
-        return self.get_link(self.more_information_about_our_cookies_link)
+    def get_choose_your_cookie_settings_link(self):
+        """Return the Choose your cookie settings link"""
+        return self.get_link(self.choose_your_cookie_settings_link)
 
     def get_cookie_confirmation_banner(self):
         """Returns the cookie confirmation banner"""

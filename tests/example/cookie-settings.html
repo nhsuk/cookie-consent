@@ -1,25 +1,36 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="description" content="">
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <meta name="description" content="" />
 
-    <link rel="shortcut icon" href="">
+    <link rel="shortcut icon" href="" />
 
     <title>Cookie Consent settings form</title>
 
-    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/style.css" />
 
     <!-- Necessary cookies should always be set regardless of user preferences  -->
     <script src="./js/necessary.js"></script>
 
     <!-- Statistics cookies have to be accepted before they are set -->
-    <script src="./js/statistics.js" data-cookieconsent="statistics" type="text/plain"></script>
+    <script
+      src="./js/statistics.js"
+      data-cookieconsent="statistics"
+      type="text/plain"
+    ></script>
 
     <!-- Cookie Consent plugin -->
-    <script src="../../dist/main.js" data-policy-url="./cookie-settings.html" type="text/javascript"></script>
+    <script
+      src="../../dist/main.js"
+      data-nobanner
+      type="text/javascript"
+    ></script>
 
     <script type="text/plain" data-cookieconsent="statistics">
       document.cookie = 'inline-js=this cookie is from inline javascript';
@@ -29,15 +40,17 @@
     <main class="main">
       <h1>Cookie Settings:</h1>
       <div>
-        <p>Necessary: <input type="checkbox" id="necessary" checked disabled/></p>
+        <p>
+          Necessary: <input type="checkbox" id="necessary" checked disabled />
+        </p>
         <p>Preferences: <input type="checkbox" id="preferences" /></p>
         <p>Statistics: <input type="checkbox" id="statistics" /></p>
         <p>Marketing: <input type="checkbox" id="marketing" /></p>
 
         <script>
-          var preferences = document.getElementById("preferences");
-          var statistics = document.getElementById("statistics");
-          var marketing = document.getElementById("marketing");
+          var preferences = document.getElementById('preferences');
+          var statistics = document.getElementById('statistics');
+          var marketing = document.getElementById('marketing');
 
           preferences.checked = NHSCookieConsent.getPreferences();
           statistics.checked = NHSCookieConsent.getStatistics();
@@ -54,15 +67,19 @@
           }
         </script>
 
-        <input type="submit" onclick="updateSettings();">
+        <input type="submit" onclick="updateSettings()" />
       </div>
 
-      <hr/>
+      <hr />
 
       <button id="cookie-list-refresh">Refresh</button>
       <div id="cookie-list"></div>
 
-      <iframe data-src="https://example.com" data-cookieconsent="statistics" title="Example Content"></iframe>
+      <iframe
+        data-src="https://example.com"
+        data-cookieconsent="statistics"
+        title="Example Content"
+      ></iframe>
 
       <script src="./js/show-cookie-data.js"></script>
     </main>

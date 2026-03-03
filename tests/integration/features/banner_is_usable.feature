@@ -18,6 +18,6 @@ Feature: Banner is usable
     And the cookie confirmation banner is displayed to the user
     And the "example" page is displayed
 
-  Scenario: Clicking "More information about our cookies" should take the user to another page
+  Scenario: Clicking "Choose your cookie settings" should take the user to another page
     Given the user navigates to the "example" page
-    When the user may choose to read more information about our cookies
+    When the user may choose to view "Choose your cookie settings" page

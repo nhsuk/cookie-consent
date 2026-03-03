@@ -140,15 +140,16 @@ async def step_impl(context):
     await expect(confirmation_banner).not_to_be_visible()
 
 
-@when("the user may choose to read more information about our cookies")
+@when('the user may choose to view the "Choose your cookie settings" page')
+@when('the user may choose to view "Choose your cookie settings" page')
 @async_run_until_complete
 async def step_impl(context):
-    """Verifies the cookie policy link"""
+    """Verifies the cookie settings link"""
     await expect(
-        context.current_page.get_more_information_about_our_cookies_link()
+        context.current_page.get_choose_your_cookie_settings_link()
     ).to_have_attribute(
         "href",
-        "/our-policies/cookies-policy/",
+        "/our-policies/cookies-policy/cookie-settings/",
     )
 
 
