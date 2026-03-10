@@ -1,6 +1,8 @@
 // N.B document.currentScript needs to be executed outside of any callbacks
 // https://developer.mozilla.org/en-US/docs/Web/API/Document/currentScript#Notes
 const scriptTag = document.currentScript;
+export const COOKIE_SETTINGS_URL =
+  '/our-policies/cookies-policy/cookie-settings/';
 const DOMAIN_WHITELIST = [
   'www.nhs.uk',
   'organisation.nhswebsite.nhs.uk',
@@ -15,26 +17,8 @@ const DOMAIN_WHITELIST = [
  */
 function isWhitelistedDomain(domain) {
   return DOMAIN_WHITELIST.some((whitelistedDomain) =>
-    domain.endsWith(whitelistedDomain)
+    domain.endsWith(whitelistedDomain),
   );
-}
-
-// get properties from the scriptTag for the policy URL
-export function getPolicyUrl() {
-  let dataPolicyUrl = '/our-policies/cookies-policy/';
-  if (process.env.POLICY_URL) {
-    dataPolicyUrl = process.env.POLICY_URL;
-  }
-
-  if (!scriptTag) {
-    return dataPolicyUrl;
-  }
-
-  if (scriptTag.getAttribute('data-policy-url')) {
-    dataPolicyUrl = scriptTag.getAttribute('data-policy-url');
-  }
-
-  return dataPolicyUrl;
 }
 
 /**
@@ -80,16 +64,10 @@ export function shouldBroadcastConsent(link) {
     const currentUrl = new URL(window.location.href);
 
     const isSameDomainNavigation = targetUrl.hostname === currentUrl.hostname;
-    const isPolicyPageNavigation = targetUrl.href.endsWith(getPolicyUrl());
     const isAuthorizedDomain = isWhitelistedDomain(targetUrl.hostname);
 
     // Don't broadcast for same-domain navigation
     if (isSameDomainNavigation) {
-      return false;
-    }
-
-    // Don't broadcast for policy page navigation
-    if (isPolicyPageNavigation) {
       return false;
     }
 

@@ -1,4 +1,5 @@
 # cookie-consent
+
 In-house solution for managing cookies on nhs.uk
 
 ## Quickstart
@@ -13,6 +14,7 @@ Go to http://localhost:8080/tests/example/ for an example site using the cookie 
 ## Usage
 
 Include the cookie javascript in your page
+
 ```html
 <script src="/path/to/javascript.js" type="text/javascript"></script>
 ```
@@ -24,7 +26,11 @@ which scripts to enable based on the user's consent settings.
 Possible data-cookieconsent values are `preferences`, `statistics` and `marketing`.
 
 ```html
-<script src="/path/to/js-that-uses-cookies.js" data-cookieconsent="marketing" type="text/plain"></script>
+<script
+  src="/path/to/js-that-uses-cookies.js"
+  data-cookieconsent="marketing"
+  type="text/plain"
+></script>
 ```
 
 ### Script Options
@@ -41,16 +47,7 @@ If you want to prevent the cookie banner from showing automatically, add a
 If you disable the banner, you will have to write your own logic and interact with
 the javascript API to set user cookie consent.
 
-#### `data-policy-url`
-
-By default, the cookie policy link takes users to `/our-policies/cookies-policy/`.
-If you need the link to use a different url, you can set the `data-policy-url` attribute.
-
-```html
-<script src="./cookie-consent.js" data-policy-url="/custom/policy/url" type="text/javascript"></script>
-```
-
-The cookie banner will not show on the policy page, even if you have embedded the cookie-consent.js script.
+The cookie banner will not show on the cookie settings page, even if you have embedded the cookie-consent.js script.
 This is because the user does not need to be presented with a cookie banner if they are on the page
 which can manage cookies.
 
@@ -60,14 +57,14 @@ The javascript API is exposed on a NHSCookieConsent global variable.
 
 ```js
 // shows the current cookie consent library version
-console.log(NHSCookieConsent.VERSION)
+console.log(NHSCookieConsent.VERSION);
 ```
 
 ### Methods
 
 - `getPreferences()`
 - `getStatistics()`
-- `getMarketing()` 
+- `getMarketing()`
 
 These methods get the status of the cookie consent for that type of cookie.  
 Returns a boolean.
@@ -97,16 +94,19 @@ expiry date of the cookie.
 - `VERSION` the current version as defined in package.json
 
 <a name="compiling"></a>
+
 ## Compiling
 
 This project uses [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/)
 
 To compile the javascript in development mode, run
+
 ```sh
 npm run build
 ```
 
 For production mode, run
+
 ```sh
 npm run build:production
 ```
@@ -126,18 +126,10 @@ Instead consent will be implied for all cookie types.
 NO_BANNER=true npm run build:production
 ```
 
-#### `POLICY_URL`
-
-By default, the cookie policy link takes users to `/our-policies/cookies-policy/`.
-If you need the link to use a different url, you can set this variable
-
-```sh
-POLICY_URL=/custom/policy/url/ npm run build:production
-```
-
 #### `LOG TO SPLUNK`
 
 Set to `true` a logging URL will be hit when the banner shown, analytics are accepted or analytics are not accepted.
+
 ```sh
 LOG_TO_SPLUNK=true npm run build:production
 ```
@@ -153,11 +145,13 @@ npm test
 ```
 
 To run only unit tests
+
 ```sh
 npm run test:unit
 ```
 
 To run only integration tests
+
 ```sh
 npm run test:integration
 ```
@@ -166,19 +160,19 @@ N.B. The integration tests rely on there being a test server available on localh
 
 ## Deployment
 
-When code is merged into the main branch an Azure build pipeline will be triggered. If the pipeline runs successfully 
+When code is merged into the main branch an Azure build pipeline will be triggered. If the pipeline runs successfully
 it will produce a build artifact containing the compiled javascript.
 
-To deploy the artifact simply create a release referencing the appropriate build artifact and run the release pipeline in 
+To deploy the artifact simply create a release referencing the appropriate build artifact and run the release pipeline in
 Azure DevOps, selecting the required environments. The compiled javascript will be uploaded to the following Azure Storage Account:
 
-| Environment | Storage Account | Container | Blob path |
-| --- | --- | --- | --- |
-| Integration | nhsukassetsstaging | dev     | nhsuk / js / cookie-consent.js |
-| Staging     | nhsukassetsstaging | staging | scripts / cookie-consent.js    |
-| Production  | nhsukassets        | scripts | cookie-consent.js              |
+| Environment | Storage Account    | Container | Blob path                      |
+| ----------- | ------------------ | --------- | ------------------------------ |
+| Integration | nhsukassetsstaging | dev       | nhsuk / js / cookie-consent.js |
+| Staging     | nhsukassetsstaging | staging   | scripts / cookie-consent.js    |
+| Production  | nhsukassets        | scripts   | cookie-consent.js              |
 
-NOTE: When deploying to the Staging and Production environments, the Akamai cache should be flushed using the full URL of the 
+NOTE: When deploying to the Staging and Production environments, the Akamai cache should be flushed using the full URL of the
 javascript resource. The resource content can then be verified by accessing the URL in a browser.
 
 ## Contributing to a release.

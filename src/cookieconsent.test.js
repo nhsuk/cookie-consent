@@ -59,7 +59,7 @@ describe('createCookie', () => {
       10,
       '/',
       'domain',
-      false
+      false,
     );
     cookieconsent.__ResetDependency__('createRawCookie');
   });
@@ -113,7 +113,7 @@ describe('setConsent', () => {
         version: COOKIE_VERSION,
       },
       90,
-      '/'
+      '/',
     );
   });
 
@@ -124,7 +124,7 @@ describe('setConsent', () => {
         preferences: true,
         statistics: false,
       },
-      COOKIE_TYPE.SESSION
+      COOKIE_TYPE.SESSION,
     );
     expect(spy).toHaveBeenCalledWith(
       {
@@ -134,7 +134,7 @@ describe('setConsent', () => {
         version: COOKIE_VERSION,
       },
       null,
-      '/'
+      '/',
     );
   });
 
@@ -145,7 +145,7 @@ describe('setConsent', () => {
         preferences: true,
         statistics: false,
       },
-      null
+      null,
     );
     expect(spy).toHaveBeenCalledWith(
       {
@@ -155,7 +155,7 @@ describe('setConsent', () => {
         version: COOKIE_VERSION,
       },
       null,
-      '/'
+      '/',
     );
   });
 
@@ -167,7 +167,7 @@ describe('setConsent', () => {
           preferences: true,
           statistics: false,
         },
-        'INVALID'
+        'INVALID',
       );
     }).toThrow(`Cookie mode INVALID not recognised`);
   });
@@ -189,7 +189,7 @@ describe('setConsent', () => {
         version: COOKIE_VERSION,
       },
       90,
-      '/'
+      '/',
     );
     cookieconsent.__ResetDependency__('getConsent');
   });
@@ -322,27 +322,12 @@ describe('shouldShowBanner', () => {
     expect(shouldShowBanner()).toBe(false);
     cookieconsent.__ResetDependency__('getCookie');
   });
-
-  test('returns false if we are on policy page', () => {
-    cookieconsent.__Rewire__('getPolicyUrl', () => '/path1/path2/path3/');
-    expect(shouldShowBanner()).toBe(false);
-    cookieconsent.__ResetDependency__('getPolicyUrl');
-  });
-
-  test('returns false if we are on policy page configured with absolute URL', () => {
-    cookieconsent.__Rewire__(
-      'getPolicyUrl',
-      () => 'http://localhost/path1/path2/path3/'
-    );
-    expect(shouldShowBanner()).toBe(false);
-    cookieconsent.__ResetDependency__('getPolicyUrl');
-  });
 });
 
 describe('onload', () => {
   const acceptConsent = cookieconsent.__get__('acceptConsent');
   const acceptAnalyticsConsent = cookieconsent.__get__(
-    'acceptAnalyticsConsent'
+    'acceptAnalyticsConsent',
   );
   const hitLoggingUrl = cookieconsent.__get__('hitLoggingUrl');
   const defaultConsent = cookieconsent.__get__('defaultConsent');
@@ -370,7 +355,7 @@ describe('onload', () => {
     expect(spy).toHaveBeenCalledWith(
       acceptConsent,
       acceptAnalyticsConsent,
-      hitLoggingUrl
+      hitLoggingUrl,
     );
     cookieconsent.__ResetDependency__('insertCookieBanner');
   });
@@ -451,7 +436,7 @@ describe('acceptConsent', () => {
 });
 describe('acceptAnalyticsConsent', () => {
   const acceptAnalyticsConsent = cookieconsent.__get__(
-    'acceptAnalyticsConsent'
+    'acceptAnalyticsConsent',
   );
 
   let setConsentSpy,
@@ -466,11 +451,11 @@ describe('acceptAnalyticsConsent', () => {
     cookieconsent.__Rewire__('setConsent', setConsentSpy);
     cookieconsent.__Rewire__(
       'enableScriptsAndIframes',
-      enableScriptsAndIframesSpy
+      enableScriptsAndIframesSpy,
     );
     cookieconsent.__Rewire__(
       'registerSharedConsentLinkHandler',
-      registerSharedConsentLinkHandlerSpy
+      registerSharedConsentLinkHandlerSpy,
     );
   });
 
@@ -525,7 +510,7 @@ describe('hitLoggingUrl', () => {
     hitLoggingUrl(route);
     expect(mockOpen).toHaveBeenCalledWith(
       'GET',
-      `https://www.nhs.uk/our-policies/cookies-policy/?policy-action=${route}`
+      `https://www.nhs.uk/our-policies/cookies-policy/?policy-action=${route}`,
     );
     expect(mockSend).toHaveBeenCalled();
   });
@@ -582,7 +567,7 @@ describe('NO_BANNER mode', () => {
         preferences: true,
         statistics: true,
       },
-      'long'
+      'long',
     );
     cookieconsent.__ResetDependency__('setConsent');
   });
@@ -765,6 +750,6 @@ describe('consume shared consent', () => {
       const parsedUrl = new URL(replacedUrl, internalUrl);
 
       expect(parsedUrl.searchParams.has('nhsa.sc')).toBe(false);
-    }
+    },
   );
 });

@@ -6,12 +6,7 @@ import {
 } from './cookies';
 import insertCookieBanner from './banner';
 import { enableScriptsByCategories, enableIframesByCategories } from './enable';
-import {
-  getNoBanner,
-  getPolicyUrl,
-  makeUrlAbsolute,
-  shouldBroadcastConsent,
-} from './settings';
+import { getNoBanner, shouldBroadcastConsent } from './settings';
 
 /**
  * If cookie rules/regulations change and the cookie itself needs to change,
@@ -169,7 +164,7 @@ function enableScriptsAndIframes() {
   const allCategories = ['preferences', 'statistics', 'marketing'];
   // Filter out categories that do not have user consent
   const allowedCategories = allCategories.filter(
-    (category) => getConsentSetting(category) === true
+    (category) => getConsentSetting(category) === true,
   );
 
   enableScriptsByCategories(allowedCategories);
@@ -204,7 +199,7 @@ export function hitLoggingUrl(route) {
     const oReq = new XMLHttpRequest();
     oReq.open(
       'GET',
-      `https://www.nhs.uk/our-policies/cookies-policy/?policy-action=${route}`
+      `https://www.nhs.uk/our-policies/cookies-policy/?policy-action=${route}`,
     );
     oReq.send();
   }
@@ -217,11 +212,6 @@ export function hitLoggingUrl(route) {
 function shouldShowBanner() {
   // If the `nobanner` setting is used, never show the banner.
   if (getNoBanner()) {
-    return false;
-  }
-
-  // Do not show the banner if we are on the policy page.
-  if (document.location.href === makeUrlAbsolute(getPolicyUrl())) {
     return false;
   }
 
@@ -267,7 +257,7 @@ function handleSharedConsentLinkClick(event) {
   const linkUrl = new URL(link.href);
   linkUrl.searchParams.set(
     SHARED_CONSENT_QUERY,
-    statistics ? CONSENT_GIVEN : CONSENT_NOT_GIVEN
+    statistics ? CONSENT_GIVEN : CONSENT_NOT_GIVEN,
   );
   link.href = linkUrl.href;
 }
@@ -329,7 +319,7 @@ function consumeSharedConsentQuery() {
     // First-time consent: set statistics consent using session cookie
     setConsent(
       { ...defaultConsent, statistics: overrideStatsConsent, consented: true },
-      COOKIE_TYPE.SESSION
+      COOKIE_TYPE.SESSION,
     );
   }
 
@@ -360,7 +350,7 @@ export function onload() {
           marketing: true,
           consented: false,
         },
-        COOKIE_TYPE.LONG
+        COOKIE_TYPE.LONG,
       );
     } else {
       insertCookieBanner(acceptConsent, acceptAnalyticsConsent, hitLoggingUrl);
