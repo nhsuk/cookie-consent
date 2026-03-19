@@ -17,7 +17,7 @@ steps:
   - script: npm install
     displayName: npm install
 
-  - task: SonarCloudPrepare@2
+  - task: SonarCloudPrepare@2.3.5
     inputs:
       SonarCloud: 'SonarCloud'
       organization: 'nhsdigital'
@@ -47,10 +47,10 @@ steps:
   - script: CI=true npm run test
     displayName: 'Testing: Run tests'
 
-  - task: SonarCloudAnalyze@2
+  - task: SonarCloudAnalyze@2.3.5
     displayName: 'Run SonarCloud Code Analysis'
 
-  - task: SonarCloudPublish@2
+  - task: SonarCloudPublish@2.3.5
     displayName: 'Publish Quality Gate Result'
     inputs:
       pollingTimeoutSec: '300'
@@ -78,7 +78,7 @@ steps:
       targetPath: '$(Build.SourcesDirectory)/tests/integration/reports'
       artifactName: 'Integration test report - $(Build.BuildNumber)-$(System.JobAttempt)'
 
-  - task: qameta.allure-azure-pipelines.PublishAllureReport.PublishAllureReport@1
+  - task: qameta.allure-azure-pipelines.PublishAllureReport.PublishAllureReport@1.5.0
     displayName: 'Testing: Publish integration test Allure report'
     condition: succeededOrFailed()
     inputs:
