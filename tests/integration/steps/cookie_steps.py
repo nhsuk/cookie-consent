@@ -149,7 +149,7 @@ async def step_impl(context):
         context.current_page.get_choose_your_cookie_settings_link()
     ).to_have_attribute(
         "href",
-        "/our-policies/cookies-policy/cookie-settings/",
+        "/our-policies/choose-your-cookie-settings/",
     )
 
 
