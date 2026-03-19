@@ -2,7 +2,7 @@
 // https://developer.mozilla.org/en-US/docs/Web/API/Document/currentScript#Notes
 const scriptTag = document.currentScript;
 export const COOKIE_SETTINGS_URL =
-  '/our-policies/cookies-policy/cookie-settings/';
+  '/our-policies/choose-your-cookie-settings/';
 const DOMAIN_WHITELIST = [
   'www.nhs.uk',
   'organisation.nhswebsite.nhs.uk',

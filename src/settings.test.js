@@ -10,7 +10,7 @@ import settings, {
 describe('cookie settings URL constant', () => {
   test('exports the default cookie settings URL', () => {
     expect(COOKIE_SETTINGS_URL).toBe(
-      '/our-policies/cookies-policy/cookie-settings/',
+      '/our-policies/choose-your-cookie-settings/',
     );
   });
 });
@@ -100,8 +100,8 @@ describe('shouldBroadcastConsent', () => {
       ${'same domain with params should not broadcast'}               | ${'https://nhs.uk?referer=test?val=1'}                           | ${false}
       ${'same domain with fragment should not broadcast'}             | ${'https://nhs.uk#field1=error1'}                                | ${false}
       ${'same domain subdomain should not broadcast'}                 | ${'https://assets.nhs.uk'}                                       | ${false}
-      ${'cookie settings link should not broadcast'}                  | ${'https://nhs.uk/our-policies/cookies-policy/cookie-settings/'} | ${false}
-      ${'authorized external cookie settings link should broadcast'}   | ${'https://www.nhs.uk/our-policies/cookies-policy/cookie-settings/'} | ${true}
+      ${'cookie settings link should not broadcast'}                  | ${'https://nhs.uk/our-policies/choose-your-cookie-settings/'}    | ${false}
+      ${'authorized external cookie settings link should broadcast'}  | ${'https://www.nhs.uk/our-policies/choose-your-cookie-settings/'} | ${true}
       ${'non-authorized external link should not broadcast'}          | ${'https://external.uk'}                                         | ${false}
       ${'non-authorized external with params should not broadcast'}   | ${'https://external.uk?referer=test?val=1'}                      | ${false}
       ${'non-authorized external with fragment should not broadcast'} | ${'https://external.uk#field1'}                                  | ${false}
@@ -149,8 +149,8 @@ describe('when current URL is same as target URL', () => {
     ${'same domain app path should not broadcast'}       | ${'https://nhs.uk/app#fragment'}                                 | ${false}
     ${'same domain complex path should not broadcast'}   | ${'https://nhs.uk/app#field1=error1&field2=error2'}              | ${false}
     ${'same domain subdomain should not broadcast'}      | ${'https://assets.nhs.uk'}                                       | ${false}
-    ${'cookie settings link should not broadcast'}       | ${'https://nhs.uk/our-policies/cookies-policy/cookie-settings/'} | ${false}
-    ${'authorized external cookie settings should broadcast'} | ${'https://www.nhs.uk/our-policies/cookies-policy/cookie-settings/'} | ${true}
+    ${'cookie settings link should not broadcast'}       | ${'https://nhs.uk/our-policies/choose-your-cookie-settings/'}    | ${false}
+    ${'authorized external cookie settings should broadcast'} | ${'https://www.nhs.uk/our-policies/choose-your-cookie-settings/'} | ${true}
     ${'authorized domain www.nhs.uk should broadcast'}   | ${'https://www.nhs.uk/home'}                                     | ${true}
     ${'authorized domain nhsapp should broadcast'}       | ${'https://www.nhsapp.service.nhs.uk/login'}                     | ${true}
     ${'authorized domain access.login should broadcast'} | ${'https://access.login.nhs.uk'}                                 | ${true}
@@ -189,7 +189,7 @@ describe('when current URL is on an authorized domain', () => {
     ${'different authorized domain with params should broadcast'}  | ${'https://www.nhs.uk/services?ref=x'}                           | ${true}
     ${'non-authorized domain should not broadcast'}                | ${'https://google.com'}                                          | ${false}
     ${'non-authorized subdomain should not broadcast'}             | ${'https://subdomain.example.com'}                               | ${false}
-    ${'cookie settings link should not broadcast'}                 | ${'https://nhs.uk/our-policies/cookies-policy/cookie-settings/'} | ${false}
+    ${'cookie settings link should not broadcast'}                 | ${'https://nhs.uk/our-policies/choose-your-cookie-settings/'}    | ${false}
   `('$description', ({ href, shouldBroad }) => {
     let link = null;
     if (href !== null && href !== undefined) {
