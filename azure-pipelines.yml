@@ -2,6 +2,13 @@ trigger:
   - main
   - azure-pipelines
 
+resources:
+  repositories:
+    - repository: pipelineTemplates
+      type: github
+      name: nhsuk/nhsuk.platform.pipeline-templates
+      endpoint: nhsuk
+
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -16,6 +23,10 @@ steps:
 
   - script: npm install
     displayName: npm install
+
+  - template: build/security-scan.yaml@pipelineTemplates
+    parameters:
+      FailOnSeverity: 'high'
 
   - task: SonarCloudPrepare@2.3.5
     inputs:
