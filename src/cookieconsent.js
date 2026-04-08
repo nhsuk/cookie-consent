@@ -280,7 +280,7 @@ function registerSharedConsentLinkHandler() {
 function deleteSharedConsentQuery(url) {
   url.searchParams.delete(SHARED_CONSENT_QUERY);
   const relativeUrl = url.pathname + url.search + url.hash;
-  window.history.replaceState({}, '', relativeUrl);
+  globalThis.history.replaceState({}, '', relativeUrl);
 }
 
 /**
@@ -296,7 +296,7 @@ function deleteSharedConsentQuery(url) {
  * The query parameter is removed from the URL in all cases where it is present.
  */
 function consumeSharedConsentQuery() {
-  const url = new URL(window.location.href);
+  const url = new URL(globalThis.location.href);
 
   // Extract the value of the 'shared consent' query parameter
   const sharedConsent = url.searchParams.get(SHARED_CONSENT_QUERY);

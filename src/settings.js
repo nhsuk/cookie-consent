@@ -1,8 +1,7 @@
 // N.B document.currentScript needs to be executed outside of any callbacks
 // https://developer.mozilla.org/en-US/docs/Web/API/Document/currentScript#Notes
 const scriptTag = document.currentScript;
-export const COOKIE_SETTINGS_URL =
-  '/our-policies/choose-your-cookie-settings/';
+export const COOKIE_SETTINGS_URL = '/our-policies/choose-your-cookie-settings/';
 const DOMAIN_WHITELIST = [
   'www.nhs.uk',
   'organisation.nhswebsite.nhs.uk',
@@ -39,7 +38,7 @@ export function getNoBanner() {
     return defaults;
   }
 
-  const dataNoBanner = scriptTag.getAttribute('data-nobanner');
+  const dataNoBanner = scriptTag.dataset.nobanner;
 
   // overwrite the default settings with attributes found on the <script> tag
   if (dataNoBanner === 'true' || dataNoBanner === '') {
@@ -61,7 +60,7 @@ export function shouldBroadcastConsent(link) {
 
   try {
     const targetUrl = new URL(link.href);
-    const currentUrl = new URL(window.location.href);
+    const currentUrl = new URL(globalThis.location.href);
 
     const isSameDomainNavigation = targetUrl.hostname === currentUrl.hostname;
     const isAuthorizedDomain = isWhitelistedDomain(targetUrl.hostname);

@@ -32,14 +32,14 @@ describe('get script settings for no banner', () => {
 
   test('getNoBanner for <script data-nobanner="true"></script>', () => {
     const scriptTag = document.createElement('script');
-    scriptTag.setAttribute('data-nobanner', 'true');
+    scriptTag.dataset.nobanner = 'true';
     settings.__Rewire__('scriptTag', scriptTag);
     expect(getNoBanner()).toBeTruthy();
   });
 
   test('getNoBanner for <script data-nobanner></script>', () => {
     const scriptTag = document.createElement('script');
-    scriptTag.setAttribute('data-nobanner', '');
+    scriptTag.dataset.nobanner = '';
     settings.__Rewire__('scriptTag', scriptTag);
     expect(getNoBanner()).toBeTruthy();
   });
@@ -81,8 +81,8 @@ describe('get an absolute URL', () => {
 describe('shouldBroadcastConsent', () => {
   describe('when current URL is different to target URL', () => {
     beforeEach(() => {
-      const originalLocation = window.location;
-      jest.spyOn(window, 'location', 'get').mockImplementation(() => ({
+      const originalLocation = globalThis.location;
+      jest.spyOn(globalThis, 'location', 'get').mockImplementation(() => ({
         ...originalLocation,
         href: 'http://nhs.uk/path1/path2/path3/',
       }));
@@ -127,8 +127,8 @@ describe('shouldBroadcastConsent', () => {
 
 describe('when current URL is same as target URL', () => {
   beforeEach(() => {
-    const originalLocation = window.location;
-    jest.spyOn(window, 'location', 'get').mockImplementation(() => ({
+    const originalLocation = globalThis.location;
+    jest.spyOn(globalThis, 'location', 'get').mockImplementation(() => ({
       ...originalLocation,
       href: 'http://nhs.uk',
     }));
@@ -168,8 +168,8 @@ describe('when current URL is same as target URL', () => {
 
 describe('when current URL is on an authorized domain', () => {
   beforeEach(() => {
-    const originalLocation = window.location;
-    jest.spyOn(window, 'location', 'get').mockImplementation(() => ({
+    const originalLocation = globalThis.location;
+    jest.spyOn(globalThis, 'location', 'get').mockImplementation(() => ({
       ...originalLocation,
       href: 'https://www.nhsapp.service.nhs.uk/login',
     }));
