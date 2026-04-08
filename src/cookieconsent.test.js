@@ -494,7 +494,7 @@ describe('hitLoggingUrl', () => {
     originalEnv = { ...process.env };
     mockOpen = jest.fn();
     mockSend = jest.fn();
-    global.XMLHttpRequest = jest.fn(() => ({
+    globalThis.XMLHttpRequest = jest.fn(() => ({
       open: mockOpen,
       send: mockSend,
     }));
@@ -502,7 +502,7 @@ describe('hitLoggingUrl', () => {
 
   afterEach(() => {
     process.env = originalEnv;
-    global.XMLHttpRequest = undefined;
+    globalThis.XMLHttpRequest = undefined;
   });
   test('should send a GET request to the correct URL when LOG_TO_SPLUNK is true', () => {
     process.env.LOG_TO_SPLUNK = 'true';
@@ -587,8 +587,8 @@ describe('link href broadcast shared consent querystring parameter', () => {
 
   describe('same domain links should not broadcast', () => {
     beforeEach(() => {
-      const originalLocation = window.location;
-      jest.spyOn(window, 'location', 'get').mockImplementation(() => ({
+      const originalLocation = globalThis.location;
+      jest.spyOn(globalThis, 'location', 'get').mockImplementation(() => ({
         ...originalLocation,
         href: 'https://www.nhs.uk/',
       }));
@@ -621,8 +621,8 @@ describe('link href broadcast shared consent querystring parameter', () => {
 
   describe('authorized domain links should broadcast', () => {
     beforeEach(() => {
-      const originalLocation = window.location;
-      jest.spyOn(window, 'location', 'get').mockImplementation(() => ({
+      const originalLocation = globalThis.location;
+      jest.spyOn(globalThis, 'location', 'get').mockImplementation(() => ({
         ...originalLocation,
         href: 'https://www.nhs.uk/',
       }));
@@ -655,8 +655,8 @@ describe('link href broadcast shared consent querystring parameter', () => {
 
   describe('non-authorized domain links should not broadcast', () => {
     beforeEach(() => {
-      const originalLocation = window.location;
-      jest.spyOn(window, 'location', 'get').mockImplementation(() => ({
+      const originalLocation = globalThis.location;
+      jest.spyOn(globalThis, 'location', 'get').mockImplementation(() => ({
         ...originalLocation,
         href: 'https://www.nhs.uk/',
       }));
@@ -693,12 +693,12 @@ describe('consume shared consent', () => {
   let spy;
   let replaceSpy;
   beforeEach(() => {
-    delete window.location;
-    window.location = { href: '' };
+    delete globalThis.location;
+    globalThis.location = { href: '' };
     spy = jest.fn();
     cookieconsent.__Rewire__('setConsent', spy);
     replaceSpy = jest
-      .spyOn(window.history, 'replaceState')
+      .spyOn(globalThis.history, 'replaceState')
       .mockImplementation(() => {});
   });
 
@@ -727,7 +727,7 @@ describe('consume shared consent', () => {
     ({ consent, sharedConsent, expectedSetCall }) => {
       const requestUrl = new URL(internalUrl);
       requestUrl.searchParams.set('nhsa.sc', sharedConsent);
-      Object.defineProperty(window, 'location', {
+      Object.defineProperty(globalThis, 'location', {
         value: new URL(requestUrl),
       });
 
