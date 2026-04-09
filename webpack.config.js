@@ -1,18 +1,21 @@
-const path = require('path');
+const path = require('node:path');
 const webpack = require('webpack');
 
 module.exports = {
-  entry: ['@babel/polyfill', './src/main.js'],
+  entry: ['@babel/polyfill', './src/main.ts'],
   mode: 'development',
+  resolve: {
+    extensions: ['.ts', '.js'],
+  },
   module: {
     rules: [
       {
         exclude: /node_modules/,
-        test: /\.js$/,
+        test: /\.(ts|js)$/,
         use: {
           loader: 'babel-loader',
           options: {
-            presets: ['@babel/preset-env'],
+            presets: ['@babel/preset-env', '@babel/preset-typescript'],
           },
         },
       },
@@ -21,7 +24,7 @@ module.exports = {
         use: {
           loader: 'html-loader',
           options: {
-            postprocessor: (content, loaderContext) => {
+            postprocessor: (content, _loaderContext) => {
               const isTemplateLiteralSupported = content[0] === '`';
               return content
                 .replaceAll('<%=', isTemplateLiteralSupported ? '${' : '" +')

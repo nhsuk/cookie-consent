@@ -1,7 +1,8 @@
 /* global expect */
- 
 
-import * as api from './main';
+import '../main';
+
+const api = globalThis.NHSCookieConsent;
 
 test('getPreferences function exists', () => {
   expect(api.getPreferences).toBeInstanceOf(Function);
@@ -50,8 +51,7 @@ test('setMarketing sets the marketing consent', () => {
 
 test('getConsented function exists', () => {
   expect(api.getConsented).toBeInstanceOf(Function);
-}
-);  
+});
 test('setConsented function exists', () => {
   expect(api.setConsented).toBeInstanceOf(Function);
 });
@@ -63,5 +63,5 @@ test('setConsented sets the correct consented value', () => {
 });
 
 test('Javascript API is exposed on window.NHSCookieConsent', () => {
-  expect(window.NHSCookieConsent).toBeInstanceOf(Object);
+  expect(globalThis.NHSCookieConsent).toBeInstanceOf(Object);
 });
