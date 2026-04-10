@@ -3,7 +3,7 @@ axe-playwright-python==0.1.4
 behave==1.2.6
 behavex==4.6.0
 behavex-images==3.3.1
-black==25.1.0
+black==26.3.1
 click==8.1.8
 configobj==5.0.9
 csscompressor==0.9.5
@@ -19,7 +19,7 @@ numpy==2.2.4
 packaging==24.2
 parse==1.20.2
 parse_type==0.6.4
-pathspec==0.12.1
+pathspec==1.0.4
 pillow==12.1.1
 platformdirs==4.3.7
 playwright==1.51.0
