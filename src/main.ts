@@ -1,37 +1,38 @@
-import { getConsentSetting, setConsentSetting, onload } from './cookieconsent';
+import { onload } from './services/consentOrchestrator';
+import { getConsentSetting, setConsentSetting } from './services/consent';
 import { version } from '../package.json';
 
-export const VERSION = version;
+const VERSION = version;
 
-export function getPreferences() {
+function getPreferences(): boolean {
   return getConsentSetting('preferences');
 }
 
-export function getStatistics() {
+function getStatistics(): boolean {
   return getConsentSetting('statistics');
 }
 
-export function getMarketing() {
+function getMarketing(): boolean {
   return getConsentSetting('marketing');
 }
 
-export function getConsented() {
+function getConsented(): boolean {
   return getConsentSetting('consented');
 }
 
-export function setPreferences(value) {
+function setPreferences(value: boolean): void {
   setConsentSetting('preferences', value);
 }
 
-export function setStatistics(value) {
+function setStatistics(value: boolean): void {
   setConsentSetting('statistics', value);
 }
 
-export function setMarketing(value) {
+function setMarketing(value: boolean): void {
   setConsentSetting('marketing', value);
 }
 
-export function setConsented(value) {
+function setConsented(value: boolean): void {
   setConsentSetting('consented', value);
 }
 
@@ -40,7 +41,7 @@ export function setConsented(value) {
  * will interact with.
  */
 
-window.NHSCookieConsent = {
+globalThis.NHSCookieConsent = {
   /*
    * The version of this package as defined in the package.json
    */
@@ -57,4 +58,4 @@ window.NHSCookieConsent = {
   setConsented,
 };
 
-window.addEventListener('DOMContentLoaded', onload);
+globalThis.addEventListener('DOMContentLoaded', onload);

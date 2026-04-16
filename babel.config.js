@@ -1,4 +1,4 @@
-module.exports = (api) => {
+const babel = (api) => {
   const isTest = api.env('test');
 
   let targets = {};
@@ -12,18 +12,14 @@ module.exports = (api) => {
     };
 
     // Add rewire for jest unit tests
-    plugins = [
-      ...plugins,
-      'babel-plugin-rewire',
-    ];
+    plugins = [...plugins, 'babel-plugin-rewire'];
   }
 
   const config = {
     plugins,
-    presets: [
-      ['@babel/preset-env', { targets }],
-    ],
+    presets: [['@babel/preset-env', { targets }], '@babel/preset-typescript'],
   };
 
   return config;
 };
+export default babel;

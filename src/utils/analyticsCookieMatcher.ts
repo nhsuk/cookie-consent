@@ -23,8 +23,8 @@ export const analyticsCookieWhitelist = {
 };
 
 const patternMatcher = analyticsCookieWhitelist.patterns.map((pattern) => {
-  const escaped = pattern.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const regexStr = '^' + escaped.replace('#', '[^=;]+') + '$';
+  const escaped = pattern.replaceAll(/[.*+?^${}()|[\]\\]/g, String.raw`\$&`);
+  const regexStr = `^${escaped.replace('#', '[^=;]+')}$`;
   return new RegExp(regexStr);
 });
 
@@ -34,10 +34,10 @@ const patternMatcher = analyticsCookieWhitelist.patterns.map((pattern) => {
  * @param {string[]} cookieNames - The list of cookie names to check
  * @returns {string[]} - Filtered list of matching cookie names
  */
-export function getMatchingAnalyticsCookies(cookieNames) {
+export function getMatchingAnalyticsCookies(cookieNames: string[]): string[] {
   return cookieNames.filter(
     (name) =>
       analyticsCookieWhitelist.exact.includes(name) ||
-      patternMatcher.some((regex) => regex.test(name))
+      patternMatcher.some((regex) => regex.test(name)),
   );
 }

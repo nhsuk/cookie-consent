@@ -1,11 +1,15 @@
 /* global expect, cookieJar */
 
-import { createCookie, getCookie, deleteCookies } from './cookies';
-import { deleteStaleSessionConsentCookies } from './cookies';
-import { analyticsCookieWhitelist } from './analyticsCookieMatcher';
+import {
+  createCookie,
+  getCookie,
+  deleteCookies,
+  deleteStaleSessionConsentCookies,
+} from '../../services/cookies';
+import { analyticsCookieWhitelist } from '../../utils/analyticsCookieMatcher';
 
 /* https://stackoverflow.com/questions/179355/clearing-all-cookies-with-javascript */
-function deleteAllCookies() {
+function deleteAllCookies(): void {
   cookieJar.removeAllCookiesSync();
 }
 
@@ -58,14 +62,46 @@ describe('createCookie', () => {
   });
 
   test('createCookie creates a cookie', () => {
-    createCookie('testcookie', 'testvalue', '');
+    createCookie('testcookie', 'testvalue', 0);
     expect(document.cookie).toBe('testcookie=testvalue');
   });
 
   test('createCookie changes an existing cookie', () => {
     document.cookie = 'testcookie=testvalue';
-    createCookie('testcookie', 'testvalue2', '');
+    createCookie('testcookie', 'testvalue2', 0);
     expect(document.cookie).toBe('testcookie=testvalue2');
+  });
+
+  test('createCookie includes domain when domain contains a dot', () => {
+    const cookieSetterSpy = jest.spyOn(document, 'cookie', 'set');
+
+    createCookie('testcookie', 'testvalue', 0, '/', 'www.nhs.uk');
+
+    expect(cookieSetterSpy).toHaveBeenCalledWith(
+      expect.stringContaining(';domain=www.nhs.uk'),
+    );
+    cookieSetterSpy.mockRestore();
+  });
+
+  test('createCookie does not include domain when domain does not contain a dot', () => {
+    const cookieSetterSpy = jest.spyOn(document, 'cookie', 'set');
+
+    createCookie('testcookie', 'testvalue', 0, '/', 'localhost');
+
+    expect(cookieSetterSpy).toHaveBeenCalled();
+    expect(cookieSetterSpy.mock.calls[0][0]).not.toContain(';domain=');
+    cookieSetterSpy.mockRestore();
+  });
+
+  test('createCookie includes secure flag when secure is true', () => {
+    const cookieSetterSpy = jest.spyOn(document, 'cookie', 'set');
+
+    createCookie('testcookie', 'testvalue', 0, '/', undefined, true);
+
+    expect(cookieSetterSpy).toHaveBeenCalledWith(
+      expect.stringContaining(';secure'),
+    );
+    cookieSetterSpy.mockRestore();
   });
 });
 
@@ -82,13 +118,13 @@ describe('deleteCookies', () => {
     document.cookie = 'nhsuk-cookie-consent=consentvalue';
     document.cookie = 'testcookie=testvalue';
     document.cookie = 'anothertestcookie=anothertestvalue';
-    deleteCookies();
+    deleteCookies('nhsuk-cookie-consent');
     expect(document.cookie).toBe('nhsuk-cookie-consent=consentvalue');
   });
 
   test('deletes cookies, even if they have a path', () => {
     document.cookie = 'testcookie=testvalue; Path=/path1/path2';
-    deleteCookies();
+    deleteCookies('nhsuk-cookie-consent');
     expect(document.cookie).toBe('');
   });
 
@@ -98,7 +134,7 @@ describe('deleteCookies', () => {
       document.cookie = `${cookieName}=somevalue`;
       deleteStaleSessionConsentCookies();
       expect(document.cookie).not.toContain(`${cookieName}=`);
-    }
+    },
   );
 
   test('removes cookies that match exact analytics cookie names', () => {

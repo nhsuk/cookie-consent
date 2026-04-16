@@ -1,4 +1,4 @@
-import { getMatchingAnalyticsCookies } from '../src/analyticsCookieMatcher';
+import { getMatchingAnalyticsCookies } from '../../utils/analyticsCookieMatcher';
 
 describe('getMatchingAnalyticsCookies', () => {
   it('returns exact matches only', () => {

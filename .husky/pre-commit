@@ -2,6 +2,7 @@
 set -e
 
 source ./venv/bin/activate
+npm run typecheck
 npx lint-staged
 
 if ! command -v gitleaks # &> /dev/null 

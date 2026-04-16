@@ -1,30 +1,52 @@
 /* global expect, jest */
 
-import enable, { enableScriptsByCategories, enableIframesByCategories } from './enable';
+const enable = require('../../utils/enable').default;
+import {
+  enableScriptsByCategories,
+  enableIframesByCategories,
+} from '../../utils/enable';
 
 test('enableScript enables a javascript snippet', () => {
   const enableScript = enable.__get__('enableScript');
-  document.body.innerHTML = '<script src="./abc.js" data-cookieconsent="abc" type="text/plain"></script>';
+  document.body.innerHTML =
+    '<script src="./abc.js" data-cookieconsent="abc" type="text/plain"></script>';
   const element = document.querySelector('script');
   enableScript(element);
 
   const script = document.querySelector('script');
-  const type = script.getAttribute('type');
-  const src = script.getAttribute('src');
-  expect(type).toBe('text/javascript');
-  expect(src).toBe('./abc.js');
+  if (script) {
+    const type = script.getAttribute('type');
+    const src = script.getAttribute('src');
+    expect(type).toBe('text/javascript');
+    expect(src).toBe('./abc.js');
+  }
+});
+
+test('enableScript does not set src when script src is missing', () => {
+  const enableScript = enable.__get__('enableScript');
+  document.body.innerHTML =
+    '<script data-cookieconsent="abc" type="text/plain">window.x = 1;</script>';
+  const element = document.querySelector('script')!;
+
+  enableScript(element);
+
+  const script = document.querySelector('script');
+  if (script) {
+    expect(script.getAttribute('type')).toBe('text/javascript');
+    expect(script.hasAttribute('src')).toBe(false);
+  }
 });
 
 test('enableScriptsByCategory enables inline javascript snippets', () => {
-  window.inlineJsEnabled = false;
+  globalThis.inlineJsEnabled = false;
   document.body.innerHTML = `
     <script data-cookieconsent="abc" type="text/plain">
       window.inlineJsEnabled = true;
     </script>
   `;
-  enableScriptsByCategories('abc');
+  enableScriptsByCategories(['abc']);
 
-  expect(window.inlineJsEnabled).toBe(true);
+  expect(globalThis.inlineJsEnabled).toBe(true);
 });
 
 test('enableIframesByCategory is a function', () => {
@@ -33,12 +55,23 @@ test('enableIframesByCategory is a function', () => {
 
 test('enableIframe enables an iframe', () => {
   const enableIframe = enable.__get__('enableIframe');
-  document.body.innerHTML = '<iframe data-src="abc.html" data-cookieconsent="abc"></iframe>';
-  const element = document.querySelector('iframe');
+  document.body.innerHTML =
+    '<iframe data-src="abc.html" data-cookieconsent="abc"></iframe>';
+  const element = document.querySelector('iframe')!;
+  enableIframe(element);
+  const src = element.getAttribute('src');
+
+  expect(src).toBe('abc.html');
+});
+
+test('enableIframe does not set src when data-src is missing', () => {
+  const enableIframe = enable.__get__('enableIframe');
+  document.body.innerHTML = '<iframe data-cookieconsent="abc"></iframe>';
+  const element = document.querySelector('iframe')!;
+
   enableIframe(element);
 
-  const src = document.querySelector('iframe').getAttribute('src');
-  expect(src).toBe('abc.html');
+  expect(element.hasAttribute('src')).toBe(false);
 });
 
 test('enableScriptsByCategories is a function', () => {
@@ -46,7 +79,7 @@ test('enableScriptsByCategories is a function', () => {
 });
 
 describe('enableScriptsByCategories enables javascript snippets', () => {
-  let spy;
+  let spy: jest.Mock;
 
   beforeEach(() => {
     spy = jest.fn();
@@ -58,7 +91,8 @@ describe('enableScriptsByCategories enables javascript snippets', () => {
   });
 
   test('for one matching category', () => {
-    document.body.innerHTML = '<script src="./abc.js" data-cookieconsent="abc" type="text/plain"></script>';
+    document.body.innerHTML =
+      '<script src="./abc.js" data-cookieconsent="abc" type="text/plain"></script>';
     enableScriptsByCategories(['abc']);
     const element = document.querySelector('script');
     expect(spy).toHaveBeenCalledWith(element);
@@ -66,16 +100,19 @@ describe('enableScriptsByCategories enables javascript snippets', () => {
   });
 
   test('for one matching category and one mismatch', () => {
-    document.body.innerHTML = '<script src="./abc.js" data-cookieconsent="abc" type="text/plain"></script>';
+    document.body.innerHTML =
+      '<script src="./abc.js" data-cookieconsent="abc" type="text/plain"></script>';
     const element = document.querySelector('script');
-    document.body.innerHTML += '<script src="./xyz.js" data-cookieconsent="xyz" type="text/plain"></script>';
+    document.body.innerHTML +=
+      '<script src="./xyz.js" data-cookieconsent="xyz" type="text/plain"></script>';
     enableScriptsByCategories(['abc']);
     expect(spy).toHaveBeenCalledWith(element);
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
   test('for a matching category with two cookie types', () => {
-    document.body.innerHTML = '<script src="./abc.js" data-cookieconsent="abc,xyz" type="text/plain"></script>';
+    document.body.innerHTML =
+      '<script src="./abc.js" data-cookieconsent="abc,xyz" type="text/plain"></script>';
     const element = document.querySelector('script');
     enableScriptsByCategories(['abc', 'xyz']);
     expect(spy).toHaveBeenCalledWith(element);
@@ -83,8 +120,10 @@ describe('enableScriptsByCategories enables javascript snippets', () => {
   });
 
   test('for two matching categories with two cookie types', () => {
-    document.body.innerHTML = '<script src="./abc.js" data-cookieconsent="abc" type="text/plain"></script>';
-    document.body.innerHTML += '<script src="./xyz.js" data-cookieconsent="xyz" type="text/plain"></script>';
+    document.body.innerHTML =
+      '<script src="./abc.js" data-cookieconsent="abc" type="text/plain"></script>';
+    document.body.innerHTML +=
+      '<script src="./xyz.js" data-cookieconsent="xyz" type="text/plain"></script>';
     enableScriptsByCategories(['abc', 'xyz']);
     expect(spy).toHaveBeenCalledWith(document.querySelectorAll('script')[0]);
     expect(spy).toHaveBeenCalledWith(document.querySelectorAll('script')[1]);
@@ -92,14 +131,15 @@ describe('enableScriptsByCategories enables javascript snippets', () => {
   });
 
   test('for no matches', () => {
-    document.body.innerHTML = '<script src="./no-match.js" data-cookieconsent="no-match" type="text/plain"></script>';
+    document.body.innerHTML =
+      '<script src="./no-match.js" data-cookieconsent="no-match" type="text/plain"></script>';
     enableScriptsByCategories(['abc', 'xyz']);
     expect(spy).not.toHaveBeenCalled();
   });
 });
 
 describe('enableIframesByCategories enables iframes', () => {
-  let spy;
+  let spy: jest.Mock;
 
   beforeEach(() => {
     spy = jest.fn();
@@ -111,24 +151,28 @@ describe('enableIframesByCategories enables iframes', () => {
   });
 
   test('for one matching category', () => {
-    document.body.innerHTML = '<iframe data-src="./abc.js" data-cookieconsent="abc"></iframe>';
+    document.body.innerHTML =
+      '<iframe data-src="./abc.js" data-cookieconsent="abc"></iframe>';
     enableIframesByCategories(['abc']);
-    const element = document.querySelector('iframe');
+    const element = document.querySelector('iframe')!;
     expect(spy).toHaveBeenCalledWith(element);
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
   test('for one matching category and one mismatch', () => {
-    document.body.innerHTML = '<iframe data-src="./abc.js" data-cookieconsent="abc"></iframe>';
+    document.body.innerHTML =
+      '<iframe data-src="./abc.js" data-cookieconsent="abc"></iframe>';
     const element = document.querySelector('iframe');
-    document.body.innerHTML += '<iframe data-src="./xyz.js" data-cookieconsent="xyz"></iframe>';
+    document.body.innerHTML +=
+      '<iframe data-src="./xyz.js" data-cookieconsent="xyz"></iframe>';
     enableIframesByCategories(['abc']);
     expect(spy).toHaveBeenCalledWith(element);
     expect(spy).toHaveBeenCalledTimes(1);
   });
 
   test('for a matching category with two cookie types', () => {
-    document.body.innerHTML = '<iframe data-src="./abc.js" data-cookieconsent="abc,xyz"></iframe>';
+    document.body.innerHTML =
+      '<iframe data-src="./abc.js" data-cookieconsent="abc,xyz"></iframe>';
     const element = document.querySelector('iframe');
     enableIframesByCategories(['abc', 'xyz']);
     expect(spy).toHaveBeenCalledWith(element);
@@ -136,8 +180,10 @@ describe('enableIframesByCategories enables iframes', () => {
   });
 
   test('for two matching categories with two cookie types', () => {
-    document.body.innerHTML = '<iframe data-src="./abc.js" data-cookieconsent="abc"></iframe>';
-    document.body.innerHTML += '<iframe data-src="./xyz.js" data-cookieconsent="xyz"></iframe>';
+    document.body.innerHTML =
+      '<iframe data-src="./abc.js" data-cookieconsent="abc"></iframe>';
+    document.body.innerHTML +=
+      '<iframe data-src="./xyz.js" data-cookieconsent="xyz"></iframe>';
     enableIframesByCategories(['abc', 'xyz']);
     expect(spy).toHaveBeenCalledWith(document.querySelectorAll('iframe')[0]);
     expect(spy).toHaveBeenCalledWith(document.querySelectorAll('iframe')[1]);
@@ -145,7 +191,8 @@ describe('enableIframesByCategories enables iframes', () => {
   });
 
   test('for no matches', () => {
-    document.body.innerHTML = '<iframe data-src="./no-match.js" data-cookieconsent="no-match"></iframe>';
+    document.body.innerHTML =
+      '<iframe data-src="./no-match.js" data-cookieconsent="no-match"></iframe>';
     enableIframesByCategories(['abc', 'xyz']);
     expect(spy).not.toHaveBeenCalled();
   });

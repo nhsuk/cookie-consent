@@ -97,7 +97,7 @@ expiry date of the cookie.
 
 ## Compiling
 
-This project uses [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/)
+This project uses [Webpack](https://webpack.js.org/) and [Babel](https://babeljs.io/) with [TypeScript](https://www.typescriptlang.org/).
 
 To compile the javascript in development mode, run
 
@@ -150,6 +150,12 @@ To run only unit tests
 npm run test:unit
 ```
 
+To run the TypeScript type checker
+
+```sh
+npm run typecheck
+```
+
 To run only integration tests
 
 ```sh
@@ -187,7 +193,7 @@ more information can be found at https://semver.org/
 
 The release also must contain changes to the package version number to match the new tag.
 
-If the release contains a change that will require the banner to be redisplayed to users, then the `COOKIE_VERSION` variable in cookieconsent.js must be increased by 1.
+If the release contains a change that will require the banner to be redisplayed to users, then the `COOKIE_VERSION` variable in consent.ts must be increased by 1.
 
 ## Notes
 
