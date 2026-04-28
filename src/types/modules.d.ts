@@ -14,3 +14,6 @@ declare module '*.scss' {
 declare module '*/package.json' {
   export const version: string;
 }
+
+// Build-time constants injected via webpack DefinePlugin
+declare const CONSENT_SCHEMA_HASH: string;

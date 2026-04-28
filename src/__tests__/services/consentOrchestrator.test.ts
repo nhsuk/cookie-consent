@@ -97,6 +97,30 @@ describe('onload', () => {
     orchestrator.__ResetDependency__('isValidVersion');
     orchestrator.__ResetDependency__('deleteCookies');
   });
+
+  test('removes cookies if schema hash is stale', () => {
+    const spy = jest.fn();
+    orchestrator.__Rewire__('deleteCookies', spy);
+    orchestrator.__Rewire__('isValidVersion', () => true);
+    orchestrator.__Rewire__('isSchemaValid', () => false);
+    onload();
+    expect(spy).toHaveBeenCalled();
+    orchestrator.__ResetDependency__('isValidVersion');
+    orchestrator.__ResetDependency__('isSchemaValid');
+    orchestrator.__ResetDependency__('deleteCookies');
+  });
+
+  test('creates default session cookie if schema hash is stale', () => {
+    const spy = jest.fn();
+    orchestrator.__Rewire__('isValidVersion', () => true);
+    orchestrator.__Rewire__('isSchemaValid', () => false);
+    orchestrator.__Rewire__('setConsent', spy);
+    onload();
+    expect(spy).toHaveBeenCalledWith(defaultConsent, COOKIE_TYPE.SESSION);
+    orchestrator.__ResetDependency__('isValidVersion');
+    orchestrator.__ResetDependency__('isSchemaValid');
+    orchestrator.__ResetDependency__('setConsent');
+  });
 });
 
 describe('acceptConsent', () => {

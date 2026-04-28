@@ -17,6 +17,7 @@ import {
   setConsent,
   isCookieConsentGiven,
   isValidVersion,
+  isSchemaValid,
   getConsentSetting,
   shouldShowBanner,
 } from './consent';
@@ -97,12 +98,12 @@ export function onload(): void {
   }
 
   // if a cookie is set but it's invalid, clear all cookies.
-  if (isValidVersion() === false) {
+  if (isValidVersion() === false || isSchemaValid() === false) {
     deleteCookies(COOKIE_NAME);
   }
 
   // If there isn't a valid user cookie, create one with default consent
-  if (isValidVersion() !== true) {
+  if (isValidVersion() !== true || isSchemaValid() === false) {
     setConsent(defaultConsent, COOKIE_TYPE.SESSION);
   }
 

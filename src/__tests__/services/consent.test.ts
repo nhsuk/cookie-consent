@@ -1,4 +1,4 @@
-/* global expect, jest, beforeEach, afterEach */
+/* global expect, jest, beforeEach, afterEach, CONSENT_SCHEMA_HASH */
 
 const consent = require('../../services/consent').default;
 import {
@@ -11,6 +11,7 @@ import {
   setConsentSetting,
   getUserCookieVersion,
   isValidVersion,
+  isSchemaValid,
   shouldShowBanner,
 } from '../../services/consent';
 
@@ -95,12 +96,13 @@ describe('setConsent', () => {
       statistics: false,
     });
     expect(spy).toHaveBeenCalledWith(
-      {
+      expect.objectContaining({
         marketing: true,
         preferences: true,
         statistics: false,
         version: COOKIE_VERSION,
-      },
+        schemaHash: CONSENT_SCHEMA_HASH,
+      }),
       90,
       '/',
     );
@@ -116,12 +118,13 @@ describe('setConsent', () => {
       COOKIE_TYPE.SESSION,
     );
     expect(spy).toHaveBeenCalledWith(
-      {
+      expect.objectContaining({
         marketing: true,
         preferences: true,
         statistics: false,
         version: COOKIE_VERSION,
-      },
+        schemaHash: CONSENT_SCHEMA_HASH,
+      }),
       undefined,
       '/',
     );
@@ -137,12 +140,13 @@ describe('setConsent', () => {
       marketing: true,
     });
     expect(spy).toHaveBeenCalledWith(
-      {
+      expect.objectContaining({
         marketing: true,
         preferences: false,
         statistics: false,
         version: COOKIE_VERSION,
-      },
+        schemaHash: CONSENT_SCHEMA_HASH,
+      }),
       90,
       '/',
     );
@@ -279,5 +283,119 @@ describe('shouldShowBanner with nobanner', () => {
 
   test('If nobanner setting is used, never show the banner', () => {
     expect(shouldShowBanner()).toBe(false);
+  });
+});
+
+describe('consentedAt', () => {
+  let spy: jest.Mock;
+
+  beforeEach(() => {
+    spy = jest.fn();
+    consent.__Rewire__('createCookie', spy);
+    consent.__Rewire__('getConsent', () => ({}));
+    consent.__Rewire__('getCookie', () => null);
+  });
+
+  afterEach(() => {
+    consent.__ResetDependency__('createCookie');
+    consent.__ResetDependency__('getConsent');
+    consent.__ResetDependency__('getCookie');
+  });
+
+  test('setConsent stores consentedAt when consented is true', () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date('2026-04-26T12:00:00.000Z'));
+    setConsent({ consented: true });
+    expect(spy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        consentedAt: '2026-04-26T12:00:00.000Z',
+      }),
+      90,
+      '/',
+    );
+    jest.useRealTimers();
+  });
+
+  test('setConsent does not set consentedAt when consented is not true', () => {
+    setConsent({ marketing: true });
+    const cookieValue = spy.mock.calls[0][0];
+    expect(cookieValue.consentedAt).toBeUndefined();
+  });
+
+  test('setConsent preserves existing consentedAt on partial updates', () => {
+    consent.__Rewire__('getCookie', () => ({
+      consented: true,
+      version: COOKIE_VERSION,
+      consentedAt: '2026-01-01T00:00:00.000Z',
+      schemaHash: CONSENT_SCHEMA_HASH,
+    }));
+    setConsent({ marketing: true });
+    expect(spy).toHaveBeenCalledWith(
+      expect.objectContaining({
+        consentedAt: '2026-01-01T00:00:00.000Z',
+      }),
+      90,
+      '/',
+    );
+    consent.__ResetDependency__('getCookie');
+  });
+});
+
+describe('isSchemaValid', () => {
+  test('returns true when schemaHash matches current CONSENT_SCHEMA_HASH', () => {
+    consent.__Rewire__('getCookie', () => ({
+      consented: true,
+      version: COOKIE_VERSION,
+      schemaHash: CONSENT_SCHEMA_HASH,
+    }));
+    expect(isSchemaValid()).toBe(true);
+    consent.__ResetDependency__('getCookie');
+  });
+
+  test('returns false when schemaHash does not match', () => {
+    consent.__Rewire__('getCookie', () => ({
+      consented: true,
+      version: COOKIE_VERSION,
+      schemaHash: 'stale123',
+    }));
+    expect(isSchemaValid()).toBe(false);
+    consent.__ResetDependency__('getCookie');
+  });
+
+  test('returns null when cookie has no schemaHash', () => {
+    consent.__Rewire__('getCookie', () => ({
+      consented: true,
+      version: COOKIE_VERSION,
+    }));
+    expect(isSchemaValid()).toBe(null);
+    consent.__ResetDependency__('getCookie');
+  });
+
+  test('returns null when no cookie exists', () => {
+    consent.__Rewire__('getCookie', () => null);
+    expect(isSchemaValid()).toBe(null);
+    consent.__ResetDependency__('getCookie');
+  });
+});
+
+describe('shouldShowBanner with stale schema', () => {
+  test('returns true when schema hash is stale', () => {
+    consent.__Rewire__('getCookie', () => ({
+      consented: true,
+      version: COOKIE_VERSION,
+      schemaHash: 'stale123',
+    }));
+    expect(shouldShowBanner()).toBe(true);
+    consent.__ResetDependency__('getCookie');
+  });
+
+  test('returns false when schema hash is current and consent is given', () => {
+    consent.__Rewire__('getCookie', () => ({
+      consented: true,
+      version: COOKIE_VERSION,
+      schemaHash: CONSENT_SCHEMA_HASH,
+    }));
+    expect(shouldShowBanner()).toBe(false);
+    consent.__ResetDependency__('getCookie');
   });
 });

@@ -1,5 +1,10 @@
 const path = require('node:path');
+const { execSync } = require('node:child_process');
 const webpack = require('webpack');
+
+const CONSENT_SCHEMA_HASH = execSync('node scripts/compute-schema-hash.js', {
+  encoding: 'utf-8',
+}).trim();
 
 module.exports = {
   entry: ['@babel/polyfill', './src/main.ts'],
@@ -54,6 +59,7 @@ module.exports = {
     new webpack.DefinePlugin({
       'process.env.LOG_TO_SPLUNK': JSON.stringify(process.env.LOG_TO_SPLUNK),
       'process.env.NO_BANNER': JSON.stringify(process.env.NO_BANNER),
+      CONSENT_SCHEMA_HASH: JSON.stringify(CONSENT_SCHEMA_HASH),
     }),
   ],
 };

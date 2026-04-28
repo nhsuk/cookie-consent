@@ -1,7 +1,14 @@
 import { CookieJar } from 'jsdom';
+import { execSync } from 'node:child_process';
+
+const CONSENT_SCHEMA_HASH = execSync('node scripts/compute-schema-hash.js', {
+  encoding: 'utf-8',
+}).trim();
 
 export const displayName = 'Unit tests';
-export const moduleNameMapper = {
+export const globals = {
+  CONSENT_SCHEMA_HASH,
+};export const moduleNameMapper = {
   '\\.(html)$': '<rootDir>/__mocks__/htmlMock.js',
   '\\.(scss)$': '<rootDir>/__mocks__/sassMock.js',
 };

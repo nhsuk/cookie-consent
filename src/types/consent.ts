@@ -8,6 +8,8 @@ export interface ConsentState {
 
 export interface ConsentCookie extends ConsentState {
   version: number;
+  consentedAt?: string;
+  schemaHash?: string;
 }
 
 export type CookieMode = 'long' | 'session';

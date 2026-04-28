@@ -65,7 +65,7 @@ function getConsent(): Partial<ConsentState> {
   if (!cookieValue) {
     return {};
   }
-  const { version, ...consent } = cookieValue;
+  const { version, consentedAt, schemaHash, ...consent } = cookieValue;
   return consent;
 }
 
@@ -97,12 +97,21 @@ export function setConsent(
 
   const existingConsent = getConsent();
 
+  const existingCookie = getCookie();
+
   const cookieValue = {
     // merge the consent that already exists with the new consent setting
     ...existingConsent,
     ...consent,
     // add version information to the cookie consent settings
     version: COOKIE_VERSION,
+    // store schema hash for automatic invalidation on consent model changes
+    schemaHash: CONSENT_SCHEMA_HASH,
+    // store consent timestamp; preserve existing if this is a partial update
+    consentedAt:
+      consent.consented === true
+        ? new Date().toISOString()
+        : existingCookie?.consentedAt,
   };
 
   createCookie(cookieValue, days, path);
@@ -140,6 +149,18 @@ export function isValidVersion(): boolean | null {
   return currentVersion === null ? null : currentVersion >= COOKIE_VERSION;
 }
 
+/**
+ * Is the consent schema hash in the cookie still current.
+ * Returns true if the hash matches, false if it doesn't, or null if no hash is stored.
+ */
+export function isSchemaValid(): boolean | null {
+  const cookie = getCookie();
+  if (cookie === null || cookie.schemaHash === undefined) {
+    return null;
+  }
+  return cookie.schemaHash === CONSENT_SCHEMA_HASH;
+}
+
 export function getConsentSetting(key: keyof ConsentState): boolean {
   const cookie = getConsent();
   // double ! to convert truthy/falsy values into true/false
@@ -175,6 +196,11 @@ export function shouldShowBanner(): boolean {
 
   // Show the banner if the user has consented before, but on an old version
   if (!isValidVersion()) {
+    return true;
+  }
+
+  // Show the banner if the consent schema has changed since the user last consented
+  if (isSchemaValid() === false) {
     return true;
   }
 
